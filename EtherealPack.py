@@ -1,23 +1,23 @@
 import os
-from random import random
+import random
 import Spells
 from CommonContent import RegenBuff, SimpleMeleeAttack
 import Level, Upgrades
 from Level import Bolt, Color, EventOnDamaged, Point, Tags, are_hostile
 import mods.API_Universal.Modred as Modred
 
-Ethereal = Level.Tag("Äthereal", Level.Color(1,121,111))
+Ethereal = Level.Tag("Äthereal", Level.Color(1,255,188))
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Level.Tags.elements.append(Ethereal)
 Modred.add_tag_keybind(Ethereal, 'Ä')
 
-Etherealness = Level.Tag("Ätherealness", Level.Color(1,121,111))
+Etherealness = Level.Tag("Ätherealness", Level.Color(1,255,188))
 
 Modred.add_tag_tooltip(Ethereal)
 Modred.add_tag_tooltip(Etherealness)
 
 # Add custom spells
-#Modred.add_tag_effect_simple(Level.Tags.Ethereal, os.path.join('mods','EtherealPack', ''))
+#Modred.add_tag_effect_simple(Ethereal, os.path.join('mods','EtherealPack', ''))
 
 Modred.add_shrine_option(Ethereal, 1)
 
@@ -26,15 +26,19 @@ class EtherealnessBuff(Level.Buff):#cant meele? #stackable? #still applied/effec
 		Level.Buff.__init__(self)
 		self.name = "Ätherealness"
 		self.buff_type = Level.BUFF_TYPE_CURSE
-		self.stack_type	= Level.STACK_NONE
-		self.asset = ['EtherealPack', 'status', 'Ätherealness']
-		self.color = Level.Tags.Ethereal.color
+		self.stack_type	= Level.STACK_DURATION
+		#self.asset = ['EtherealPack', 'status', 'Ätherealness']
+		self.color = Ethereal.color
 	
 	def on_applied(self, owner):
-		if owner.resists[Level.Tags.Ethereal] >= 100:
+		if owner.resists[Ethereal] >= 100:
 			return Level.ABORT_BUFF_APPLY
-		owner.resists[Level.Tags.Ethereal] -= 50
-		owner.resists[Level.Tags.Physical] += 25
+		owner.resists[Ethereal] -= 50
+		owner.resists[Tags.Physical] += 25	
+
+	def on_unapplied(self, owner):
+		owner.resists[Ethereal] += 50
+		owner.resists[Tags.Physical] -= 25
 
 #SKILLS
 
@@ -52,7 +56,7 @@ class Etherpredators(Upgrades.Upgrade):
 		self.name = "Äther Predators"
 		self.asset = ['EtherealPack', 'skill', 'Ätherpredators']
 
-#skill etherealness death ice nova
+#skill etherealness death nova random ice/ether dmg and freeze/etherealness
 class Vastness(Upgrades.Upgrade):
 	def __init__(self):
 		Upgrades.Upgrade.__init__(self)
@@ -66,7 +70,63 @@ class EtherBolt(Level.Spell):
 	def on_init(self):
 		self.name = "Äther Bolt"
 		self.range = 8 
-		self.tags = [Ethereal, Level.Tags.Sorcery]
+		self.tags = [Ethereal, Tags.Sorcery]
+		self.level = 1
+
+		self.damage = 11
+		self.duration = 3
+		self.damage_type = Ethereal
+
+		self.max_charges = 10 
+		self.shield_burn = 0
+
+		self.upgrades['max_charges'] = (15, 2)
+		self.upgrades['damage'] = (10, 3)
+		self.upgrades['range'] = (5, 1)
+		self.upgrades['energy_drain'] = (5, 2, "Energy Drain", "If Äther Bolt targets a unit affected by Ätherealness, it grants you a shield up to maximum of 5")
+		self.upgrades['energy_disruption'] = (1, 4, "Energy Disruption", "If Äther Bolt targets a unit affected by Ätherealness, it deals %d [fire], [lightning], and [ice] aswell" % (self.damage/2))
+		self.upgrades['energy_connection'] = (1, 6, "Energy Connection", "If Äther Bolt targets a unit affected by Ätherealness, Äther Bolt is cast again at units affected by Ätherealness in line of sight.")
+		
+
+	def cast(self, x, y, connected=True):
+		dtypes = []
+		unit = self.caster.level.get_unit_at(x, y)
+				
+		for p in self.caster.level.get_points_in_line(self.caster, Level.Point(x, y), find_clear=True)[1:-1]:
+			self.caster.level.show_effect(p.x, p.y, Ethereal, minor=True)
+
+		if unit:
+			if unit.has_buff(EtherealnessBuff):
+				if self.get_stat('energy_drain'):
+						if self.caster.shields < self.get_stat('energy_drain'):
+							self.caster.shields += 1
+				if self.get_stat('energy_disruption'):
+					dtypes = [Tags.Fire, Tags.Lightning, Tags.Ice]
+				if self.get_stat('energy_connection') and connected:
+					for u in self.caster.level.get_units_in_los(unit):
+						if u.has_buff(EtherealnessBuff):
+							self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage'), Ethereal, self)
+							for dtype in dtypes:
+								self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage')/2, dtype, self)
+							if u and u.resists[Ethereal] < 100:
+								u.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
+
+		self.caster.level.deal_damage(x, y, self.get_stat('damage'), Ethereal, self)
+		for dtype in dtypes:
+			self.caster.level.deal_damage(x, y, self.get_stat('damage')/2, dtype, self)
+		if unit and unit.resists[Ethereal] < 100:
+			unit.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
+		yield
+
+	def get_description(self):
+		return "Deal [{damage}_äthereal:äthereal] damage to the target and apply Ätherealness for [{duration}_turns:duration].".format(**self.fmt_dict())
+
+#spell hex debuff target takes extra dmg from all sources/skillsandspells
+class Hex(Level.Spell):
+	def on_init(self):
+		self.name = "Hex"
+		self.range = 8 
+		self.tags = [Ethereal, Tags.Dark, Tags.Sorcery]
 		self.level = 1
 
 		self.damage = 11
@@ -113,7 +173,6 @@ class EtherBolt(Level.Spell):
 	def get_description(self):
 		return "Deal [{damage}_äthereal:äthereal] damage to the target.".format(**self.fmt_dict())
 
-#spell hex debuff target takes extra dmg from all sources/skillsandspells
 
 class EtherBreath(Level.Spell):
 	def __init__(self, elemental):
@@ -175,7 +234,7 @@ class EtherBreath(Level.Spell):
 def EtherHydra(elemental=False):
 	unit = Level.Unit()
 	unit.sprite.char = 'D'
-	unit.sprite.color = Color(1,121,111)
+	unit.sprite.color = Color(1,255,188)
 	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
 	unit.name = "Äther Hydra"
 	unit.description = "Fires äther beams"
@@ -251,24 +310,25 @@ class LostHeadsBuff(Level.Buff):
 		self.stored_damage = 0
 	
 	def on_damaged(self, evt):
-		self.stored_damage += evt.damage
-		if self.stored_damage > 15:
-			self.stored_damage -= 15
-			head = Level.Unit()
-			head.sprite.char = 'D'
-			head.sprite.color = Color(1,121,111)
-			head.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
-			head.name = "Äther Hydra Head"
-			head.description = "Fires äther beam"
-			head.max_hp = 15
-			head.stationary = True
-			head.spells.append(EtherBeam(self.elemental))
-			head.spells.append(SimpleMeleeAttack(3))
-			head.resists[Ethereal] = 100
-			head.resists[Tags.Arcane] = -50
-			head.tags = [Tags.Dragon, Tags.Living, Ethereal]
-			head.team = self.owner.team
-			self.summon(head, Point(evt.unit.x, evt.unit.y), 5)
+		if evt.unit == self.owner:
+			self.stored_damage += evt.damage
+			if self.stored_damage > 15:
+				self.stored_damage -= 15
+				head = Level.Unit()
+				head.sprite.char = 'D'
+				head.sprite.color = Color(1,121,111)
+				head.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+				head.name = "Äther Hydra Head"
+				head.description = "Fires äther beam"
+				head.max_hp = 15
+				head.stationary = True
+				head.spells.append(EtherBeam(self.elemental))
+				head.spells.append(SimpleMeleeAttack(3))
+				head.resists[Ethereal] = 100
+				head.resists[Tags.Arcane] = -50
+				head.tags = [Tags.Dragon, Tags.Living, Ethereal]
+				head.team = self.owner.team
+				self.summon(head, Point(evt.unit.x, evt.unit.y), 5)
 
 class EtherBeam(Level.Spell):
 	def __init__(self, elemental):
@@ -280,7 +340,7 @@ class EtherBeam(Level.Spell):
 		self.cool_down = 7
 		self.dtypes = [Ethereal]
 		if elemental:
-			self.dtypes.append(random.choice[Tags.Fire,Tags.Ice,Tags.Lightning])
+			self.dtypes.append(random.choice([Tags.Fire,Tags.Ice,Tags.Lightning]))
 
 	def get_description(self):
 		return "Shoots an Äther Beam"
@@ -324,4 +384,4 @@ Spells.all_player_spell_constructors.append(SummonEtherHydraSpell)
 #Upgrades.skill_constructors.append(SpiritShaman)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
-#RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Level.Tags.Ice))
+#RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))
