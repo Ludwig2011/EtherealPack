@@ -261,12 +261,13 @@ class LostHeadsBuff(Level.Buff):
 			head.name = "Äther Hydra Head"
 			head.description = "Fires äther beam"
 			head.max_hp = 15
+			head.stationary = True
 			head.spells.append(EtherBeam(self.elemental))
 			head.spells.append(SimpleMeleeAttack(3))
 			head.resists[Ethereal] = 100
 			head.resists[Tags.Arcane] = -50
 			head.tags = [Tags.Dragon, Tags.Living, Ethereal]
-			head.team = self.caster.team
+			head.team = self.owner.team
 			self.summon(head, Point(evt.unit.x, evt.unit.y), 5)
 
 class EtherBeam(Level.Spell):
