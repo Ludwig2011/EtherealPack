@@ -1,6 +1,14 @@
 
 # Consitent naming scheme required
-class SummonEtherHydraSpell(Level.Spell):
+from CommonContent import RegenBuff
+from mods.EtherealPack.EtherealPack import Ethereal
+from Level import *
+from mods.EtherealPack.models.buffs.lost_heads_buff import LostHeadsBuff
+from mods.EtherealPack.models.minions.ether_hydra import EtherHydra
+from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
+
+
+class SummonEtherHydraSpell(Spell):
 
 	def on_init(self):
 		self.name = "Äther Hydra"

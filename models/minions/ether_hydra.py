@@ -1,6 +1,10 @@
+from CommonContent import SimpleMeleeAttack
+from Level import *
+from mods.EtherealPack.EtherealPack import Ethereal
+from mods.EtherealPack.models.minions.ether_breath import EtherBreath 
 
 def EtherHydra(elemental=False):
-	unit = Level.Unit()
+	unit = Unit()
 	unit.sprite.char = 'D'
 	unit.sprite.color = Color(1,121,111)
 	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")

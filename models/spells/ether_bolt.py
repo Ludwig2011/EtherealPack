@@ -1,10 +1,13 @@
+from Level import *
+from mods.EtherealPack.EtherealPack import Ethereal
+from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 
-class EtherBolt(Level.Spell):
+class EtherBolt(Spell):
 
 	def on_init(self):
 		self.name = "Äther Bolt"
 		self.range = 8 
-		self.tags = [Ethereal, Level.Tags.Sorcery]
+		self.tags = [Ethereal, Tags.Sorcery]
 		self.level = 1
 
 		self.damage = 11
@@ -24,10 +27,10 @@ class EtherBolt(Level.Spell):
 
 	def cast(self, x, y, connected=True):
 		dtypes = []
-		unit = self.caster.level.get_unit_at(x, y)
+		unit = self.caster.get_unit_at(x, y)
 				
-		for p in self.caster.level.get_points_in_line(self.caster, Level.Point(x, y), find_clear=True)[1:-1]:
-			self.caster.level.show_effect(p.x, p.y, Ethereal, minor=True)
+		for p in self.caster.get_points_in_line(self.caster, Point(x, y), find_clear=True)[1:-1]:
+			self.caster.show_effect(p.x, p.y, Ethereal, minor=True)
 
 		if unit:
 			if unit.has_buff(EtherealnessBuff):
@@ -41,9 +44,9 @@ class EtherBolt(Level.Spell):
 					for u in self.caster.get_units_in_los(unit):
 						self.cast(u.x, u.y, False)
 
-		self.caster.level.deal_damage(x, y, self.get_stat('damage'), Ethereal, self)
+		self.caster.deal_damage(x, y, self.get_stat('damage'), Ethereal, self)
 		for dtype in dtypes:
-			self.caster.level.deal_damage(x, y, self.get_stat('damage')/2, dtype, self)
+			self.caster.deal_damage(x, y, self.get_stat('damage')/2, dtype, self)
 			if len(dtypes)> 1: #the fuck does this do?
 				for i in range(4):
 					yield
