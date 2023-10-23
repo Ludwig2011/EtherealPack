@@ -1,28 +1,24 @@
-import os
-from random import random
+from Level import *
 import Spells
-from CommonContent import RegenBuff, SimpleMeleeAttack
-import Level, Upgrades
-from Level import Bolt, Color, EventOnDamaged, Point, Tags, are_hostile
-import mods.API_Universal.Modred as Modred
-import EtherBolt
+from API_Universal import Modred
+from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
+from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
 
-Ethereal = Level.Tag("Äthereal", Level.Color(1,121,111))
+Ethereal = Tag("Äthereal", Color(1,121,111))
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
-Level.Tags.elements.append(Ethereal)
+Tags.elements.append(Ethereal)
 Modred.add_tag_keybind(Ethereal, 'Ä')
 
-Etherealness = Level.Tag("Ätherealness", Level.Color(1,121,111))
+Etherealness = Tag("Ätherealness", Color(1,121,111))
 
 Modred.add_tag_tooltip(Ethereal)
 Modred.add_tag_tooltip(Etherealness)
 
 # Add custom spells
-#Modred.add_tag_effect_simple(Level.Tags.Ethereal, os.path.join('mods','EtherealPack', ''))
+#Modred.add_tag_effect_simple(Tags.Ethereal, os.path.join('mods','EtherealPack', ''))
 
 Modred.add_shrine_option(Ethereal, 1)
 
-#SPELLS
 
 
 
@@ -38,4 +34,4 @@ Spells.all_player_spell_constructors.append(SummonEtherHydraSpell)
 #Upgrades.skill_constructors.append(SpiritShaman)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
-#RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Level.Tags.Ice))
+#RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

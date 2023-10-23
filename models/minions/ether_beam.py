@@ -1,7 +1,12 @@
 
-class EtherBeam(Level.Spell):
+import random
+from Level import *
+from mods.EtherealPack.EtherealPack import Ethereal
+
+
+class EtherBeam(Spell):
 	def __init__(self, elemental):
-		Level.Spell.__init__(self)
+		Spell.__init__(self)
 
 		self.name = "Äther Beam"
 		self.damage = 7
@@ -36,7 +41,7 @@ class EtherBeam(Level.Spell):
 		return tiles				
 
 	def hit(self, x, y, dtypes):
-		unit = self.caster.level.get_unit_at(x, y)
+		unit = self.caster.get_unit_at(x, y)
 		if not unit or are_hostile(self.caster, unit):
 			for dtype in dtypes:
-				self.caster.level.deal_damage(x, y, self.get_stat('damage'), dtype, self)
+				self.caster.deal_damage(x, y, self.get_stat('damage'), dtype, self)
