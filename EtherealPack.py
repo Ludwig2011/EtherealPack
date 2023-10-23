@@ -56,7 +56,7 @@ class Etherpredators(Upgrades.Upgrade):
 		self.name = "Äther Predators"
 		self.asset = ['EtherealPack', 'skill', 'Ätherpredators']
 
-#skill etherealness death nova random ice/ether dmg and freeze/etherealness
+#skill etherealnessed units loose ice resist and death nova ice and freeze
 class Vastness(Upgrades.Upgrade):
 	def __init__(self):
 		Upgrades.Upgrade.__init__(self)
@@ -78,7 +78,6 @@ class EtherBolt(Level.Spell):
 		self.damage_type = Ethereal
 
 		self.max_charges = 10 
-		self.shield_burn = 0
 
 		self.upgrades['max_charges'] = (15, 2)
 		self.upgrades['damage'] = (10, 3)
@@ -121,54 +120,28 @@ class EtherBolt(Level.Spell):
 	def get_description(self):
 		return "Deal [{damage}_äthereal:äthereal] damage to the target and apply Ätherealness for [{duration}_turns:duration].".format(**self.fmt_dict())
 
-#spell hex debuff target takes extra dmg from all sources/skillsandspells
-class Hex(Level.Spell):
+class Hex(Level.Spell): # to weak -> radius or stun?
 	def on_init(self):
 		self.name = "Hex"
-		self.range = 8 
-		self.tags = [Ethereal, Tags.Dark, Tags.Sorcery]
-		self.level = 1
+		self.range = 10 
+		self.tags = [Ethereal, Tags.Dark, Tags.Enchantment]
+		self.level = 2
 
-		self.damage = 11
-		self.damage_type = Ethereal
+		self.duration = 7
+		self.damage = 3
+		self.damage_types = [Ethereal, Tags.Dark]
 
-		self.max_charges = 10 
-		self.shield_burn = 0
+		self.max_charges = 7
 
-		self.upgrades['max_charges'] = (15, 2)
-		self.upgrades['damage'] = (10, 3)
-		self.upgrades['range'] = (5, 1)
-		self.upgrades['energy_drain'] = (5, 2, "Energy Drain", "If Äther Bolt targets a unit affected by Ätherealness, it grants you a shield up to maximum of 5")
-
-		self.upgrades['energy_disruption'] = (1, 4, "Energy Disruption", "If Äther Bolt targets a unit affected by Ätherealness, it deals %d [fire], [lightning], and [ice] aswell" % (self.damage/2))
-		self.upgrades['energy_connection'] = (1, 6, "Energy Connection", "If Äther Bolt targets a unit affected by Ätherealness, Äther Bolt is cast again at units affected by Ätherealness in line of sight.")
+		self.upgrades['damage'] = (4, 3)
+		self.upgrades['range'] = (4, 1)
+		self.upgrades['energy_disruption'] = (1, 4, "Volatile Death", "When a target effected by Hex dies, cause an explosion with [{radius}_tile:radius] ".format(**self.fmt_dict()))
+		self.upgrades['perpetual_curse'] = (1, 6, "Perpetual Curse", "When a target effected by both Hex and Ätherealness dies, reaply Hex to a random enemy in line of sight.")
 		
 
-	def cast(self, x, y, connected=True):
-		dtypes = []
+	def cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x, y)
-				
-		for p in self.caster.level.get_points_in_line(self.caster, Level.Point(x, y), find_clear=True)[1:-1]:
-			self.caster.level.show_effect(p.x, p.y, Ethereal, minor=True)
-
-		if unit:
-			if unit.has_buff(EtherealnessBuff):
-				if self.get_stat('energy_drain'):
-						if self.caster.shields < self.get_stat('energy_drain'):
-							self.caster.shields += 1
-
-				if self.get_stat('energy_disruption'):
-					dtypes = [Tags.Fire, Tags.Lightning, Tags.Ice]
-				if self.get_stat('energy_connection') and connected:
-					for u in self.caster.get_units_in_los(unit):
-						self.cast(u.x, u.y, False)
-
-		self.caster.level.deal_damage(x, y, self.get_stat('damage'), Ethereal, self)
-		for dtype in dtypes:
-			self.caster.level.deal_damage(x, y, self.get_stat('damage')/2, dtype, self)
-			if len(dtypes)> 1: #the fuck does this do?
-				for i in range(4):
-					yield
+		unit.apply_buff(HexBuff(self.get_stat('damage'), self.get_stat('energy_disruption'), self.get_stat('perpetual_curse')), self.get_stat('duration'))
 
 	def get_description(self):
 		return "Deal [{damage}_äthereal:äthereal] damage to the target.".format(**self.fmt_dict())
@@ -373,8 +346,7 @@ class EtherBeam(Level.Spell):
 				self.caster.level.deal_damage(x, y, self.get_stat('damage'), dtype, self)
 
 #Spell summon herd of wyverns that deal little dmg but etherealies enemies
-#ethereal buff for chain effects
-#ethereal storm more bolts when etheral
+#ethereal storm ethereal extra damage type when etheral choose between lightning
 #etherealness aoe ressist change lvl 2 high uses upgrades: shield teleport enemies away
 #unit ethereal spider target give enemy buff reappier in x turns deal dmg/ tile hazard reappier in x turns if ocupied nearby(deal dmg)
 #enemy frog which etherealness debuff on attack
