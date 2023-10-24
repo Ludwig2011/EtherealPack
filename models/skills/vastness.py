@@ -1,6 +1,6 @@
 from Upgrades import Upgrade
 
-#skill etherealness death ice nova
+#skill etherealnessed units loose ice resist and death nova ice and freeze
 class Vastness(Upgrade):
 	def __init__(self):
 		Upgrade.__init__(self)

@@ -8,7 +8,7 @@ class EtherealnessBuff(Buff):#cant meele? #stackable? #still applied/effect 100 
 		Buff.__init__(self)
 		self.name = "Ätherealness"
 		self.buff_type = BUFF_TYPE_CURSE
-		self.stack_type	= STACK_NONE
+		self.stack_type	= STACK_DURATION
 		self.asset = ['EtherealPack', 'status', 'Ätherealness']
 		self.color = Ethereal.color
 	
@@ -17,3 +17,7 @@ class EtherealnessBuff(Buff):#cant meele? #stackable? #still applied/effect 100 
 			return ABORT_BUFF_APPLY
 		owner.resists[Ethereal] -= 50
 		owner.resists[Tags.Physical] += 25
+	
+	def on_unapplied(self, owner):
+		owner.resists[Ethereal] += 50
+		owner.resists[Tags.Physical] -= 25
