@@ -14,7 +14,7 @@ class EtherBeam(Spell):
 		self.cool_down = 7
 		self.dtypes = [Ethereal]
 		if elemental:
-			self.dtypes.append(random.choice[Tags.Fire,Tags.Ice,Tags.Lightning])
+			self.dtypes.append(random.choice([Tags.Fire,Tags.Ice,Tags.Lightning]))
 
 	def get_description(self):
 		return "Shoots an Äther Beam"

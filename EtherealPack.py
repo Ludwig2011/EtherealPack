@@ -4,12 +4,12 @@ from API_Universal import Modred
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
 
-Ethereal = Tag("Äthereal", Color(1,121,111))
+Ethereal = Tag("Äthereal", Color(1,255,188))
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Tags.elements.append(Ethereal)
 Modred.add_tag_keybind(Ethereal, 'Ä')
 
-Etherealness = Tag("Ätherealness", Color(1,121,111))
+Etherealness = Tag("Ätherealness", Color(1,255,188))
 
 Modred.add_tag_tooltip(Ethereal)
 Modred.add_tag_tooltip(Etherealness)
@@ -23,8 +23,7 @@ Modred.add_shrine_option(Ethereal, 1)
 
 
 #Spell summon herd of wyverns that deal little dmg but etherealies enemies
-#ethereal buff for chain effects
-#ethereal storm more bolts when etheral
+#ethereal storm ethereal extra damage type when etheral choose between lightning
 #etherealness aoe ressist change lvl 2 high uses upgrades: shield teleport enemies away
 #unit ethereal spider target give enemy buff reappier in x turns deal dmg/ tile hazard reappier in x turns if ocupied nearby(deal dmg)
 #enemy frog which etherealness debuff on attack
