@@ -1,6 +1,6 @@
 from Level import *
-from mods.EtherealPack.EtherealPack import Ethereal
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
+from mods.EtherealPack.tags.Ethereal import Ethereal
 
 class EtherBolt(Spell):
 

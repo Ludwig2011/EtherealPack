@@ -1,7 +1,7 @@
 from CommonContent import SimpleMeleeAttack
 from Level import *
-from mods.EtherealPack.EtherealPack import Ethereal
-from mods.EtherealPack.models.minions.ether_breath import EtherBreath 
+from mods.EtherealPack.models.minions.ether_breath import EtherBreath
+from mods.EtherealPack.tags.Ethereal import Ethereal 
 
 def EtherHydra(elemental=False):
 	unit = Unit()
