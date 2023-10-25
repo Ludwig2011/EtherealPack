@@ -29,7 +29,7 @@ class EtherBolt(Spell):
 		dtypes = []
 		unit = self.caster.level.get_unit_at(x, y)
 
-		for p in self.caster.level.get_points_in_line(self.caster, Level.Point(x, y), find_clear=True)[1:-1]:
+		for p in self.caster.level.get_points_in_line(self.caster, Point(x, y), find_clear=True)[1:-1]:
 			self.caster.level.show_effect(p.x, p.y, Ethereal, minor=True)
 
 		if unit:
