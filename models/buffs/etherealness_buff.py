@@ -1,6 +1,6 @@
 
 from Level import *
-from mods.EtherealPack.EtherealPack import Ethereal
+from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
 class EtherealnessBuff(Buff):#cant meele? #stackable? #still applied/effect 100 resists?

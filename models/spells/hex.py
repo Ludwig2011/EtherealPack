@@ -1,5 +1,12 @@
 
-class Hex(Level.Spell): # to weak -> radius or stun?
+from Level import *
+from mods.EtherealPack.models.buffs.hex_buffs import HexBuff, HexDebuff
+from mods.EtherealPack.tags.Ethereal import Ethereal
+
+#Hex bonus damage as aoe? as upgrade?
+#summon wraith on death as upgrade
+#wraith souldrain (stunn attack gain shield attack)
+class Hex(Spell): # to weak -> radius or stun? reduce resists!?
 	def on_init(self):
 		self.name = "Hex"
 		self.range = 10 
@@ -20,7 +27,8 @@ class Hex(Level.Spell): # to weak -> radius or stun?
 
 	def cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x, y)
-		unit.apply_buff(HexBuff(self.get_stat('damage'), self.get_stat('energy_disruption'), self.get_stat('perpetual_curse')), self.get_stat('duration'))
+		unit.apply_buff(HexDebuff(), self.get_stat('duration'))
+		self.caster.apply_buff(HexBuff(self.get_stat('damage'), self.get_stat('energy_disruption'), self.get_stat('perpetual_curse')), self.get_stat('duration'))
 
 	def get_description(self):
 		return "Deal [{damage}_äthereal:äthereal] damage to the target.".format(**self.fmt_dict())

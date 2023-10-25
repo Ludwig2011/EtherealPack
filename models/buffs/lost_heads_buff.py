@@ -1,7 +1,7 @@
 from CommonContent import SimpleMeleeAttack
 from Level import *
-from mods.EtherealPack.EtherealPack import Ethereal
 from mods.EtherealPack.models.minions.ether_beam import EtherBeam
+from mods.EtherealPack.tags.Ethereal import Ethereal
 
 class LostHeadsBuff(Buff):
 	def __init__(self, elemental):

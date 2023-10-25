@@ -1,11 +1,11 @@
 
 # Consitent naming scheme required
 from CommonContent import RegenBuff
-from mods.EtherealPack.EtherealPack import Ethereal
 from Level import *
 from mods.EtherealPack.models.buffs.lost_heads_buff import LostHeadsBuff
 from mods.EtherealPack.models.minions.ether_hydra import EtherHydra
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
+from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
 class SummonEtherHydraSpell(Spell):

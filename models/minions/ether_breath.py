@@ -1,5 +1,5 @@
 from Level import *
-from mods.EtherealPack.EtherealPack import Ethereal
+from mods.EtherealPack.tags.Ethereal import Ethereal
 #spell hex debuff target takes extra dmg from all sources/skillsandspells
 
 class EtherBreath(Spell):
