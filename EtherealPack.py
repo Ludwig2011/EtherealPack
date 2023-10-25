@@ -1,15 +1,14 @@
 from Level import *
 import Spells
-from API_Universal import Modred
+import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
+from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 
-Ethereal = Tag("Äthereal", Color(1,255,188))
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Tags.elements.append(Ethereal)
 Modred.add_tag_keybind(Ethereal, 'Ä')
 
-Etherealness = Tag("Ätherealness", Color(1,255,188))
 
 Modred.add_tag_tooltip(Ethereal)
 Modred.add_tag_tooltip(Etherealness)
