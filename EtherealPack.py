@@ -4,6 +4,7 @@ import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
+from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunction
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
@@ -31,6 +32,7 @@ Modred.add_shrine_option(Ethereal, 1)
 Spells.all_player_spell_constructors.append(EtherBolt)
 Spells.all_player_spell_constructors.append(SummonEtherHydraSpell)
 Spells.all_player_spell_constructors.append(Hex)
+Spells.all_player_spell_constructors.append(WordOfDisjunction)
 #Upgrades.skill_constructors.append(SpiritShaman)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
