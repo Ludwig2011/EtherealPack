@@ -41,7 +41,7 @@ class EtherBeam(Spell):
 		return tiles				
 
 	def hit(self, x, y, dtypes):
-		unit = self.caster.get_unit_at(x, y)
+		unit = self.caster.level.get_unit_at(x, y)
 		if not unit or are_hostile(self.caster, unit):
 			for dtype in dtypes:
-				self.caster.deal_damage(x, y, self.get_stat('damage'), dtype, self)
+				self.caster.level.deal_damage(x, y, self.get_stat('damage'), dtype, self)
