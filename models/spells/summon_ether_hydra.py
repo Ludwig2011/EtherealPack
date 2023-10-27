@@ -18,7 +18,7 @@ class SummonEtherHydraSpell(Spell):
 		self.level = 4
 
 		self.minion_health = 45
-		self.minion_damage = 8
+		self.minion_damage = 9
 		self.breath_damage = EtherHydra().spells[0].damage
 		self.minion_range = 7
 		self.minion_regen = 1

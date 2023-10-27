@@ -15,7 +15,6 @@ class EtherBolt(Spell):
 		self.damage_type = Ethereal
 
 		self.max_charges = 10 
-		self.shield_burn = 0
 
 		self.upgrades['max_charges'] = (15, 2)
 		self.upgrades['damage'] = (10, 3)
