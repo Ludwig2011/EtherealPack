@@ -4,13 +4,14 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 
 class EtherWave(Spell):
 
-    def __init__(self):
+    def __init__(self, minion_damage=3, minion_range=4, shielding_waves=False):
         Spell.__init__(self)
-        self.damage = 3
+        self.damage = minion_damage
         self.damage_type = Ethereal
         self.name = "Äther Wave"
         self.cool_down = 3
-        self.radius = 4
+        self.radius = minion_range
+        self.shielding_waves = shielding_waves
         self.friendly_fire = False
         self.ignore_walls = True
 
@@ -30,9 +31,6 @@ class EtherWave(Spell):
         desc = "Deals damage in a burst around the caster."
         if self.ignore_walls:
             desc += "\nThe burst ignores walls."
-        if self.extra_desc:
-            desc += '\n'
-            desc += self.extra_desc
         return desc
 
     def get_impacted_tiles(self, x, y):
@@ -55,5 +53,6 @@ class EtherWave(Spell):
                     self.caster.level.deal_damage(p.x, p.y, self.damage, self.damage_type, self)
                     if unit.cur_hp > 0:
                         unit.apply_buff(EtherealnessBuff(), 7)
-                else:
+                elif self.shielding_waves:
                     unit.shields += 1 if unit.shields >= 1 else 0
+            self.caster.level.show_effect(p.x,p.y, Ethereal)
