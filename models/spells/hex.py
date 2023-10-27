@@ -20,9 +20,9 @@ class Hex(Spell):
 		self.upgrades['damage'] = (4, 3)
 		self.upgrades['resist_loss'] = (25, 2)
 		self.upgrades['range'] = (4, 1)
-		self.upgrades['deterioration'] = (1, 3, "Deterioration", "Targets effected by hex also lose [physical_physical:physical], [poison_poison:poison]poison and [ice_ice:ice] resistance".format(**self.fmt_dict()))
+		self.upgrades['deterioration'] = (1, 2, "Deterioration", "Targets effected by hex also lose [physical:physical], [poison:poison] and [ice:ice] resistance".format(**self.fmt_dict()))
+		self.upgrades['perpetual_curse'] = (1, 3, "Perpetual Curse", "When a target effected by both Hex and Ätherealness dies, reaply Hex the closest enemy in line of sight.")
 		self.upgrades['volatile_death'] = (1, 4, "Volatile Death", "When a target effected by Hex dies, cause an explosion with [5_tile:radius] dealing [7_dark:dark] and [7_äthereal:äthereal] damage".format(**self.fmt_dict()))
-		self.upgrades['perpetual_curse'] = (1, 6, "Perpetual Curse", "When a target effected by both Hex dies, reaply Hex to a random enemy in line of sight.")
 		
 
 	def cast(self, x, y):
@@ -30,6 +30,9 @@ class Hex(Spell):
 		unit.apply_buff(HexDebuff(self.get_stat('resist_loss'), self.get_stat('deterioration')), self.get_stat('duration'))
 		self.caster.apply_buff(HexBuff(self.get_stat('damage'), self.get_stat('volatile_death'), self.get_stat('perpetual_curse'), self.get_stat('resist_loss'), self.get_stat('deterioration'), self.get_stat('duration')), self.get_stat('duration'))
 		yield
+
+	def can_cast(self, x, y):
+		return self.caster.level.get_unit_at(x, y) and Spell.can_cast(self, x, y)
 		
 	def get_description(self):
 		return "Curse enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever they take damage.".format(**self.fmt_dict())

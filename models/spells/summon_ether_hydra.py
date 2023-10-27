@@ -42,7 +42,7 @@ class SummonEtherHydraSpell(Spell):
 
 		drake.buffs.append(RegenBuff(self.get_stat('minion_regen')))
 		if self.get_stat('lost_heads'):
-			drake.buffs.append(LostHeadsBuff(self.get_stat('element_mother')))
+			drake.buffs.append(LostHeadsBuff(self.get_stat('element_mother'),self.get_stat('breath_damage')))
 
 		if self.get_stat('dragon_mage'):
 			fball = EtherBolt()

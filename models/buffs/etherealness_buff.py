@@ -3,22 +3,30 @@ from Level import *
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
-class EtherealnessBuff(Buff):#cant meele? #stackable? #still applied/effect 100 resists?
-	def __init__(self):
+class EtherealnessBuff(Buff):
+	def __init__(self, team=None):
 		Buff.__init__(self)
 		self.name = "Ätherealness"
+		self.team = team
 		self.buff_type = BUFF_TYPE_CURSE
 		self.stack_type	= STACK_DURATION
 		#self.asset = ['EtherealPack', 'status', 'Ätherealness']
 		self.color = Ethereal.color
-	
+
 	def on_applied(self, owner):
-		if owner.resists[Ethereal] >= 100:
-			return ABORT_BUFF_APPLY
-		owner.resists[Ethereal] -= 50
-		owner.resists[Tags.Physical] += 25
-		self.owner = owner
-	
+		if self.team == None:
+			player = [u for u in self.owner.level.units if u.is_player_controlled][0]
+			self.team = player.team
+		if not owner.team==self.team:
+			if owner.resists[Ethereal] >= 100:
+				return ABORT_BUFF_APPLY
+			owner.resists[Ethereal] -= 50
+			owner.resists[Tags.Physical] += 25
+			self.owner = owner
+		else:
+			owner.resists[Tags.Physical] += 25
+
 	def on_unapplied(self):
-		self.owner.resists[Ethereal] += 50
+		if not self.owner.team==self.team:
+			self.owner.resists[Ethereal] += 50
 		self.owner.resists[Tags.Physical] -= 25

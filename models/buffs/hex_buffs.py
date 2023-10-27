@@ -1,5 +1,6 @@
 
 from Level import *
+from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 #watch out that not all buffs check for damage event (check self? or give caster permanent positive buff that checks event)
@@ -32,10 +33,17 @@ class HexBuff(Buff):
 								self.owner.level.deal_damage(point.x, point.y, self.damage, Ethereal, self)
 							else:
 								self.owner.level.show_effect(point.x, point.y, Ethereal)
-				if self.perpetual_curse:
+				if self.perpetual_curse and evt.unit.has_buff(EtherealnessBuff):
 					targets = self.owner.level.get_units_in_los(evt.unit)
 					targets = [t for t in targets if are_hostile(self.owner, t)]
-					random.choice(targets).apply_buff(HexDebuff(self.resist_loss, self.deterioration), self.duration)
+					target = targets[0]
+					distance = math.sqrt((evt.unit.x - target.x) ** 2 + (evt.unit.y - target.y) ** 2)
+					for t in targets:
+						new_distance = math.sqrt((evt.unit.x - t.x) ** 2 + (evt.unit.y - t.y) ** 2)
+						if new_distance < distance:
+							target = t
+							distance = new_distance
+					target.apply_buff(HexDebuff(self.resist_loss, self.deterioration), self.duration)
 					self.turns_left = 7
 				
 class HexDebuff(Buff):

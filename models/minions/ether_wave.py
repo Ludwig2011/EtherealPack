@@ -22,7 +22,9 @@ class EtherWave(Spell):
     def get_ai_target(self):
         for p in self.get_impacted_tiles(self.caster.x, self.caster.y):
             u = self.caster.level.get_unit_at(p.x, p.y)
-            if u and are_hostile(u, self.caster):
+            if self.shielding_waves and u:
+                return self.caster
+            elif u and are_hostile(u, self.caster):
                 return self.caster
 
         return None
@@ -51,8 +53,8 @@ class EtherWave(Spell):
             if unit:
                 if are_hostile(self.caster, unit):
                     self.caster.level.deal_damage(p.x, p.y, self.damage, self.damage_type, self)
-                    if unit.cur_hp > 0:
-                        unit.apply_buff(EtherealnessBuff(), 7)
                 elif self.shielding_waves:
-                    unit.shields += 1 if unit.shields >= 1 else 0
+                    unit.shields += 1 if unit.shields <= 1 else 0 
+                if unit.cur_hp > 0:
+                    unit.apply_buff(EtherealnessBuff(), 7)
             self.caster.level.show_effect(p.x,p.y, Ethereal)

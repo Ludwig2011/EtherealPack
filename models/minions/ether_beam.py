@@ -5,11 +5,11 @@ from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
 class EtherBeam(Spell):
-	def __init__(self, elemental):
+	def __init__(self, elemental,damage):
 		Spell.__init__(self)
 
 		self.name = "Äther Beam"
-		self.damage = 7
+		self.damage = damage
 		self.beam = True
 		self.cool_down = 7
 		self.dtypes = [Ethereal]
