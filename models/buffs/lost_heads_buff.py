@@ -19,7 +19,7 @@ class LostHeadsBuff(Buff):
 			self.stored_damage += evt.damage
 			if self.stored_damage > 15:
 				self.stored_damage -= 15
-				head = Level.Unit()
+				head = Unit()
 				head.sprite.char = 'D'
 				head.sprite.color = Color(1,121,111)
 				head.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
