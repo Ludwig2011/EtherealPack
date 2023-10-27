@@ -14,9 +14,9 @@ class EtherBolt(Spell):
 		self.duration = 3
 		self.damage_type = Ethereal
 
-		self.max_charges = 10 
+		self.max_charges = 21 
 
-		self.upgrades['max_charges'] = (15, 2)
+		self.upgrades['max_charges'] = (14, 2)
 		self.upgrades['damage'] = (10, 3)
 		self.upgrades['range'] = (5, 1)
 		self.upgrades['energy_drain'] = (5, 2, "Energy Drain", "If Äther Bolt targets a unit affected by Ätherealness, it grants you a shield up to maximum of 5")
@@ -40,7 +40,7 @@ class EtherBolt(Spell):
 					dtypes = [Tags.Fire, Tags.Lightning, Tags.Ice]
 				if self.get_stat('energy_connection') and connected:
 					for u in self.caster.level.get_units_in_los(unit):
-						if u.has_buff(EtherealnessBuff):
+						if u.has_buff(EtherealnessBuff) and are_hostile(self.caster, u):
 							self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage'), Ethereal, self)
 							for dtype in dtypes:
 								self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage')/2, dtype, self)

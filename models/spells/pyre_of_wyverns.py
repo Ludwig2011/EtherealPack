@@ -20,7 +20,7 @@ class PyreOfWyvernsSpell(Spell):
 		self.max_charges = 2		
 		self.upgrades['shields'] = (2, 3)
 		self.upgrades['num_summons'] = (2, 3)
-		self.upgrades['shielding_waves'] = 1, 4, "Shielding Waves", "The wyverns ether waves provide up to 1 shield to allies"
+		self.upgrades['shielding_waves'] = 1, 4, "Embracing Waves", "The wyverns ether waves provide up to 1 shield to allies"
 		self.upgrades['ether_link'] = 1, 5, "Ether Link", "Wyverns link up to each other if they stay near they double their damage and reduce their wave cooldown to 1"
 
 		self.range = 0
@@ -37,8 +37,9 @@ class PyreOfWyvernsSpell(Spell):
 	def cast_instant(self, x, y):
 		for i in range(self.get_stat('num_summons')):
 			wyvern = EtherWyvern(shields=self.get_stat('shields'))
+			wyvern.max_hp = self.get_stat('minion_health')
 			wyvern.spells.clear()
-			wyvern.spells.append(SimpleMeleeAttack(self.get_stat('minion_damage')))
 			wyvern.spells.append(EtherWave(self.get_stat('minion_damage'), self.get_stat('minion_range'), self.get_stat('shielding_waves')))
+			wyvern.spells.append(SimpleMeleeAttack(self.get_stat('minion_damage')))
 			wyvern.team = self.caster.team 
 			self.summon(wyvern, Point(x, y))
