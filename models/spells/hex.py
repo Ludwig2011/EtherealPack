@@ -21,8 +21,8 @@ class Hex(Spell):
 		self.upgrades['resist_loss'] = (25, 2)
 		self.upgrades['range'] = (4, 1)
 		self.upgrades['deterioration'] = (1, 2, "Deterioration", "Targets effected by hex also lose [physical:physical], [poison:poison] and [ice:ice] resistance".format(**self.fmt_dict()))
-		self.upgrades['perpetual_curse'] = (1, 3, "Perpetual Curse", "When a target effected by both Hex and Ätherealness dies, reaply Hex the closest enemy in line of sight.")
-		self.upgrades['volatile_death'] = (1, 4, "Volatile Death", "When a target effected by Hex dies, cause an explosion with [5_tile:radius] dealing [7_dark:dark] and [7_äthereal:äthereal] damage".format(**self.fmt_dict()))
+		self.upgrades['perpetual_curse'] = (1, 3, "Perpetual Curse", "When a target effected by both Hex and [Ätherealness:äthereal] dies, reaply Hex the closest enemy in line of sight.")
+		self.upgrades['volatile_death'] = (1, 4, "Volatile Death", "When a target effected by Hex dies, cause an explosion with [5_tile:radius] dealing [7_dark:dark] and [7_äthereal:äthereal] damage that apllies [Ätherealness:äthereal] for [{duration}_turns:duration]".format(**self.fmt_dict()))
 		
 
 	def cast(self, x, y):
@@ -35,4 +35,4 @@ class Hex(Spell):
 		return self.caster.level.get_unit_at(x, y) and Spell.can_cast(self, x, y)
 		
 	def get_description(self):
-		return "Curse enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever they take damage.".format(**self.fmt_dict())
+		return "Curse enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever they take damage for [{duration}_turns:duration].".format(**self.fmt_dict())

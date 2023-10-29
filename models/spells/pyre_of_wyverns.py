@@ -1,5 +1,6 @@
 from CommonContent import SimpleMeleeAttack
 from Level import *
+from mods.EtherealPack.models.minions.ether_link import EtherLink
 from mods.EtherealPack.models.minions.ether_wave import EtherWave
 from mods.EtherealPack.models.minions.ether_wyvern import EtherWyvern
 from mods.EtherealPack.tags.Ethereal import Ethereal 
@@ -18,10 +19,10 @@ class PyreOfWyvernsSpell(Spell):
 		self.shields = 2
 
 		self.max_charges = 2		
-		self.upgrades['shields'] = (2, 3)
+		self.upgrades['shields'] = (2, 2)
 		self.upgrades['num_summons'] = (2, 3)
-		self.upgrades['shielding_waves'] = 1, 4, "Embracing Waves", "The wyverns ether waves provide up to 1 shield to allies"
-		self.upgrades['ether_link'] = 1, 5, "Ether Link", "Wyverns link up to each other if they stay near they double their damage and reduce their wave cooldown to 1"
+		self.upgrades['shielding_waves'] = 1, 4, "Embracing Waves", "The wyverns ether waves provide up to 2 shields to allies"
+		self.upgrades['ether_link'] = 1, 5, "Ether Link", "Wyverns link up to each other if they stay near their range increases by 3 and their wave cooldown is set to 2"
 
 		self.range = 0
 		self.tags = [Tags.Dragon, Tags.Conjuration, Ethereal]
@@ -40,6 +41,8 @@ class PyreOfWyvernsSpell(Spell):
 			wyvern.max_hp = self.get_stat('minion_health')
 			wyvern.spells.clear()
 			wyvern.spells.append(EtherWave(self.get_stat('minion_damage'), self.get_stat('minion_range'), self.get_stat('shielding_waves')))
+			if self.get_stat('ether_link'):
+				wyvern.spells.append(EtherLink())
 			wyvern.spells.append(SimpleMeleeAttack(self.get_stat('minion_damage')))
 			wyvern.team = self.caster.team 
 			self.summon(wyvern, Point(x, y))

@@ -12,7 +12,7 @@ class LostHeadsBuff(Buff):
 		self.stack_type	= STACK_NONE
 		self.color = Ethereal.color
 		self.global_triggers[EventOnDamaged] = self.on_damaged
-		self.damage
+		self.damage = damage
 		self.stored_damage = 0
 	
 	def on_damaged(self, evt):
