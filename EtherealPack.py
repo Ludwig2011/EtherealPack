@@ -5,6 +5,7 @@ import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.ethertuned import Ethertuned
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.hex import Hex
+from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
 from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunction
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
@@ -14,7 +15,7 @@ from mods.EtherealPack.models.spells.pyre_of_wyverns import PyreOfWyvernsSpell
 Tags.elements.append(Ethereal)
 Modred.add_tag_keybind(Ethereal, 'Ä')
 
-
+#Overwrite Level set_default_resistances. Resists API?
 Modred.add_tag_tooltip(Ethereal)
 Modred.add_tag_tooltip(Etherealness)
 
@@ -37,6 +38,7 @@ Spells.all_player_spell_constructors.append(SummonEtherHydraSpell)
 Spells.all_player_spell_constructors.append(Hex)
 Spells.all_player_spell_constructors.append(WordOfDisjunction)
 Spells.all_player_spell_constructors.append(PyreOfWyvernsSpell)
+Spells.all_player_spell_constructors.append(MomentInHell)
 Upgrades.skill_constructors.append(Ethertuned)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
