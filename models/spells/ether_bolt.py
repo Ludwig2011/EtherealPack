@@ -13,6 +13,7 @@ class EtherBolt(Spell):
 		self.damage = 11
 		self.duration = 3
 		self.damage_type = Ethereal
+		self.can_target_empty = False
 
 		self.max_charges = 21 
 
