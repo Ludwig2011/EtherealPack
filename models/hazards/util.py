@@ -1,3 +1,4 @@
+import copy
 from Level import *
 
 
@@ -85,7 +86,7 @@ def deal_damage(level, unit, amount, damage_type, source):
 
     return False
 
-def add_unit(level, unit, x, y, trigger_summon_event=True):
+def add_unit(level, unit, x, y, unit_buffs, trigger_summon_event=True):
             unit.x = x
             unit.y = y
             unit.level = level
@@ -93,20 +94,19 @@ def add_unit(level, unit, x, y, trigger_summon_event=True):
             if not hasattr(unit, 'level_id'):
                 unit.level_id = level.level_id
 
-            if isinstance(unit, Unit):
-                if trigger_summon_event:
-                    level.event_manager.raise_event(EventOnUnitPreAdded(unit), unit)
+            if trigger_summon_event:
+                level.event_manager.raise_event(EventOnUnitPreAdded(unit), unit)
+                
+            assert(level.tiles[x][y].unit is None)
+            level.tiles[x][y].unit = unit
+
+            # Hack- allow improper adding in monsters.py
+            for spell in unit.spells:
+                spell.caster = unit
+                spell.owner = unit
                     
-                assert(level.tiles[x][y].unit is None)
-                level.tiles[x][y].unit = unit
+            level.units.append(unit)
+            if trigger_summon_event:
+                level.event_manager.raise_event(EventOnUnitAdded(unit), unit)
 
-                # Hack- allow improper adding in monsters.py
-                for spell in unit.spells:
-                    spell.caster = unit
-                    spell.owner = unit
-
-                level.units.append(unit)
-                if trigger_summon_event:
-                    level.event_manager.raise_event(EventOnUnitAdded(unit), unit)
-
-                unit.ever_spawned = True
+            unit.ever_spawned = True
