@@ -3,8 +3,8 @@ import Spells
 import Upgrades
 import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
-from mods.EtherealPack.models.skills.ethertuned import Ethertuned
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
+from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
 from mods.EtherealPack.models.spells.pure_ether_sphere import PureEtherSphere
@@ -44,6 +44,7 @@ Spells.all_player_spell_constructors.append(PyreOfWyvernsSpell)
 Spells.all_player_spell_constructors.append(MomentInHell)
 Spells.all_player_spell_constructors.append(PureEtherSphere)
 Spells.all_player_spell_constructors.append(EtherStormSpell)
+Spells.all_player_spell_constructors.append(SummonFrostSpire)
 Upgrades.skill_constructors.append(Etherpredators)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
