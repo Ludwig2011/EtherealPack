@@ -14,6 +14,7 @@ def EtherWyvern(shields=2):
 	unit.spells.append(EtherWave())
 	unit.shields = shields
 	unit.resists[Ethereal] = 50
+	unit.resists[Tags.Physical] = 50
 	unit.resists[Tags.Arcane] = -25
 	unit.tags = [Tags.Dragon, Tags.Living, Ethereal]
 	unit.flying = True

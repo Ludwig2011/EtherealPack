@@ -2,7 +2,7 @@ from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class EtherBolt(Spell):
+class EtherBolt(Spell):#energy_disruption when self is Ätherealiesed aswell/instead?
 
 	def on_init(self):
 		self.name = "Äther Bolt"
@@ -26,6 +26,7 @@ class EtherBolt(Spell):
 
 
 	def cast(self, x, y, connected=True):
+		self.caster.xp = 14
 		dtypes = []
 		unit = self.caster.level.get_unit_at(x, y)
 
@@ -47,6 +48,8 @@ class EtherBolt(Spell):
 								self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage')/2, dtype, self)
 							if u and u.resists[Ethereal] < 100:
 								u.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
+							for p in self.caster.level.get_points_in_line(self.caster, Point(u.x, u.y), find_clear=True)[1:-1]:
+								self.caster.level.show_effect(p.x, p.y, Ethereal, minor=True)
 
 		self.caster.level.deal_damage(x, y, self.get_stat('damage'), Ethereal, self)
 		for dtype in dtypes:
