@@ -10,6 +10,7 @@ from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraS
 from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunction
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 from mods.EtherealPack.models.spells.pyre_of_wyverns import PyreOfWyvernsSpell
+from mods.EtherealPack.models.spells.ether_storm import EtherStormSpell
 
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Tags.elements.append(Ethereal)
@@ -39,6 +40,7 @@ Spells.all_player_spell_constructors.append(Hex)
 Spells.all_player_spell_constructors.append(WordOfDisjunction)
 Spells.all_player_spell_constructors.append(PyreOfWyvernsSpell)
 Spells.all_player_spell_constructors.append(MomentInHell)
+Spells.all_player_spell_constructors.append(EtherStormSpell)
 Upgrades.skill_constructors.append(Ethertuned)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
