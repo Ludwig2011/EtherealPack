@@ -54,14 +54,13 @@ def deal_damage(level, unit, amount, damage_type, source):
                 else:
                     key = source.name	
                 level.damage_taken_sources[key] += amount
-
-        damage_event = EventOnDamaged(unit, amount, damage_type, source)
-        level.event_manager.raise_event(damage_event, unit)
     
-        if (unit.cur_hp <= 0): #might have to happen later
+        if (unit.cur_hp <= 0):
             if not unit.killed:
                 unit.cur_hp = 0
                 unit.killed = True
+                damage_event = EventOnDamaged(unit, amount, damage_type, source)
+                level.event_manager.raise_event(damage_event, unit)
                 for buff in unit.buffs:
                     buff.unapply()
                 unit.level.event_manager.raise_event(EventOnDeath(unit, damage_event), unit)
@@ -70,11 +69,17 @@ def deal_damage(level, unit, amount, damage_type, source):
                 if not unit.killed:
                     unit.cur_hp = 0
                     unit.killed = True
+                    damage_event = EventOnDamaged(unit, amount, damage_type, source)
+                    level.event_manager.raise_event(damage_event, unit)
                     for buff in unit.buffs:
                         buff.unapply()
                     unit.level.event_manager.raise_event(EventOnDeath(unit, damage_event), unit)	
 
             return True
+        else:
+            damage_event = EventOnDamaged(unit, amount, damage_type, source)
+            level.event_manager.raise_event(damage_event, unit)
+
         if (unit.cur_hp > unit.max_hp):
             unit.cur_hp = unit.max_hp
     # set amount to 0 if there is no unit- ie, if an empty tile or dead unit was hit

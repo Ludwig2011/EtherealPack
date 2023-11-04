@@ -4,7 +4,7 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class MomentInHell(Spell): # deal äthereal damage on cast? #Gives Clarity and cant target clarity
+class MomentInHell(Spell): # reviving units and mordred???????????????????????????????
 
 	def on_init(self):
 		self.name = "A Moment in Hell"
@@ -27,7 +27,7 @@ class MomentInHell(Spell): # deal äthereal damage on cast? #Gives Clarity and c
 
 	def can_cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x,y)
-		if unit and unit.has_buff(StunImmune):
+		if unit and (unit.has_buff(StunImmune) or isinstance(self.caster.level.tiles[x][y].prop, HellStasis)): # or isinstance(self.caster.level.tiles[x][y].prop, HeavenStasis)
 			return False
 		return super().can_cast(x, y)
 

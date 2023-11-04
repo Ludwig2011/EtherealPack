@@ -2,10 +2,12 @@ from Level import *
 import Spells
 import Upgrades
 import mods.API_Universal.Modred as Modred
+from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.skills.ethertuned import Ethertuned
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
+from mods.EtherealPack.models.spells.pure_ether_sphere import PureEtherSphere
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
 from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunction
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
@@ -40,8 +42,9 @@ Spells.all_player_spell_constructors.append(Hex)
 Spells.all_player_spell_constructors.append(WordOfDisjunction)
 Spells.all_player_spell_constructors.append(PyreOfWyvernsSpell)
 Spells.all_player_spell_constructors.append(MomentInHell)
+Spells.all_player_spell_constructors.append(PureEtherSphere)
 Spells.all_player_spell_constructors.append(EtherStormSpell)
-Upgrades.skill_constructors.append(Ethertuned)
+Upgrades.skill_constructors.append(Etherpredators)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

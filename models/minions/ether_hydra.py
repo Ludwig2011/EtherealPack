@@ -14,6 +14,7 @@ def EtherHydra(elemental=False):
 	unit.spells.append(EtherBreath(elemental))
 	unit.spells.append(SimpleMeleeAttack(9))
 	unit.resists[Ethereal] = 100
+	unit.resists[Tags.Physical] = 25
 	unit.resists[Tags.Arcane] = -50
 	unit.tags = [Tags.Dragon, Tags.Living, Ethereal]
 	return unit
