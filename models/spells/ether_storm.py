@@ -29,7 +29,7 @@ class EtherStormSpell(Spell):
         self.upgrades['requires_los'] = (-1, 2, "Blindcasting", "Ether Storm can be cast without line of sight")  
         self.upgrades['endothermic_discharge'] = (1, 1, "Endothermic Discharge", "The bolts have a %d percent chance to freeze enemies for 1 turns" % (self.get_stat('chance')/2))
         self.upgrades['lingering_static'] = (1, 2, "Lingering Static", "The Storms static field applies Ätherealness to all units for [{duration}_turns:duration]")
-        self.upgrades['searing_storm'] = (1, 3, "Searing Storm", "The bolts have a %d percent chance to leave enemies with burns dealing [{damage}_fire:fire] damage for 3 turns" % self.get_stat('chance')/2))
+        self.upgrades['searing_storm'] = (1, 3, "Searing Storm", "The bolts have a %d percent chance to leave enemies with burns dealing [{damage}_fire:fire] damage for 3 turns" % (self.get_stat('chance')/2))
 
         self.tags = [Tags.Sorcery, Tags.Chaos, Tags.Lightning, Ethereal]
 
@@ -38,7 +38,7 @@ class EtherStormSpell(Spell):
     def get_description(self):
         return ("Open a Rift to the Energy Plane through which %d energy bolts strike random enemies in [{radius}_radius:radius]\n"
                 "Each bolt deals [{damage}_äthereal:äthereal] damage and has a %d percent chance to deal lightning damage aswell\n"
-                 "The Chance of added effects from this spell is doubled against äthereal targets" % (self.get_stat('amount_of_strikes'), self.get_stat('chance'))).format(**self.fmt_dict())
+                "The Chance of added effects from this spell is doubled against äthereal targets" % (self.get_stat('amount_of_strikes'), self.get_stat('chance'))).format(**self.fmt_dict())
 
     def cast(self, x, y):
         targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.radius) if u != self.caster and are_hostile(self.caster, u)]
