@@ -14,6 +14,7 @@ from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunctio
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 from mods.EtherealPack.models.spells.pyre_of_wyverns import PyreOfWyvernsSpell
 from mods.EtherealPack.models.spells.ether_storm import EtherStormSpell
+from mods.EtherealPack.models.spells.domain_expansion_spell import DomainExpansionSpell
 
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Tags.elements.append(Ethereal)
@@ -46,6 +47,7 @@ Spells.all_player_spell_constructors.append(MomentInHell)
 Spells.all_player_spell_constructors.append(PureEtherSphere)
 Spells.all_player_spell_constructors.append(EtherStormSpell)
 Spells.all_player_spell_constructors.append(SummonFrostSpire)
+Spells.all_player_spell_constructors.append(DomainExpansionSpell)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
 #Monsters.spawn_options.append((SpriteCloud, 2))
