@@ -56,5 +56,5 @@ class EtherWave(Spell):
                 elif self.shielding_waves:
                     unit.shields += 1 if unit.shields <= 1 else 0 
                 if unit.cur_hp > 0:
-                    unit.apply_buff(EtherealnessBuff(), 7)
+                    unit.apply_buff(EtherealnessBuff(), 3)
             self.caster.level.show_effect(p.x,p.y, Ethereal)

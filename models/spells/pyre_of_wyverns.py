@@ -32,7 +32,7 @@ class PyreOfWyvernsSpell(Spell):
 	def get_description(self):
 		return ("Summons [{num_summons}_wyverns:num_summons] near the caster.\n"
 				"Wyverns have [{minion_health}_HP:minion_health].\n"
-				"Wyverns have a ether wave attack which deals [{minion_damage}_äthereal:äthereal] damage in a [4_tile:radius] radius.\n"
+				"Wyverns have a ether wave attack which deals [{minion_damage}_äthereal:äthereal] damage in a [4_tile:radius] radius and applies [Ätherealness:äthereal] for 3 turns.\n"
 				"Wyverns have a melee attack which deals [{minion_damage}_physical:physical] damage.").format(**self.fmt_dict())
 
 	def cast_instant(self, x, y):

@@ -1,0 +1,1 @@
+#gain back charges of spells when ätherealised enemies die
