@@ -9,6 +9,7 @@ from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
 from mods.EtherealPack.models.spells.pure_ether_sphere import PureEtherSphere
+from mods.EtherealPack.models.spells.railgun import Railgun
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
 from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunction
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
@@ -46,6 +47,7 @@ Spells.all_player_spell_constructors.append(MomentInHell)
 Spells.all_player_spell_constructors.append(PureEtherSphere)
 Spells.all_player_spell_constructors.append(EtherStormSpell)
 Spells.all_player_spell_constructors.append(SummonFrostSpire)
+Spells.all_player_spell_constructors.append(Railgun)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
 #Monsters.spawn_options.append((SpriteCloud, 2))

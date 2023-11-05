@@ -56,6 +56,6 @@ class SummonEtherHydraSpell(Spell):
 
 	def get_description(self):
 		return ("Summon an Äther Hydra at target square.\n"
-				"Äther Hydras have [{minion_health}_HP:minion_health], and have [100_äthereal:äthereal] resist.\n"
+				"Äther Hydras have [{minion_health}_HP:minion_health] and [100_äthereal:äthereal], [25_physical:physical] and [-50_arcane:arcane] resist.\n"
 				"Äther Hydras have a breath weapon which deals [{breath_damage}_äthereal:äthereal] damage.\n"
 				"Äther Hydras have a melee attack which deals [{minion_damage}_physical:physical] damage.").format(**self.fmt_dict())

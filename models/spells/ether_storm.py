@@ -1,6 +1,5 @@
 from CommonContent import FrozenBuff
 from Level import *
-from Shrines import BurningBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 import random

@@ -10,7 +10,7 @@ class EtherealnessBuff(Buff):
 		self.buff_type = BUFF_TYPE_CURSE
 		self.stack_type	= STACK_DURATION
 		#self.asset = ['EtherealPack', 'status', 'Ätherealness']
-		self.description = "Partially shifts unit into the [Äther:äthereal] increasing [physical:physical] resistance by 25% and decreasing [äthereal:äthereal] resistance by 50%.\n lose 10% duration rounded down each round"
+		self.description = "Partially shifts unit into the [Äther:äthereal] increasing [physical:physical] resistance by 25% and decreasing [äthereal:äthereal] resistance by 50% on enemies.\n lose 10% duration rounded down each round"
 		self.color = Ethereal.color
  
 	def on_applied(self, owner):
