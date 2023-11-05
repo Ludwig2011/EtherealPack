@@ -2,6 +2,7 @@ from Level import *
 import Spells
 import Upgrades
 import mods.API_Universal.Modred as Modred
+from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
@@ -46,6 +47,7 @@ Spells.all_player_spell_constructors.append(PureEtherSphere)
 Spells.all_player_spell_constructors.append(EtherStormSpell)
 Spells.all_player_spell_constructors.append(SummonFrostSpire)
 Upgrades.skill_constructors.append(Etherpredators)
+Upgrades.skill_constructors.append(CollectDispersion)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

@@ -11,7 +11,7 @@ class SummonFrostSpire(Spell):
 		self.range = 6
 		self.max_charges = 4
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
-		self.level = 3
+		self.level = 4
 
 		self.minion_health = 40
 		self.minion_damage = 4
