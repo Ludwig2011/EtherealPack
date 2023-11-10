@@ -9,7 +9,7 @@ class EtherStormSpell(Spell):
 
     def on_init(self):
 
-        self.name = "Ether Storm"
+        self.name = "Äther Storm"
         self.level = 2
 
         self.amount_of_strikes = 7
@@ -25,7 +25,7 @@ class EtherStormSpell(Spell):
         self.upgrades['chance'] = (25, 1)      
         self.upgrades['amount_of_strikes'] = (7, 2)
         self.upgrades['max_charges'] = (11, 3)
-        self.upgrades['requires_los'] = (-1, 2, "Blindcasting", "Ether Storm can be cast without line of sight")  
+        self.upgrades['requires_los'] = (-1, 2, "Blindcasting", "Äther Storm can be cast without line of sight")  
         self.upgrades['endothermic_discharge'] = (1, 1, "Endothermic Discharge", "The bolts have a %d percent chance to freeze enemies for 1 turns" % (self.get_stat('chance')/2))
         self.upgrades['lingering_static'] = (1, 2, "Lingering Static", "The Storms static field applies Ätherealness to all units for [{duration}_turns:duration]")
         self.upgrades['searing_storm'] = (1, 3, "Searing Storm", "The bolts have a %d percent chance to leave enemies with burns dealing [{damage}_fire:fire] damage for 3 turns" % (self.get_stat('chance')/2))

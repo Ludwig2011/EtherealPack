@@ -5,6 +5,7 @@
 # charge speed upgrade
 
 from Level import *
+from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 class Railgun(Spell):
@@ -28,15 +29,24 @@ class Railgun(Spell):
         self.upgrades['max_charges'] = (7, 2)
         self.upgrades['radius'] = (1, 2)
         self.upgrades['requires_los'] = (-1, 2, "Wall Buster", "Destroy walls in the center path".format(**self.fmt_dict()))
+        self.upgrades['discharging_velocity'] = (1, 4, "Discharging Velocity", "For every 25 damage more then needed to kill a unit launch an äther spark dealing [7_äthereal:äthereal] damage and aplying [Ätherealness:äthereal] for 2 turns at a random enemy in line of sight".format(**self.fmt_dict()))
         
 
     def cast(self, x, y):
         if self.name == "Fire Railgun":
-            center_beam = self.caster.level.get_points_in_line(self.caster, Point(x, y), find_clear=True)[1:]
+            center_beam = self.caster.level.get_points_in_line(self.caster, Point(x, y), find_clear=self.get_stat('requires_los'))[1:]
             side_beam = []
             side_beam_damage = []
             for p in center_beam:
                 unit = self.caster.level.get_unit_at(p.x,p.y)
+                if unit and self.get_stat('discharging_velocity'):
+                        amount_of_bolts = math.floor((self.damage - unit.max_hp)/25)
+                        for i in range(amount_of_bolts):
+                            targets = [u for u in self.caster.level.get_units_in_los(unit) if u != self.caster and are_hostile(u, self.caster)]
+                            if len(targets) > 0:
+                                target = random.choice(targets)
+                                self.caster.level.deal_damage(target.x, target.y, 7, Ethereal, self)
+                                target.apply_buff(EtherealnessBuff(),2)
                 self.caster.level.deal_damage(p.x, p.y, self.get_stat('damage'), Tags.Physical, self)
                 self.caster.level.deal_damage(p.x, p.y, self.get_stat('damage')/2, Ethereal, self)
                 if not self.caster.level.tiles[p.x][p.y].can_see:

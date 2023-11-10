@@ -14,6 +14,7 @@ class PyreOfWyvernsSpell(Spell):
 
 		self.minion_health = 10
 		self.minion_damage = 3
+		self.breath_damage = 0
 		self.minion_range = 4
 		self.num_summons = 3
 		self.shields = 2
@@ -40,7 +41,7 @@ class PyreOfWyvernsSpell(Spell):
 			wyvern = EtherWyvern(shields=self.get_stat('shields'))
 			wyvern.max_hp = self.get_stat('minion_health')
 			wyvern.spells.clear()
-			wyvern.spells.append(EtherWave(self.get_stat('minion_damage'), self.get_stat('minion_range'), self.get_stat('shielding_waves')))
+			wyvern.spells.append(EtherWave(self.get_stat('minion_damage')+self.get_stat('breath_damage'), self.get_stat('minion_range'), self.get_stat('shielding_waves')))
 			if self.get_stat('ether_link'):
 				wyvern.spells.append(EtherLink())
 			wyvern.spells.append(SimpleMeleeAttack(self.get_stat('minion_damage')))

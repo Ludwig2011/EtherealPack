@@ -4,26 +4,24 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class MomentInHell(Spell): # mordred???????????????????????????????
+class MomentOfBliss(Spell): # mordred???????????????????????????????
 
 	def on_init(self):
-		self.name = "A Moment in Hell"
+		self.name = "A Moment of Bliss"
 		self.range = 7 
-		self.tags = [Ethereal, Tags.Fire, Tags.Enchantment]
+		self.tags = [Ethereal, Tags.Holy, Tags.Enchantment]
 		self.level = 3
 
 		self.duration = 3
-		self.damage = 5
-		self.damage_type = Ethereal
 
 		self.max_charges = 4
 		self.can_target_empty = False
 
 		self.upgrades['max_charges'] = (3, 1)
-		self.upgrades['damage'] = (9, 4)
-		self.upgrades['duration'] = (4, 2)
-		self.upgrades['brimstone'] = (1, 3, "Brimstone", "Deal [{damage}_fire:fire] and [{damage}_äthereal:äthereal] to 3 random enemies in a [5_tile:radius] radius around the target every turn")
-		self.upgrades['explosive_entry'] = (1, 5, "Explosive Entry", "When the target reappiers or dies in the Fire Plane deal [fire:fire] and [äthereal:äthereal] damage equal to 1/4 of the targets missing hp to all units in a radius equal to 1/8 of the targets maximum hp until 32 hp then 1/16")
+		self.upgrades['duration'] = (4, 3)
+		self.upgrades['stunning_entry'] = (1, 3, "Stunning Entry", "When the target reappiers stun all units in a [{radius}_radius:radius] for 2 turns")
+		self.upgrades['sunlight'] = (1, 4, "Sunlight", "Provide healing and shielding in a [{radius}_radius:radius] aswell")
+		self.upgrades['blessing'] = (1, 5, "Blessing", "The target gains power every turn ")
 
 	def can_cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x,y)
@@ -45,5 +43,5 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 		yield
 
 	def get_description(self):
-		return "Transport target into the Plane of Fire for [{duration}_turns:duration]. Target suffers [{damage}_fire:fire] every turn until it reappiers.\nLeaves behind a Hell Portal that deals [{damage}_fire:fire] to enemies and applies Ätherealness for 2 turns.".format(**self.fmt_dict())
+		return "Transport target into the Plane of Bliss for [{duration}_turns:duration]. Target restors [{damage}_hp:healing] every turn until it reappiers.\nLeaves behind a blissfull Portal that heals [{damage}_hp:healing] to allies and applies Ätherealness for 2 turns.".format(**self.fmt_dict())
 	

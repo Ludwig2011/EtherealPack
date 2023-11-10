@@ -35,24 +35,22 @@ class SummonFrostSpire(Spell):
 		self.summon(spire, Point(x, y))
 		
 		if self.get_stat('implosive_entry'):
-			for stage in Burst(self.caster.level, Point(x, y), self.get_stat('radius')+1):
-				for p in stage:
-					unit = self.caster.level.get_unit_at(p.x, p.y)
-					if unit:
-						pull(unit, spire, 1)
-
-		for stage in Burst(self.caster.level, Point(x, y), self.get_stat('radius')):
-			for p in stage:
+			for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')+1):
 				unit = self.caster.level.get_unit_at(p.x, p.y)
 				if unit:
-					if self.get_stat('implosive_entry') and not (p.x == x and p.y == y):
-						self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Tags.Ice, self)
-						self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Ethereal, self)
-					if unit.cur_hp > 0:
-						unit.apply_buff(FrozenBuff(), self.get_stat('duration'))
-					if unit.cur_hp > 0 and self.get_stat('faulty_rift'):
-						unit.apply_buff(EtherealnessBuff(), 7)
-						self.caster.level.show_effect(p.x,p.y, Ethereal)
+					pull(unit, spire, 1)
+
+		for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')):
+			unit = self.caster.level.get_unit_at(p.x, p.y)
+			if unit:
+				if self.get_stat('implosive_entry') and not (p.x == x and p.y == y):
+					self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Tags.Ice, self)
+					self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Ethereal, self)
+				if unit.cur_hp > 0:
+					unit.apply_buff(FrozenBuff(), self.get_stat('duration'))
+				if unit.cur_hp > 0 and self.get_stat('faulty_rift'):
+					unit.apply_buff(EtherealnessBuff(), 7)
+					self.caster.level.show_effect(p.x,p.y, Ethereal)
 
 
 		yield
@@ -72,7 +70,7 @@ def FrostSpire(health,damage,range):
 	unit.stationary = True
 	unit.description = "Fires Frost Bolts that freeze enemies"
 	unit.max_hp = health
-	unit.spells.append(SimpleRangedAttack("Frost Bolt", damage, Tags.Ice, range, buff=FrozenBuff, buff_duration=3))
+	unit.spells.append(SimpleRangedAttack("Frost Bolt", damage, Tags.Ice, range, cool_down=3, buff=FrozenBuff, buff_duration=3))
 	unit.tags = [Tags.Ice, Tags.Construct]
 	unit.resists[Tags.Ice] = 100
 	unit.resists[Tags.Poison] = 100
@@ -122,11 +120,10 @@ class FrostAuraBuff(Buff):
 	def on_death(self, evt):
 		if self.frost_mortem:
 			points = []
-			for stage in Burst(self.owner.level, Point(self.owner.x, self.owner.y), self.radius):
-				for p in stage:
-					points.append(Point(p.x, p.y))
+			for p in self.owner.level.get_points_in_ball(self.owner.x, self.owner.y, self.radius):
+				points.append(Point(p.x, p.y))
 			if Point(evt.unit.x, evt.unit.y) in points:
-				frost_golem = FrostGolem(evt.unit.max_hp/2)
+				frost_golem = FrostGolem(math.ceil(evt.unit.max_hp/2))
 				frost_golem.team = self.owner.team
 				self.summon(frost_golem, Point(evt.unit.x, evt.unit.y))
 

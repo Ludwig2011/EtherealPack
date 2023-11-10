@@ -5,6 +5,7 @@ import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
+from mods.EtherealPack.models.spells.ether_stream import EtherStream
 from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
@@ -48,6 +49,7 @@ Spells.all_player_spell_constructors.append(PureEtherSphere)
 Spells.all_player_spell_constructors.append(EtherStormSpell)
 Spells.all_player_spell_constructors.append(SummonFrostSpire)
 Spells.all_player_spell_constructors.append(Railgun)
+Spells.all_player_spell_constructors.append(EtherStream)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
 #Monsters.spawn_options.append((SpriteCloud, 2))

@@ -39,15 +39,16 @@ class HexBuff(Buff):
 				if self.perpetual_curse and evt.unit.has_buff(EtherealnessBuff):
 					targets = self.owner.level.get_units_in_los(evt.unit)
 					targets = [t for t in targets if are_hostile(self.owner, t) and t.cur_hp > 0]
-					target = targets[0]
-					distance = math.sqrt((evt.unit.x - target.x) ** 2 + (evt.unit.y - target.y) ** 2)
-					for t in targets:
-						new_distance = math.sqrt((evt.unit.x - t.x) ** 2 + (evt.unit.y - t.y) ** 2)
-						if new_distance < distance or distance == 0:
-							target = t
-							distance = new_distance
-					target.apply_buff(HexDebuff(self.resist_loss, self.deterioration), self.duration)
-					self.turns_left = 7
+					if len(targets) > 0:
+						target = targets[0]
+						distance = math.sqrt((evt.unit.x - target.x) ** 2 + (evt.unit.y - target.y) ** 2)
+						for t in targets:
+							new_distance = math.sqrt((evt.unit.x - t.x) ** 2 + (evt.unit.y - t.y) ** 2)
+							if new_distance < distance or distance == 0:
+								target = t
+								distance = new_distance
+						target.apply_buff(HexDebuff(self.resist_loss, self.deterioration), self.duration)
+						self.turns_left = 7
 				
 class HexDebuff(Buff):
 	def __init__(self, loss, deterioration):
