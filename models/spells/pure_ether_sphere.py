@@ -36,7 +36,7 @@ class PureEtherSphere(OrbSpell):
 		target.apply_buff(Stun(),2)
 		for stage in Burst(self.caster.level, Point(target.x, target.y), self.get_stat('radius'), expand_diagonals=True):
 			for point in stage:
-				pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'))
+				pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'),self.caster.level.tiles[point.x][point.y].is_chasm)
 				if self.caster.level.tiles[point.x][point.y].prop == None:
 					self.caster.level.add_obj(pure_ether, point.x, point.y)
 			for p in self.caster.level.get_points_in_line(orb, Point(target.x, target.y), find_clear=True)[1:-1]:
@@ -68,7 +68,7 @@ class PureEtherSphere(OrbSpell):
 		for stage in Burst(self.caster.level, Point(x, y), self.get_stat('radius')):
 			for point in stage:
 				if self.caster.level.tiles[point.x][point.y].prop == None:
-					pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'))
+					pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'),self.caster.level.tiles[point.x][point.y].is_chasm)
 					self.caster.level.add_obj(pure_ether, point.x, point.y)
 			for i in range(3):
 				yield
@@ -107,7 +107,7 @@ class PureEtherSphere(OrbSpell):
 		for stage in Burst(self.caster.level, Point(x, y), self.get_stat('radius'), expand_diagonals=True):
 			for point in stage:
 				if self.caster.level.tiles[point.x][point.y].prop == None:
-					pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'))
+					pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'),self.caster.level.tiles[point.x][point.y].is_chasm)
 					self.caster.level.add_obj(pure_ether, point.x, point.y)
 
 	def on_orb_collide(self, orb, next_point):
