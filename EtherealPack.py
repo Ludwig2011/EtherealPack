@@ -4,11 +4,15 @@ import Upgrades
 import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
+from mods.EtherealPack.models.skills.ethertuned import Ethertuned
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
+from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell
 from mods.EtherealPack.models.spells.ether_stream import EtherStream
 from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
+from mods.EtherealPack.models.spells.moment_of_bliss import MomentOfBliss
+from mods.EtherealPack.models.spells.piercing_gaze import PiercingGaze
 from mods.EtherealPack.models.spells.pure_ether_sphere import PureEtherSphere
 from mods.EtherealPack.models.spells.railgun import Railgun
 from mods.EtherealPack.models.spells.summon_ether_hydra import SummonEtherHydraSpell
@@ -50,8 +54,12 @@ Spells.all_player_spell_constructors.append(EtherStormSpell)
 Spells.all_player_spell_constructors.append(SummonFrostSpire)
 Spells.all_player_spell_constructors.append(Railgun)
 Spells.all_player_spell_constructors.append(EtherStream)
+Spells.all_player_spell_constructors.append(EyeOfEtherSpell)
+Spells.all_player_spell_constructors.append(MomentOfBliss)
+Spells.all_player_spell_constructors.append(PiercingGaze)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
+Upgrades.skill_constructors.append(Ethertuned)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

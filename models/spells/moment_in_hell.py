@@ -1,5 +1,6 @@
 import copy
 from Level import *
+from mods.API_TileHazards.API_TileHazards import TileHazardBasic
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
 from mods.EtherealPack.tags.Ethereal import Ethereal
@@ -34,16 +35,40 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 	def cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x, y)
 
-		unit_copy = copy.copy(unit)
-		unit.kill(None, False) 
-		for buff in unit.buffs:
-			buff.apply(unit_copy)
+		if not unit.gets_clarity:
+			unit_copy = copy.copy(unit)
+			unit.kill(None, False) 
+			for buff in unit.buffs:
+				buff.apply(unit_copy)
 
-		stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),unit_copy,self.get_stat('brimstone'),self.get_stat('explosive_entry'))
-		self.caster.level.add_obj(stasis, unit.x, unit.y)
+			stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),unit_copy,self.get_stat('brimstone'),self.get_stat('explosive_entry'))
+			self.caster.level.add_obj(stasis, unit.x, unit.y)
+		else:
+			unit.apply_buff(Stun(), self.get_stat('duration'))
+			stasis = Brimstone(self.caster,self,self.get_stat('duration'),self.get_stat('damage'))
+			self.caster.level.add_obj(stasis, unit.x, unit.y)
 
 		yield
 
 	def get_description(self):
-		return "Transport target into the Plane of Fire for [{duration}_turns:duration]. Target suffers [{damage}_fire:fire] every turn until it reappiers.\nLeaves behind a Hell Portal that deals [{damage}_fire:fire] to enemies and applies Ätherealness for 2 turns.".format(**self.fmt_dict())
+		return "Transport target into the Plane of Fire for [{duration}_turns:duration]. Target suffers [{damage}_fire:fire] every turn until it reappiers.\nLeaves behind a Hell Portal that deals [{damage}_fire:fire] to enemies and applies [Ätherealness:äthereal] for 2 turns.".format(**self.fmt_dict())
 	
+class Brimstone(TileHazardBasic):
+    def __init__(self, user, source, duration, damage):
+        TileHazardBasic.__init__(self, "Hell Portal", duration, user)
+        self.damage = damage
+        self.source = source
+        self.asset = ["EtherealPack", "Hell_Stasis"]
+
+    def get_description(self):
+        return "Units hostile to %s take %d [fire:fire] damage at the end of a turn, applies 2 turns of [Ätherealness:äthereal]\n%d turns remaining" % (self.user.name, self.damage, self.duration) 
+
+    def effect(self, unit):
+        pass
+
+    def advance_effect(self):
+        unit = self.user.level.get_unit_at(self.x, self.y)
+        if unit is not None:
+            unit.apply_buff(EtherealnessBuff(),2)
+            if are_hostile(self.user, unit):
+                self.user.level.deal_damage(self.x, self.y, self.damage, Ethereal, self.source)

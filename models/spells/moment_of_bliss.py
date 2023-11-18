@@ -13,6 +13,7 @@ class MomentOfBliss(Spell): # mordred???????????????????????????????
 		self.level = 3
 
 		self.duration = 3
+		self.damage = 3
 
 		self.max_charges = 4
 		self.can_target_empty = False
@@ -32,16 +33,21 @@ class MomentOfBliss(Spell): # mordred???????????????????????????????
 	def cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x, y)
 
-		unit_copy = copy.copy(unit)
-		unit.kill(None, False) 
-		for buff in unit.buffs:
-			buff.apply(unit_copy)
+		if not unit.gets_clarity:
+			unit_copy = copy.copy(unit)
+			unit.kill(None, False) 
+			for buff in unit.buffs:
+				buff.apply(unit_copy)
 
-		stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),unit_copy,self.get_stat('brimstone'),self.get_stat('explosive_entry'))
-		self.caster.level.add_obj(stasis, unit.x, unit.y)
-
+			stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),unit_copy,self.get_stat('brimstone'),self.get_stat('explosive_entry'))
+			self.caster.level.add_obj(stasis, unit.x, unit.y)
+		else:
+			unit.apply_buff(Stun(), self.get_stat('duration'))
+			stasis = Brimstone(self.caster,self,self.get_stat('duration'),self.get_stat('damage'))
+			self.caster.level.add_obj(stasis, unit.x, unit.y)
+			
 		yield
 
 	def get_description(self):
-		return "Transport target into the Plane of Bliss for [{duration}_turns:duration]. Target restors [{damage}_hp:healing] every turn until it reappiers.\nLeaves behind a blissfull Portal that heals [{damage}_hp:healing] to allies and applies Ätherealness for 2 turns.".format(**self.fmt_dict())
+		return "Transport target into the Plane of Bliss for [{duration}_turns:duration]. Target restors [{damage}_hp:heal] every turn until it reappiers.\nLeaves behind a blissfull Portal that heals [{damage}_hp:heal] to allies and applies Ätherealness for 2 turns.".format(**self.fmt_dict())
 	

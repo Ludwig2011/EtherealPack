@@ -24,7 +24,7 @@ class PureEtherSphere(OrbSpell):
 		self.element = Ethereal
 		
 		self.tags = [Ethereal, Tags.Orb, Tags.Conjuration]
-		self.level = 3
+		self.level = 4
 
 		self.upgrades['range'] = (5, 2)
 		self.upgrades['max_charges'] = (4, 2)

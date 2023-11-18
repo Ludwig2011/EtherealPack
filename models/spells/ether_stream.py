@@ -25,14 +25,14 @@ class EtherStream(Spell):
 		self.requires_los = False
 		self.range = 99
 		self.name = "Äther Stream"
-		self.max_charges = 3
+		self.max_charges = 4
 		self.tags = [Ethereal, Tags.Sorcery, Tags.Translocation]
-		self.level = 2
+		self.level = 3
 		self.num_summons = 0
 		self.minion_health = 0
 		self.minion_damage = 0
 
-		self.upgrades['max_charges'] = (4, 2)
+		self.upgrades['max_charges'] = (3, 2)
 		self.upgrades['num_summons'] = (3, 3, "Imp Friends", "Summon Äther Imps at the beginning of the stream")
 
 	def get_description(self):

@@ -8,7 +8,7 @@ class SummonFrostSpire(Spell):
 
 	def on_init(self):
 		self.name = "Frost Spire"
-		self.range = 6
+		self.range = 10
 		self.max_charges = 4
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
 		self.level = 4
@@ -19,7 +19,6 @@ class SummonFrostSpire(Spell):
 		self.duration = 3
 		self.upgrades['minion_health'] = (30, 2)
 		self.upgrades['minion_damage'] = (3, 1)
-		self.upgrades['range'] = (4, 2)
 		self.upgrades['radius'] = (3, 3)
 		self.upgrades['faulty_rift'] = (1, 2, "Faulty Rift", "The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns")
 		self.upgrades['implosive_entry'] = (1, 4, "Implosive Entry", "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage")
@@ -160,8 +159,10 @@ class FrostPunch(Spell):
 		self.range = 1.5
 		self.melee = True
 		self.damage = 4
-		self.description = "Deals [ice:ice] and [physical:physical] - 1 damage".format(**self.fmt_dict())
 
 	def cast_instant(self, x, y):
 		self.caster.level.deal_damage(x, y, self.get_stat('damage'), Tags.Ice, self)
 		self.caster.level.deal_damage(x, y, self.get_stat('damage')-1, Tags.Physical, self)
+
+	def get_description(self):
+		return ("Deals %d [ice:ice] and [physical:physical] damage" % (self.damage)).format(**self.fmt_dict())
