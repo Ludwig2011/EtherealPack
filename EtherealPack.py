@@ -5,6 +5,7 @@ import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.skills.ethertuned import Ethertuned
+from mods.EtherealPack.models.spells.domain_expansion import DomainExpansion
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell
 from mods.EtherealPack.models.spells.ether_stream import EtherStream
@@ -20,7 +21,6 @@ from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunctio
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 from mods.EtherealPack.models.spells.pyre_of_wyverns import PyreOfWyvernsSpell
 from mods.EtherealPack.models.spells.ether_storm import EtherStormSpell
-from mods.EtherealPack.models.spells.domain_expansion_spell import DomainExpansion
 
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Tags.elements.append(Ethereal)
