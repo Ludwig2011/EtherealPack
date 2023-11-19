@@ -26,7 +26,6 @@ class EtherBolt(Spell):#energy_disruption when self is Ätherealiesed aswell/ins
 
 
 	def cast(self, x, y, connected=True):
-		self.caster.xp = 14
 		dtypes = []
 		unit = self.caster.level.get_unit_at(x, y)
 

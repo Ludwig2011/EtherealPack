@@ -20,7 +20,7 @@ from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunctio
 from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 from mods.EtherealPack.models.spells.pyre_of_wyverns import PyreOfWyvernsSpell
 from mods.EtherealPack.models.spells.ether_storm import EtherStormSpell
-from mods.EtherealPack.models.spells.domain_expansion_spell import DomainExpansionSpell
+from mods.EtherealPack.models.spells.domain_expansion_spell import DomainExpansion
 
 #demons undead dark holy weak, arcane strong (living/nature aswell?)
 Tags.elements.append(Ethereal)
@@ -58,7 +58,7 @@ Spells.all_player_spell_constructors.append(EtherStream)
 Spells.all_player_spell_constructors.append(EyeOfEtherSpell)
 Spells.all_player_spell_constructors.append(MomentOfBliss)
 Spells.all_player_spell_constructors.append(PiercingGaze)
-Spells.all_player_spell_constructors.append(DomainExpansionSpell)
+Spells.all_player_spell_constructors.append(DomainExpansion)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
 Upgrades.skill_constructors.append(Ethertuned)
