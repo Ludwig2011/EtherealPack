@@ -10,6 +10,7 @@ class DomainExpansion(Spell):
         self.name = "Domain Expansion"
         
         self.level = 6
+        self.asset = ['EtherealPack', 'domain_expansion']
         self.max_charges = 0
         self.duration = 7
         self.cool_down = 21

@@ -9,7 +9,7 @@ class EtherEyeBuff(Buff):
 		self.name = "Eye of Äther"
 		self.color = Ethereal.color
 		self.requires_los = requires_los
-		self.asset = ['status', 'ice_eye']	
+		self.asset = ['EtherealPack', 'ether_eye_buff']
 		self.damage_type = Ethereal
 		self.damage = damage
 		self.freq = freq
@@ -52,6 +52,7 @@ class EyeOfEtherSpell(Spell):
 		self.range = 0
 		self.max_charges = 4
 		self.name = "Eye of Äther"
+		self.asset = ['EtherealPack', 'ether_eye']
 		self.requires_los = True
 		self.damage = 15
 		self.element = Ethereal

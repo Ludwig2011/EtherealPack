@@ -9,6 +9,7 @@ from mods.EtherealPack.models.spells.domain_expansion import DomainExpansion
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell
 from mods.EtherealPack.models.spells.ether_stream import EtherStream
+from mods.EtherealPack.models.spells.expanding_force import ExpandingForceSpell
 from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
 from mods.EtherealPack.models.spells.hex import Hex
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
@@ -31,7 +32,7 @@ Modred.add_tag_tooltip(Ethereal)
 Modred.add_tag_tooltip(Etherealness)
 
 # Add custom spells
-#Modred.add_tag_effect_simple(Tags.Ethereal, os.path.join('mods','EtherealPack', ''))
+Modred.add_tag_effect_simple(Ethereal, os.path.join('mods','EtherealPack', 'ether'))
 
 Modred.add_shrine_option(Ethereal, 1)
 
@@ -55,6 +56,7 @@ Spells.all_player_spell_constructors.append(EtherStormSpell)
 Spells.all_player_spell_constructors.append(SummonFrostSpire)
 Spells.all_player_spell_constructors.append(Railgun)
 Spells.all_player_spell_constructors.append(EtherStream)
+Spells.all_player_spell_constructors.append(ExpandingForceSpell)
 Spells.all_player_spell_constructors.append(EyeOfEtherSpell)
 Spells.all_player_spell_constructors.append(MomentOfBliss)
 Spells.all_player_spell_constructors.append(PiercingGaze)

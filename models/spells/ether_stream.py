@@ -26,6 +26,7 @@ class EtherStream(Spell):
 		self.range = 99
 		self.name = "Äther Stream"
 		self.max_charges = 4
+		self.asset = ['EtherealPack', 'ether_stream']
 		self.tags = [Ethereal, Tags.Sorcery, Tags.Translocation]
 		self.level = 3
 		self.num_summons = 0

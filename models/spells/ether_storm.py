@@ -11,6 +11,7 @@ class EtherStormSpell(Spell):
 
         self.name = "Äther Storm"
         self.level = 2
+        self.asset = ['EtherealPack', 'ether_storm']
 
         self.amount_of_strikes = 7
         self.range = 11

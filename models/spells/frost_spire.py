@@ -1,4 +1,4 @@
-from CommonContent import FrozenBuff, SimpleRangedAttack, pull
+from CommonContent import FrozenBuff, SimpleRangedAttack
 from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
@@ -37,7 +37,7 @@ class SummonFrostSpire(Spell):
 			for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')+1):
 				unit = self.caster.level.get_unit_at(p.x, p.y)
 				if unit:
-					pull(unit, spire, 1)
+					self.pull(unit, spire, 1)
 
 		for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')):
 			unit = self.caster.level.get_unit_at(p.x, p.y)
@@ -51,9 +51,29 @@ class SummonFrostSpire(Spell):
 					unit.apply_buff(EtherealnessBuff(), 7)
 					self.caster.level.show_effect(p.x,p.y, Ethereal)
 
-
 		yield
 
+	def pull(target, source, squares):
+		direction_x = source.x - target.x
+		direction_y = source.y - target.y
+
+		# Make sure to check if the direction is non-zero to avoid division by zero
+		if direction_x != 0:
+			opposite_x = target.x - squares * (direction_x // abs(direction_x))
+		else:
+			opposite_x = target.x
+
+		if direction_y != 0:
+			opposite_y = target.y - squares * (direction_y // abs(direction_y))
+		else:
+			opposite_y = target.y
+
+		if target.level.can_move(target, opposite_x, opposite_y, teleport=True):
+			target.level.act_move(target, opposite_x, opposite_y, teleport=True)
+			return True
+		else:
+			return False
+	
 	def get_description(self):
 		return ("Open a Rift to the Ice Plane that freezes all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.\n"
 				"Frost Spire has [{minion_health}_HP:minion_health] and [100_ice:ice], [100_poison:poison], [25_physical:physical], [-50_fire:fire] resistance.\n"

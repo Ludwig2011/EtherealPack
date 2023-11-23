@@ -13,7 +13,8 @@ class SummonEtherHydraSpell(Spell):
 	def on_init(self):
 		self.name = "Äther Hydra"
 		self.range = 4
-		self.max_charges = 2
+		self.max_charges = 3
+		#self.asset = []
 		self.tags = [Ethereal, Tags.Conjuration, Tags.Dragon]
 		self.level = 4
 
@@ -58,4 +59,5 @@ class SummonEtherHydraSpell(Spell):
 		return ("Summon an Äther Hydra at target square.\n"
 				"Äther Hydras have [{minion_health}_HP:minion_health] and [100_äthereal:äthereal], [25_physical:physical] and [-50_arcane:arcane] resist.\n"
 				"Äther Hydras have a breath weapon which deals [{breath_damage}_äthereal:äthereal] damage.\n"
-				"Äther Hydras have a melee attack which deals [{minion_damage}_physical:physical] damage.").format(**self.fmt_dict())
+				"Äther Hydras have a melee attack which deals [{minion_damage}_physical:physical] damage.\n"
+				"Äther Hydras trample over allies to get where they want").format(**self.fmt_dict())

@@ -11,7 +11,7 @@ class EtherealnessBuff(Buff):
 		self.ethertuned = False
 		self.vastness = False
 		self.ally = False
-		#self.asset = ['EtherealPack', 'status', 'Ätherealness']
+		self.asset = ['EtherealPack', 'etherealness']
 		self.description = "Partially shifts unit into the [Äther:äthereal] increasing [physical:physical] resistance by 25% and decreasing [äthereal:äthereal] resistance by 50%.\n Lose 10% duration rounded down each round.\n Äther and 100% [äthereal:äthereal] resistant units are immune"
 		self.color = Ethereal.color
  

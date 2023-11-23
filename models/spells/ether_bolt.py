@@ -8,6 +8,7 @@ class EtherBolt(Spell):#energy_disruption when self is Ätherealiesed aswell/ins
 		self.name = "Äther Bolt"
 		self.range = 8 
 		self.tags = [Ethereal, Tags.Sorcery]
+		self.asset = ['EtherealPack', 'ether_bolt']
 		self.level = 1
 
 		self.damage = 11
