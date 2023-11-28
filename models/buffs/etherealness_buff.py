@@ -11,19 +11,21 @@ class EtherealnessBuff(Buff):
 		self.ethertuned = False
 		self.vastness = False
 		self.ally = False
+		self.player = None
 		self.asset = ['EtherealPack', 'etherealness']
 		self.description = "Partially shifts unit into the [Äther:äthereal] increasing [physical:physical] resistance by 25% and decreasing [äthereal:äthereal] resistance by 50%.\n Lose 10% duration rounded down each round.\n Äther and 100% [äthereal:äthereal] resistant units are immune"
 		self.color = Ethereal.color
  
 	def on_applied(self, owner):
-		player = [u for u in self.owner.level.units if u.is_player_controlled][0]
-		for skill in player.get_skills():
+		if self.player == None:
+			self.player = [u for u in self.owner.level.units if u.is_player_controlled][0]
+		for skill in self.player.get_skills():
 			if skill.name == "Äthertuned":
 				self.ethertuned = True
-		for skill in player.get_skills():
+		for skill in self.player.get_skills():
 			if skill.name == "Vastness":
 				self.vastness = True
-		team = player.team
+		team = self.player.team
 		if owner.team==team and self.ethertuned:
 			owner.resists[Tags.Physical] += 50
 			owner.resists[Ethereal] += 50

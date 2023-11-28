@@ -9,9 +9,10 @@ class SummonFrostSpire(Spell):
 	def on_init(self):
 		self.name = "Frost Spire"
 		self.range = 10
-		self.max_charges = 4
+		self.max_charges = 3
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
 		self.level = 4
+		self.must_target_walkable = True
 
 		self.minion_health = 40
 		self.minion_damage = 4
@@ -30,14 +31,17 @@ class SummonFrostSpire(Spell):
 	def cast(self, x, y):		
 		spire = FrostSpire(self.get_stat('minion_health'),self.get_stat('minion_damage'), self.get_stat('radius'))
 		spire.team = self.caster.team
-		spire.buffs.append(FrostAuraBuff(self.get_stat('radius'),self.get_stat('frost_mortem')))
+		spire.buffs.append(FrostAuraBuff(self.get_stat('radius'),self.get_stat('frost_mortem'),self))
 		self.summon(spire, Point(x, y))
 		
 		if self.get_stat('implosive_entry'):
+			units_to_pull = []
 			for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')+1):
 				unit = self.caster.level.get_unit_at(p.x, p.y)
 				if unit:
-					self.pull(unit, spire, 1)
+					units_to_pull.append(unit)
+			for unit in units_to_pull:
+				self.pull(unit, spire, 1)
 
 		for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')):
 			unit = self.caster.level.get_unit_at(p.x, p.y)
@@ -53,23 +57,25 @@ class SummonFrostSpire(Spell):
 
 		yield
 
-	def pull(target, source, squares):
-		direction_x = source.x - target.x
-		direction_y = source.y - target.y
+	def pull(self, target, source, squares):
+		direction_x = target.x - source.x
+		direction_y = target.y - source.y
 
-		# Make sure to check if the direction is non-zero to avoid division by zero
-		if direction_x != 0:
-			opposite_x = target.x - squares * (direction_x // abs(direction_x))
-		else:
-			opposite_x = target.x
+		new_x = target.x
+		new_y = target.y
 
-		if direction_y != 0:
-			opposite_y = target.y - squares * (direction_y // abs(direction_y))
-		else:
-			opposite_y = target.y
+		if direction_x > 0:
+			new_x -= squares
+		elif direction_x < 0:
+			new_x += squares
 
-		if target.level.can_move(target, opposite_x, opposite_y, teleport=True):
-			target.level.act_move(target, opposite_x, opposite_y, teleport=True)
+		if direction_y > 0:
+			new_y -= squares
+		elif direction_y < 0:
+			new_y += squares
+
+		if target.level.can_move(target, new_x, new_y, teleport=True):
+			target.level.act_move(target, new_x, new_y, teleport=True)
 			return True
 		else:
 			return False
@@ -99,8 +105,9 @@ def FrostSpire(health,damage,range):
 
 class FrostAuraBuff(Buff):
 
-	def __init__(self, radius, frost_mortem):
+	def __init__(self, radius, frost_mortem, source):
 		Buff.__init__(self)
+		self.source = source
 		self.damage = 3
 		self.damage_type = Tags.Ice
 		self.radius = radius
@@ -144,6 +151,7 @@ class FrostAuraBuff(Buff):
 			if Point(evt.unit.x, evt.unit.y) in points:
 				frost_golem = FrostGolem(math.ceil(evt.unit.max_hp/2))
 				frost_golem.team = self.owner.team
+				frost_golem.source = self.source
 				self.summon(frost_golem, Point(evt.unit.x, evt.unit.y))
 
 	def can_threaten(self, x, y):
@@ -185,4 +193,4 @@ class FrostPunch(Spell):
 		self.caster.level.deal_damage(x, y, self.get_stat('damage')-1, Tags.Physical, self)
 
 	def get_description(self):
-		return ("Deals %d [ice:ice] and [physical:physical] damage" % (self.damage)).format(**self.fmt_dict())
+		return ("Deals %d [ice:ice] and %d [physical:physical] damage" % (self.damage,self.damage-1)).format(**self.fmt_dict())

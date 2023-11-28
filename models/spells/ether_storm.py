@@ -38,7 +38,7 @@ class EtherStormSpell(Spell):
     def get_description(self):
         return ("Open a Rift to the Energy Plane through which %d energy bolts strike random enemies in [{radius}_radius:radius]\n"
                 "Each bolt deals [{damage}_äthereal:äthereal] damage and has a %d percent chance to deal lightning damage aswell\n"
-                "The Chance of added effects from this spell is doubled against äthereal targets" % (self.get_stat('amount_of_strikes'), self.get_stat('chance'))).format(**self.fmt_dict())
+                "The Chance of added effects from this spell is doubled against [ätherealiesed:äthereal] targets" % (self.get_stat('amount_of_strikes'), self.get_stat('chance'))).format(**self.fmt_dict())
 
     def cast(self, x, y):
         targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.radius) if u != self.caster and are_hostile(self.caster, u)]

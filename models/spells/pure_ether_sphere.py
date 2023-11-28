@@ -78,7 +78,7 @@ class PureEtherSphere(OrbSpell):
 
 	def on_make_orb(self, orb):
 		orb.resists[Ethereal] = 0
-		orb.asset = ["EtherealPack", "ether_hydra"]
+		orb.asset = ["EtherealPack", "ether_hydra"]#["EtherealPack", "ether_orb"]
 		orb.shields = 3
 
 	def on_orb_move(self, orb, next_point):

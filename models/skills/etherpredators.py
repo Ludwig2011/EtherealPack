@@ -8,7 +8,7 @@ class Etherpredators(Upgrade):
 	def __init__(self):
 		Upgrade.__init__(self)
 		self.name = "Äther Predators"
-		self.level = 5
+		self.level = 6
 		self.tags = [Ethereal, Tags.Nature]
 		self.asset = ['EtherealPack', 'skill', 'Ätherpredators']
 		self.global_triggers[EventOnMoved] = self.on_moved

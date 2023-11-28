@@ -25,11 +25,11 @@ class CollectDispersion(Upgrade):
                     chance = buff.turns_left
             if damage_event.damage_type == Ethereal:
                 chance *= 3
-            if random.random()*100 < chance:
-                for spell in self.owner.spells:
+            for spell in self.owner.spells:
+                if random.random()*100 < chance:
                     if Ethereal in spell.tags and spell.cur_charges < spell.get_stat('max_charges'):
                         spell.cur_charges += 1
-                self.owner.level.show_effect(self.owner.x, self.owner.y, Ethereal)
+                        self.owner.level.show_effect(self.owner.x, self.owner.y, Ethereal)
 
     def get_description(self):
         return ("Whenever an enemy unit dies, each of your [äthereal] spells has a chance euqal to 1/100 of the Ätherealness applied to the unit to gain a charge.\n"

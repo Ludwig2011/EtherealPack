@@ -2,9 +2,11 @@ from Level import *
 import Spells
 import Upgrades
 import mods.API_Universal.Modred as Modred
+from mods.EtherealPack.models.skills.beholding_eyes import BeholdingEyes
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.skills.ethertuned import Ethertuned
+from mods.EtherealPack.models.skills.vastness import Vastness
 from mods.EtherealPack.models.spells.domain_expansion import DomainExpansion
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell
@@ -35,8 +37,8 @@ Modred.add_tag_tooltip(Etherealness)
 Modred.add_tag_effect_simple(Ethereal, os.path.join('mods','EtherealPack', 'ether'))
 
 Modred.add_shrine_option(Ethereal, 1)
-
-
+Modred.add_shrine_option(Ethereal, 1)
+Modred.add_shrine_option(Ethereal, 1)
 
 
 #Spell summon herd of wyverns that deal little dmg but etherealies enemies
@@ -64,6 +66,8 @@ Spells.all_player_spell_constructors.append(DomainExpansion)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
 Upgrades.skill_constructors.append(Ethertuned)
+Upgrades.skill_constructors.append(Vastness)
+Upgrades.skill_constructors.append(BeholdingEyes)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))
