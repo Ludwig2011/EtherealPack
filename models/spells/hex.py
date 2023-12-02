@@ -35,4 +35,4 @@ class Hex(Spell):
 		return self.caster.level.get_unit_at(x, y) and Spell.can_cast(self, x, y)
 		
 	def get_description(self):
-		return "Curse enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever they take damage for [{duration}_turns:duration].".format(**self.fmt_dict())
+		return ("Curse enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever they take damage for [{duration}_turns:duration], they also lose %d [dark:dark] and [äthereal:äthereal] resistance." % (self.resist_loss)).format(**self.fmt_dict())

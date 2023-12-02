@@ -59,6 +59,7 @@ class HexDebuff(Buff):
 		self.color = Ethereal.color
 		self.loss = loss
 		self.deterioration = deterioration
+		self.asset = ['EtherealPack', 'hex_debuff']
 	
 	def on_applied(self, owner):
 		if owner.resists[Ethereal] >= 100:

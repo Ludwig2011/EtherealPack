@@ -12,6 +12,7 @@ class EtherLinkBuff(Buff):
         self.range = range
         self.old_range = 4
         self.ether_wave = None
+        self.asset = ['EtherealPack', 'ether_link']
         self.owner
         
     def on_applied(self, owner):

@@ -10,6 +10,7 @@ class CollectDispersion(Upgrade):
         self.global_triggers[EventOnDamaged] = self.on_damaged
         self.name = "Collect Dispersion"
         self.tags = [Ethereal]
+        self.asset = ['EtherealPack', 'collect_dispersion']
         self.level = 6
 
     def on_damaged(self, damage_event):

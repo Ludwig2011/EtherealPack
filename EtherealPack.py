@@ -4,6 +4,7 @@ import Upgrades
 import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.beholding_eyes import BeholdingEyes
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
+from mods.EtherealPack.models.skills.ether_lord import EtherLord
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.skills.ethertuned import Ethertuned
 from mods.EtherealPack.models.skills.vastness import Vastness
@@ -40,11 +41,6 @@ Modred.add_shrine_option(Ethereal, 1)
 Modred.add_shrine_option(Ethereal, 1)
 Modred.add_shrine_option(Ethereal, 1)
 
-
-#Spell summon herd of wyverns that deal little dmg but etherealies enemies
-#ethereal storm ethereal extra damage type when etheral choose between lightning
-#etherealness aoe ressist change lvl 2 high uses upgrades: shield teleport enemies away
-#unit ethereal spider target give enemy buff reappier in x turns deal dmg/ tile hazard reappier in x turns if ocupied nearby(deal dmg)
 #enemy frog which etherealness debuff on attack
 
 Spells.all_player_spell_constructors.append(EtherBolt)
@@ -68,6 +64,7 @@ Upgrades.skill_constructors.append(CollectDispersion)
 Upgrades.skill_constructors.append(Ethertuned)
 Upgrades.skill_constructors.append(Vastness)
 Upgrades.skill_constructors.append(BeholdingEyes)
+Upgrades.skill_constructors.append(EtherLord)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

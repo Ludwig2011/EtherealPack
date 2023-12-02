@@ -7,7 +7,7 @@ class BeholdingEyes(Upgrade):#prioritise enemies!
     def __init__(self):
         Upgrade.__init__(self)
         self.name = "Beholding Eyes"
-        #self.asset = ['EtherealPack', 'skill', 'beholding_eyes']
+        self.asset = ['EtherealPack', 'skill', 'beholding_eyes']
         self.tags = [Ethereal, Tags.Eye]
         self.level = 4
         

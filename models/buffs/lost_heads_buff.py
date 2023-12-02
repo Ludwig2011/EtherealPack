@@ -31,6 +31,7 @@ class LostHeadsBuff(Buff):
 				head.spells.append(EtherBeam(self.elemental,self.damage))
 				head.spells.append(SimpleMeleeAttack(3))
 				head.resists[Ethereal] = 100
+				head.resists[Tags.Poison] = 100
 				head.resists[Tags.Arcane] = -50
 				head.tags = [Tags.Dragon, Tags.Living, Ethereal]
 				head.team = self.owner.team

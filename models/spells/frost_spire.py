@@ -11,6 +11,7 @@ class SummonFrostSpire(Spell):
 		self.range = 10
 		self.max_charges = 3
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
+		self.asset = ['EtherealPack', 'forst_spire_spell']
 		self.level = 4
 		self.must_target_walkable = True
 
@@ -90,7 +91,7 @@ def FrostSpire(health,damage,range):
 	unit = Unit()
 	unit.sprite.char = 'D'
 	unit.sprite.color = Color(1,121,111)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "frost_spire")
 	unit.name = "Frost Spire"
 	unit.stationary = True
 	unit.description = "Fires Frost Bolts that freeze enemies"
@@ -166,7 +167,7 @@ def FrostGolem(health):
 	unit = Unit()
 	unit.sprite.char = 'D'
 	unit.sprite.color = Color(1,121,111)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "frost_golem")
 	unit.name = "Frost Golem"
 	unit.description = "Punches Things, is cold"
 	unit.shields = 1
