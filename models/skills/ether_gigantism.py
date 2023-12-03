@@ -6,7 +6,7 @@ class EtherGigantism(Upgrade):
 	def __init__(self):
 		Upgrade.__init__(self)
 		self.name = "Äther Gigantism"
-		#self.asset = ['EtherealPack', 'skill', 'ether_gigantism']
+		#self.asset = ['EtherealPack', 'ether_gigantism']
 		self.tags = [Ethereal, Tags.Nature]
 		self.description = "Every turn an ally spends in stasis they grow larger, gaining 2 minion damage and 5 hp"
 		self.level = 4

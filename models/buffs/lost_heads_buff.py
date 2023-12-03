@@ -23,7 +23,7 @@ class LostHeadsBuff(Buff):
 				head = Unit()
 				head.sprite.char = 'D'
 				head.sprite.color = Color(1,121,111)
-				head.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+				head.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra_head")
 				head.name = "Äther Hydra Head"
 				head.description = "Fires äther beam"
 				head.max_hp = 15
@@ -32,6 +32,8 @@ class LostHeadsBuff(Buff):
 				head.spells.append(SimpleMeleeAttack(3))
 				head.resists[Ethereal] = 100
 				head.resists[Tags.Poison] = 100
+				head.resists[Tags.Dark] = 50
+				head.resists[Tags.Holy] = 50
 				head.resists[Tags.Arcane] = -50
 				head.tags = [Tags.Dragon, Tags.Living, Ethereal]
 				head.team = self.owner.team

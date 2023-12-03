@@ -8,7 +8,7 @@ class Vastness(Upgrade):
 	def __init__(self):
 		Upgrade.__init__(self)
 		self.name = "Vastness"
-		#self.asset = ['EtherealPack', 'skill', 'Vastness']
+		#self.asset = ['EtherealPack', 'Vastness']
 		self.tags = [Ethereal, Tags.Ice]
 		self.global_triggers[EventOnDamaged] = self.on_damaged
 		self.radius = 4

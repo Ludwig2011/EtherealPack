@@ -11,7 +11,7 @@ class Brimstone(TileHazardBasic):
             self.asset = ["EtherealPack", "Hell_Stasis"]
         else:
             TileHazardBasic.__init__(self, "Brimstone", duration, user)
-            self.asset = ["EtherealPack", "Hell_Stasis"] # ["EtherealPack", "brimstone"]
+            self.asset = ["EtherealPack", "brimstone"]
         self.damage = damage
         self.ether = ether
         self.source = source

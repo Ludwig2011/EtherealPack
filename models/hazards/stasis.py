@@ -13,9 +13,9 @@ class Stasis(TileHazardBasic):
         self.unit = unit
         self.unit_buffs = unit_buffs
         self.hazards = hazards
-        self.asset = ["EtherealPack", "Hell_Stasis"] # ["EtherealPack", "Stasis"]
+        self.asset = ["EtherealPack", "stasis"]
         self.gigantism = False
-        self.player = [u for u in self.owner.level.units if u.is_player_controlled][0]
+        self.player = [u for u in self.user.level.units if u.is_player_controlled][0]
         for skill in self.player.get_skills():
             if skill.name == "Äther Gigantism":
                 self.gigantism = True
@@ -30,6 +30,7 @@ class Stasis(TileHazardBasic):
     def advance_effect(self):
         if self.gigantism and not are_hostile(self.unit, self.user):
             self.unit.max_hp += 5
+            self.unit.cur_hp += 5
             for spell in self.unit.spells:
                 if hasattr(spell, "damage"):
                     spell.damage += 2
@@ -37,11 +38,14 @@ class Stasis(TileHazardBasic):
         steppy = self.user.level.get_unit_at(self.x,self.y)
         if steppy: 
             steppy.apply_buff(EtherealnessBuff(), 2)
-        tiles = [t for t in self.user.level.get_points_in_ball(self.x,self.y,5) if self.user.level.tiles[t.x][t.y].prop == None]
-        for i in range(self.hazards):
-            tile = random.choice(tiles)
-            self.user.level.add_obj(PureEther(self.user,self.source,3,7), tile.x, tile.y)
-            tiles.remove(tile)
+        tiles = [t for t in self.user.level.get_points_in_ball(self.x,self.y,5) if self.user.level.tiles[t.x][t.y].prop == None and self.user.level.tiles[t.x][t.y].can_see]
+        if len(tiles)>0:
+            for i in range(self.hazards):
+                if len(tiles)<=0:
+                    continue
+                tile = random.choice(tiles)
+                self.user.level.add_obj(PureEther(self.user,self.source,3,7, self.user.level.tiles[tile.x][tile.y].is_chasm), tile.x, tile.y)
+                tiles.remove(tile)
         if self.unit.cur_hp <= 0:
             self.duration = 1
         if self.duration <= 1 and not self.unit.cur_hp <= 0:

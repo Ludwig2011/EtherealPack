@@ -11,7 +11,7 @@ class SummonFrostSpire(Spell):
 		self.range = 10
 		self.max_charges = 3
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
-		self.asset = ['EtherealPack', 'forst_spire_spell']
+		self.asset = ['EtherealPack', 'frost_spire_spell']
 		self.level = 4
 		self.must_target_walkable = True
 

@@ -9,6 +9,7 @@ class PureEtherSphere(OrbSpell):
 
 	def on_init(self):
 		self.name = "Pure Ether Sphere"
+		self.asset = ['EtherealPack', 'pure_ether_sphere_spell']
 		self.minion_damage = 5
 		self.range = 9
 		self.radius = 1
@@ -78,7 +79,7 @@ class PureEtherSphere(OrbSpell):
 
 	def on_make_orb(self, orb):
 		orb.resists[Ethereal] = 0
-		orb.asset = ["EtherealPack", "ether_hydra"]#["EtherealPack", "ether_orb"]
+		orb.asset = ["EtherealPack", "pure_ether_sphere"]
 		orb.shields = 3
 
 	def on_orb_move(self, orb, next_point):

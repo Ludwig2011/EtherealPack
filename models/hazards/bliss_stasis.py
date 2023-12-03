@@ -15,9 +15,9 @@ class BlissStasis(TileHazardBasic):
         self.unit_buffs = unit_buffs
         self.blind = blind
         self.bless = bless
-        self.asset = ["EtherealPack", "Hell_Stasis"] # ["EtherealPack", "Bliss_Stasis"]
+        self.asset = ["EtherealPack", "bliss_stasis"]
         self.gigantism = False
-        self.player = [u for u in self.owner.level.units if u.is_player_controlled][0]
+        self.player = [u for u in self.user.level.units if u.is_player_controlled][0]
         for skill in self.player.get_skills():
             if skill.name == "Äther Gigantism":
                 self.gigantism = True
@@ -32,6 +32,7 @@ class BlissStasis(TileHazardBasic):
     def advance_effect(self):
         if self.gigantism and not are_hostile(self.unit, self.user):
             self.unit.max_hp += 5
+            self.unit.cur_hp += 5
             for spell in self.unit.spells:
                 if hasattr(spell, "damage"):
                     spell.damage += 2

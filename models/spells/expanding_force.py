@@ -102,6 +102,7 @@ class ExpandingForceSpell(Spell):
 		self.range = 0
 		self.max_charges = 3
 		self.name = "Expanding Force"
+		self.asset = ['EtherealPack', 'expanding_force']
 		self.aura_damage = 2
 		self.radius = 5
 		self.duration = 7

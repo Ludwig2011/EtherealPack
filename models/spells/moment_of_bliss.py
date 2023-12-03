@@ -8,7 +8,7 @@ class MomentOfBliss(Spell):
 	def on_init(self):
 		self.name = "A Moment in Heaven"
 		self.range = 7 
-		self.tags = [Ethereal, Tags.Holy, Tags.Enchantment]
+		self.tags = [Ethereal, Tags.Holy, Tags.Enchantment, Tags.Translocation]
 		self.level = 2
 
 		self.duration = 7

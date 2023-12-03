@@ -8,6 +8,7 @@ class PiercingGaze(Spell): # cone?
 
     def on_init(self):
         self.name = "Piercing Gaze"
+        self.asset = ['EtherealPack', 'piercing_gaze']
 
         self.range = 99
         self.max_charges = 7
@@ -20,9 +21,9 @@ class PiercingGaze(Spell): # cone?
         self.level = 3
         self.upgrades['requires_los'] = (-1, 2)
         self.upgrades['duration'] = (7, 2)
-        self.upgrades['damage'] = (6, 4)
-        self.upgrades['unnerving_gaze'] = (1, 3, "Unnerving Gaze", "Ätherealies enemies aswell")
-        self.upgrades['shocking_gaze'] = (1, 3, "Shocking Gaze", "Petrify affected enemies for 1 turn")
+        #self.upgrades['damage'] = (6, 4)
+        self.upgrades['unnerving_gaze'] = (1, 2, "Unnerving Gaze", "Ätherealies enemies aswell")
+        self.upgrades['shocking_gaze'] = (1, 4, "Shocking Gaze", "Petrify affected enemies for 2 turns")
 
 
 
@@ -51,7 +52,7 @@ class PiercingGaze(Spell): # cone?
                 if self.get_stat('unnerving_gaze'):
                     target.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
                 if self.get_stat('shocking_gaze'):
-                    target.apply_buff(PetrifyBuff(), 1)
+                    target.apply_buff(PetrifyBuff(), 2)
             yield
 
 class Cone():

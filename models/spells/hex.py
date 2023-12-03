@@ -8,6 +8,7 @@ class Hex(Spell):
 		self.name = "Hex"
 		self.range = 10 
 		self.tags = [Ethereal, Tags.Dark, Tags.Enchantment]
+		self.asset = ['EtherealPack', 'hex']
 		self.level = 2
 
 		self.duration = 7

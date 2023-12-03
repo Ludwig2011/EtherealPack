@@ -6,9 +6,10 @@ from mods.EtherealPack.tags.Ethereal import Ethereal
 def ÄtherImp():
 	unit = Unit()
 	unit.sprite.color = Color(1,121,111)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_imp")
 	unit.name = "Äther Imp"
-	unit.resists[Ethereal] = 100
+	unit.tags = [Tags.Demon, Ethereal]
+	unit.resists[Ethereal] = 100 
 	unit.resists[Tags.Physical] = 75
 	unit.resists[Tags.Dark] = 50
 	unit.resists[Tags.Holy] = 50

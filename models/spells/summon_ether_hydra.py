@@ -14,7 +14,7 @@ class SummonEtherHydraSpell(Spell):
 		self.name = "Äther Hydra"
 		self.range = 4
 		self.max_charges = 3
-		self.asset = ['EtherealPack', 'summon_ether_hydra']
+		self.asset = ['EtherealPack', 'ether_hydra_spell']
 		self.tags = [Ethereal, Tags.Conjuration, Tags.Dragon]
 		self.level = 4
 

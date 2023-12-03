@@ -8,6 +8,7 @@ class WordOfDisjunction(Spell):
     def on_init(self):
         self.name = "Word of Disjunction"
         self.tags = [Ethereal, Tags.Word]
+        self.asset = ['EtherealPack', 'word_of_disjunction']
         self.level = 7
 
         self.duration = 7

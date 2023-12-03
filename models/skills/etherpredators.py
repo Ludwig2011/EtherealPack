@@ -10,7 +10,7 @@ class Etherpredators(Upgrade):
 		self.name = "Äther Predators"
 		self.level = 6
 		self.tags = [Ethereal, Tags.Nature]
-		self.asset = ['EtherealPack', 'skill', 'Ätherpredators']
+		self.asset = ['EtherealPack', 'Ätherpredators']
 		self.global_triggers[EventOnMoved] = self.on_moved
 		self.minion_damage = 7
 		self.minion_health = 14
@@ -37,7 +37,7 @@ def EtherSpider(health, damage, range):
 	unit = Unit()
 	unit.sprite.char = 'D'
 	unit.sprite.color = Color(1,255,188)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_spider")
 	unit.name = "Äther Spider"
 	unit.description = "Teleports at enemies"
 	unit.max_hp = health

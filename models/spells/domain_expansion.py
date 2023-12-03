@@ -37,7 +37,7 @@ class DomainExpansion(Spell):
 
     def cast_instant(self, x, y):
         hostile_targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.get_stat('radius')) if u != self.caster and are_hostile(self.caster, u)]
-        friendly_targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y),self.get_stat('radius')) if u != self.caster and not are_hostile(self.caster, u)]
+        friendly_targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y),self.get_stat('radius')) if not are_hostile(self.caster, u)]
         for target in hostile_targets:
             target.apply_buff(Stun(), self.get_stat("stun"))
         

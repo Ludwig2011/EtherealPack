@@ -4,6 +4,7 @@ import Upgrades
 import mods.API_Universal.Modred as Modred
 from mods.EtherealPack.models.skills.beholding_eyes import BeholdingEyes
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
+from mods.EtherealPack.models.skills.ether_gigantism import EtherGigantism
 from mods.EtherealPack.models.skills.ether_lord import EtherLord
 from mods.EtherealPack.models.skills.etherpredators import Etherpredators
 from mods.EtherealPack.models.skills.ethertuned import Ethertuned
@@ -12,9 +13,11 @@ from mods.EtherealPack.models.spells.domain_expansion import DomainExpansion
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell
 from mods.EtherealPack.models.spells.ether_stream import EtherStream
+from mods.EtherealPack.models.spells.ethernity import Ethernity
 from mods.EtherealPack.models.spells.expanding_force import ExpandingForceSpell
 from mods.EtherealPack.models.spells.frost_spire import SummonFrostSpire
 from mods.EtherealPack.models.spells.hex import Hex
+from mods.EtherealPack.models.spells.mass_stasis import MassStasis
 from mods.EtherealPack.models.spells.moment_in_hell import MomentInHell
 from mods.EtherealPack.models.spells.moment_of_bliss import MomentOfBliss
 from mods.EtherealPack.models.spells.piercing_gaze import PiercingGaze
@@ -38,8 +41,6 @@ Modred.add_tag_tooltip(Etherealness)
 Modred.add_tag_effect_simple(Ethereal, os.path.join('mods','EtherealPack', 'ether'))
 
 Modred.add_shrine_option(Ethereal, 1)
-Modred.add_shrine_option(Ethereal, 1)
-Modred.add_shrine_option(Ethereal, 1)
 
 #enemy frog which etherealness debuff on attack
 
@@ -59,12 +60,15 @@ Spells.all_player_spell_constructors.append(EyeOfEtherSpell)
 Spells.all_player_spell_constructors.append(MomentOfBliss)
 Spells.all_player_spell_constructors.append(PiercingGaze)
 Spells.all_player_spell_constructors.append(DomainExpansion)
+Spells.all_player_spell_constructors.append(Ethernity)
+Spells.all_player_spell_constructors.append(MassStasis)
 Upgrades.skill_constructors.append(Etherpredators)
 Upgrades.skill_constructors.append(CollectDispersion)
 Upgrades.skill_constructors.append(Ethertuned)
 Upgrades.skill_constructors.append(Vastness)
 Upgrades.skill_constructors.append(BeholdingEyes)
 Upgrades.skill_constructors.append(EtherLord)
+Upgrades.skill_constructors.append(EtherGigantism)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

@@ -12,7 +12,7 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 	def on_init(self):
 		self.name = "A Moment in Hell"
 		self.range = 7 
-		self.tags = [Ethereal, Tags.Fire, Tags.Enchantment]
+		self.tags = [Ethereal, Tags.Fire, Tags.Enchantment, Tags.Translocation]
 		self.level = 3
 
 		self.duration = 3

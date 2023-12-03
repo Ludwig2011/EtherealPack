@@ -11,6 +11,7 @@ from mods.EtherealPack.tags.Ethereal import Ethereal
 class Railgun(Spell):
     def on_init(self):
         self.name = "Charge Railgun"
+        self.asset = ['EtherealPack', 'railgun']
         self.tags = [Tags.Sorcery, Tags.Metallic, Ethereal]
         self.level = 2
 
