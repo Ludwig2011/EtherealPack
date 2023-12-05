@@ -12,7 +12,7 @@ class MassStasis(Spell): # mordred???????????????????????????????
 
     def on_init(self):
         self.name = "Mass Stasis"
-        self.range = 7 
+        self.range = 10 
         self.tags = [Ethereal, Tags.Enchantment, Tags.Translocation]
         self.level = 3
 
@@ -29,14 +29,14 @@ class MassStasis(Spell): # mordred???????????????????????????????
 
     def can_cast(self, x, y):
         unit = self.caster.level.get_unit_at(x,y)
-        if (unit and unit.has_buff(StunImmune)) or not self.caster.level.tiles[x][y].prop == None:
+        if unit and unit.has_buff(StunImmune):
             return False
         return super().can_cast(x, y)
 
     def cast(self, x, y):
         for tile in self.caster.level.get_points_in_ball(x,y,self.get_stat('radius')):
             unit = self.caster.level.get_unit_at(tile.x, tile.y)
-            if not unit or unit == self.caster:
+            if not unit or unit == self.caster or not self.caster.level.tiles[unit.x][unit.y].prop == None:
                 continue
             if self.get_stat('linger'):
                 unit.apply_buff(EtherealnessBuff(),self.get_stat('duration')*2)

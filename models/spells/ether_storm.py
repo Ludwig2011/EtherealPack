@@ -13,7 +13,7 @@ class EtherStormSpell(Spell):
         self.level = 2
         self.asset = ['EtherealPack', 'ether_storm']
 
-        self.amount_of_strikes = 7
+        self.num_targets = 7
         self.range = 11
         self.max_charges = 10
         self.damage = 7
@@ -24,7 +24,7 @@ class EtherStormSpell(Spell):
 
               
         self.upgrades['chance'] = (25, 1)      
-        self.upgrades['amount_of_strikes'] = (7, 2)
+        self.upgrades['num_targets'] = (7, 2)
         self.upgrades['max_charges'] = (11, 3)
         self.upgrades['requires_los'] = (-1, 2, "Blindcasting", "Äther Storm can be cast without line of sight")  
         self.upgrades['endothermic_discharge'] = (1, 1, "Endothermic Discharge", "The bolts have a %d percent chance to freeze enemies for 1 turns" % (self.get_stat('chance')/2))
@@ -38,12 +38,12 @@ class EtherStormSpell(Spell):
     def get_description(self):
         return ("Open a Rift to the Energy Plane through which %d energy bolts strike random enemies in [{radius}_radius:radius]\n"
                 "Each bolt deals [{damage}_äthereal:äthereal] damage and has a %d percent chance to deal lightning damage aswell\n"
-                "The Chance of added effects from this spell is doubled against [ätherealiesed:äthereal] targets" % (self.get_stat('amount_of_strikes'), self.get_stat('chance'))).format(**self.fmt_dict())
+                "The Chance of added effects from this spell is doubled against [ätherealiesed:äthereal] targets" % (self.get_stat('num_targets'), self.get_stat('chance'))).format(**self.fmt_dict())
 
     def cast(self, x, y):
         targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.radius) if u != self.caster and are_hostile(self.caster, u)]
         
-        for i in range(self.get_stat('amount_of_strikes')):
+        for i in range(self.get_stat('num_targets')):
             if len(targets) < 1:
                 continue
             target = random.choice(targets)
