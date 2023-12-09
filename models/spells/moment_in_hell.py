@@ -5,6 +5,7 @@ from mods.API_TileHazards.API_TileHazards import TileHazardBasic
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.brimstone import Brimstone
 from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
+from mods.EtherealPack.models.hazards.util import get_hazard_point
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 class MomentInHell(Spell): # mordred???????????????????????????????
@@ -30,13 +31,13 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 
 	def can_cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x,y)
-		if (unit and unit.has_buff(StunImmune)) or not self.caster.level.tiles[x][y].prop == None:
+		if (unit and unit.has_buff(StunImmune)) or get_hazard_point(self.caster.level,x,y,flying=unit.flying)==None:
 			return False
 		return super().can_cast(x, y)
 
 	def cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x, y)
-
+		hazard_point = get_hazard_point(self.caster.level,x,y,flying=unit.flying)
 		if not unit.gets_clarity:
 			unit_copy = copy.copy(unit)
 			unit.kill(None, False) 
@@ -44,11 +45,11 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 				buff.apply(unit_copy)
 
 			stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),unit_copy,self.get_stat('brimstone'),self.get_stat('explosive_entry'))
-			self.caster.level.add_obj(stasis, unit.x, unit.y)
+			self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 		else:
 			unit.apply_buff(Stun(), self.get_stat('duration'))
 			stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),Goblin(),self.get_stat('brimstone'),self.get_stat('explosive_entry'))
-			self.caster.level.add_obj(stasis, unit.x, unit.y)
+			self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
 		yield
 

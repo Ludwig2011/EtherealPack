@@ -1,6 +1,26 @@
 import copy
 from Level import *
 
+def get_hazard_point(level, x, y, radius_limit=25, sort_dist=True, flying=False, diag=False):
+		options = list(level.get_points_in_ball(x, y, radius_limit, diag=diag))
+		random.shuffle(options)
+		
+		if sort_dist:
+			options.sort(key=lambda p: distance(p, Point(x, y)))
+
+		for o in options:
+			tile = level.tiles[o.x][o.y]
+			if not flying:
+				if not tile.can_walk:
+					continue
+			else:
+				if not tile.can_fly:
+					continue
+			if not tile.prop == None:
+				continue
+			return o
+
+		return None
 
 def deal_damage(level, unit, amount, damage_type, source):
     # Raise pre damage event (for conversions)

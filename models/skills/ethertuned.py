@@ -8,5 +8,5 @@ class Ethertuned(Upgrade):
 		self.name = "Äthertuned"
 		#self.asset = ['EtherealPack', 'Äthertuned']
 		self.tags = [Ethereal]
-		self.description = "When Ätherealness is applied to allies it increases their phyiscal and äthereal resistance by 50 aswell as their poison resistane by 100"
+		self.description = "When Ätherealness is applied to allies it increases their [phyiscal:phyiscal] and [äthereal:äthereal] resistance by 50 aswell as their [poison:poison] resistane by 100"
 		self.level = 4

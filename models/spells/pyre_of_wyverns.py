@@ -23,7 +23,7 @@ class PyreOfWyvernsSpell(Spell):
 		self.upgrades['shields'] = (2, 2)
 		self.upgrades['num_summons'] = (2, 3)
 		self.upgrades['shielding_waves'] = 1, 4, "Embracing Waves", "The wyverns ether waves provide up to 2 shields to allies"
-		self.upgrades['ether_link'] = 1, 5, "Ether Link", "Wyverns link up to each other if they stay near their range increases by 3 and their wave cooldown is set to 2"
+		self.upgrades['ether_link'] = 1, 5, "Link", "Wyverns link up to each other if they stay near their range increases by 3 and their wave cooldown is set to 2"
 
 		self.range = 0
 		self.tags = [Tags.Dragon, Tags.Conjuration, Ethereal]

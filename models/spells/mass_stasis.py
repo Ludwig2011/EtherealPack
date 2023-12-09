@@ -6,6 +6,7 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.brimstone import Brimstone
 from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
 from mods.EtherealPack.models.hazards.stasis import Stasis
+from mods.EtherealPack.models.hazards.util import get_hazard_point
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 class MassStasis(Spell): # mordred???????????????????????????????
@@ -36,7 +37,10 @@ class MassStasis(Spell): # mordred???????????????????????????????
     def cast(self, x, y):
         for tile in self.caster.level.get_points_in_ball(x,y,self.get_stat('radius')):
             unit = self.caster.level.get_unit_at(tile.x, tile.y)
-            if not unit or unit == self.caster or not self.caster.level.tiles[unit.x][unit.y].prop == None:
+            if not unit or unit == self.caster:
+                continue
+            hazard_point = get_hazard_point(self.caster.level,unit.x,unit.y,flying=unit.flying)
+            if not hazard_point:
                 continue
             if self.get_stat('linger'):
                 unit.apply_buff(EtherealnessBuff(),self.get_stat('duration')*2)
@@ -47,11 +51,11 @@ class MassStasis(Spell): # mordred???????????????????????????????
                     buff.apply(unit_copy)
 
                 stasis = Stasis(self.caster,self,self.get_stat('duration'),unit_copy)
-                self.caster.level.add_obj(stasis, unit.x, unit.y)
+                self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
             else:
                 unit.apply_buff(Stun(), self.get_stat('duration'))
                 stasis = Stasis(self.caster,self,self.get_stat('duration'),Goblin())
-                self.caster.level.add_obj(stasis, unit.x, unit.y)
+                self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
         yield
 
