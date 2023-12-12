@@ -31,7 +31,7 @@ class Ethernity(Spell): # mordred???????????????????????????????
 
 	def can_cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x,y)
-		if (unit and unit.has_buff(StunImmune)) or get_hazard_point(self.caster.level,x,y,flying=unit.flying)==None:
+		if unit and (unit.has_buff(StunImmune) or unit.has_buff(StunImmune) or get_hazard_point(self.caster.level,x,y,flying=unit.flying)==None):
 			return False
 		return super().can_cast(x, y)
 
