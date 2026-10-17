@@ -19,7 +19,7 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 
 		self.duration = 3
 		self.damage = 5
-		self.damage_type = Ethereal
+		self.damage_type = [Tags.Fire, Ethereal]
 
 		self.max_charges = 4
 		self.can_target_empty = False
@@ -49,7 +49,12 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 			self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 		else:
 			unit.apply_buff(Stun(), self.get_stat('duration'))
-			stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),Goblin(),self.get_stat('brimstone'),self.get_stat('explosive_entry'))
+			dummy = Goblin()
+			dummy.max_hp = self.get_stat('damage') * self.get_stat('duration') + 1
+			dummy.cur_hp = self.get_stat('damage') * self.get_stat('duration') + 1
+			dummy.x = x
+			dummy.y = y
+			stasis = HellStasis(self.caster,self,self.get_stat('duration'),self.get_stat('damage'),dummy,self.get_stat('brimstone'),self.get_stat('explosive_entry'))
 			self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
 		yield

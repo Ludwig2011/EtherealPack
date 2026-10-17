@@ -1,19 +1,18 @@
 from Level import *
-from Upgrades import Upgrade
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 #skill etherealnessed units loose ice resist and death nova ice and freeze
-class Vastness(Upgrade):
-	def __init__(self):
-		Upgrade.__init__(self)
+class Vastness(Equipment):
+
+	def on_init(self):
 		self.name = "Vastness"
-		#self.asset = ['EtherealPack', 'Vastness']
+		self.asset = ['EtherealPack', 'pure_ether']
 		self.tags = [Ethereal, Tags.Ice]
+		self.recipe = [(Ethereal, 1), (Tags.Ice, 1), (Tags.Any, 2)]
 		self.global_triggers[EventOnDamaged] = self.on_damaged
 		self.radius = 4
 		self.damage = 7
-		self.level = 6
 
 	def on_damaged(self, damage_event):
 
@@ -21,11 +20,11 @@ class Vastness(Upgrade):
 			return
 
 		if damage_event.unit.cur_hp <= 0 and damage_event.unit.has_buff(EtherealnessBuff):
-			for point in self.owner.level.get_points_in_ball(damage_event.unit.x, damage_event.unit.y, self.radius):
+			for point in self.owner.level.get_points_in_ball(damage_event.unit.x, damage_event.unit.y, self.get_stat('radius')):
 				unit = self.owner.level.get_unit_at(point.x, point.y)
 				if unit and are_hostile(self.owner,unit):
-					self.owner.level.deal_damage(point.x, point.y, self.damage, Tags.Ice, self)
-					self.owner.level.deal_damage(point.x, point.y, self.damage, Ethereal, self)
+					self.owner.level.deal_damage(point.x, point.y, self.get_stat('damage'), Tags.Ice, self)
+					self.owner.level.deal_damage(point.x, point.y, self.get_stat('damage'), Ethereal, self)
 					if unit.cur_hp > 0:
 						unit.apply_buff(EtherealnessBuff(), 7)
 				else:
@@ -33,5 +32,4 @@ class Vastness(Upgrade):
 			
 		
 	def get_description(self):
-		return ("Enemies that are [ätherealised:äthereal] lose 50% [ice:ice] resistance.\n"
-				"When an [ätherealised:äthereal] enemy dies cause an nova in a [4_tile:radius] radius dealing 7 [ätheral:äthereal] and [ice:ice] damage to enemies.").format(**self.fmt_dict())
+		return "Etherealness lowers affected enemies' Ice resistance by 50. When an affected enemy dies, deal 7 Ice and Ethereal damage to hostile units in a 4-tile radius and apply 7 turns of Etherealness to survivors."

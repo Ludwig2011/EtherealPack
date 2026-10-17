@@ -23,7 +23,7 @@ class SummonFrostSpire(Spell):
 		self.upgrades['minion_damage'] = (3, 1)
 		self.upgrades['radius'] = (3, 3)
 		self.upgrades['faulty_rift'] = (1, 2, "Faulty Rift", "The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns")
-		self.upgrades['implosive_entry'] = (1, 4, "Implosive Entry", "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage")
+		self.upgrades['implosive_entry'] = (1, 4, "Implosive Entry", "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage", None, [Tags.Ice, Ethereal])
 		self.upgrades['frost_mortem'] = (1, 6, "Frost Mortem", "Units that die within the Frost Aura of the Spire leave behind frost Golems\n"
 		"Frost Golems have half the units hp, 1 shield and a melee attack that deals 4 [ice:ice] and 3 [physical:physical] damage\n"
 		"Frost Golems have [75_ice:ice], [100_poison:poison], [25_physical:physical], [-25_fire:fire] resistance")
@@ -89,9 +89,7 @@ class SummonFrostSpire(Spell):
 
 def FrostSpire(health,damage,range):
 	unit = Unit()
-	unit.sprite.char = 'D'
-	unit.sprite.color = Color(1,121,111)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "frost_spire")
+	unit.asset = ["EtherealPack", "frost_spire"]
 	unit.name = "Frost Spire"
 	unit.stationary = True
 	unit.description = "Fires Frost Bolts that freeze enemies"
@@ -145,7 +143,7 @@ class FrostAuraBuff(Buff):
 			self.owner.level.deal_damage(p.x, p.y, 0, self.damage_type, source=self.source or self)
 
 	def on_death(self, evt):
-		if self.frost_mortem:
+		if self.frost_mortem and are_hostile(self.owner, evt.unit):
 			points = []
 			for p in self.owner.level.get_points_in_ball(self.owner.x, self.owner.y, self.radius):
 				points.append(Point(p.x, p.y))
@@ -165,9 +163,7 @@ class FrostAuraBuff(Buff):
 	
 def FrostGolem(health):
 	unit = Unit()
-	unit.sprite.char = 'D'
-	unit.sprite.color = Color(1,121,111)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "frost_golem")
+	unit.asset = ["EtherealPack", "frost_golem"]
 	unit.name = "Frost Golem"
 	unit.description = "Punches Things, is cold"
 	unit.shields = 1

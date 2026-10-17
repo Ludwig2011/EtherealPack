@@ -13,7 +13,7 @@ class Hex(Spell):
 
 		self.duration = 7
 		self.damage = 3
-		self.damage_types = [Ethereal, Tags.Dark]
+		self.damage_type = [Ethereal, Tags.Dark]
 		self.resist_loss = 25
 
 		self.max_charges = 7

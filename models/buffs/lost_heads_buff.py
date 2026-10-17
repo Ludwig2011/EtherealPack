@@ -21,9 +21,7 @@ class LostHeadsBuff(Buff):
 			if self.stored_damage > 15:
 				self.stored_damage -= 15
 				head = Unit()
-				head.sprite.char = 'D'
-				head.sprite.color = Color(1,121,111)
-				head.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra_head")
+				head.asset = ["EtherealPack", "ether_hydra_head"]
 				head.name = "Äther Hydra Head"
 				head.description = "Fires äther beam"
 				head.max_hp = 15

@@ -2,7 +2,7 @@ from CommonContent import SimpleRangedAttack
 from Level import *
 from mods.API_TileHazards.API_TileHazards import TileHazardBasic
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
-from mods.EtherealPack.models.hazards.util import add_unit, deal_damage
+from mods.EtherealPack.models.hazards.util import add_unit, deal_off_grid_damage, suspend_unit_events
 
 
 class BlissStasis(TileHazardBasic):
@@ -12,15 +12,13 @@ class BlissStasis(TileHazardBasic):
         self.radius = radius
         self.source = source
         self.unit = unit
+        suspend_unit_events(unit)
         self.unit_buffs = unit_buffs
         self.blind = blind
         self.bless = bless
         self.asset = ["EtherealPack", "bliss_stasis"]
-        self.gigantism = False
         self.player = [u for u in self.user.level.units if u.is_player_controlled][0]
-        for skill in self.player.get_skills():
-            if skill.name == "Äther Gigantism":
-                self.gigantism = True
+        self.gigantism = any(item.name == "Äther Gigantism" for item in self.player.get_equipment())
 
     def get_description(self):
         return ("%s in Stasis heals %d [hp:heal] every turn\n%d turns remaining\n"
@@ -41,7 +39,7 @@ class BlissStasis(TileHazardBasic):
             if are_hostile(self.user, steppy):
                 self.user.level.deal_damage(self.x,self.y,-self.damage, Tags.Heal, self.source)
             steppy.apply_buff(EtherealnessBuff(), 2)
-        killed = deal_damage(self.user.level, self.unit, -self.damage, Tags.Heal, self.source)
+        killed = deal_off_grid_damage(self.user.level, self.unit, -self.damage, Tags.Heal, self.source)
         targets = [u for u in self.user.level.get_units_in_ball(self.user, self.radius) if u != self.user and u != self.unit and not are_hostile(self.user, u) and u.cur_hp>0]
         for target in targets:
             self.user.level.deal_damage(target.x,target.y,-self.damage, Tags.Heal, self.source)

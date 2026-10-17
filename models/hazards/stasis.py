@@ -3,7 +3,7 @@ from Level import *
 from mods.API_TileHazards.API_TileHazards import TileHazardBasic
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
-from mods.EtherealPack.models.hazards.util import add_unit, deal_damage
+from mods.EtherealPack.models.hazards.util import add_unit, suspend_unit_events
 
 
 class Stasis(TileHazardBasic):
@@ -11,14 +11,12 @@ class Stasis(TileHazardBasic):
         TileHazardBasic.__init__(self, "Ether Portal", duration, user)
         self.source = source
         self.unit = unit
+        suspend_unit_events(unit)
         self.unit_buffs = unit_buffs
         self.hazards = hazards
         self.asset = ["EtherealPack", "stasis"]
-        self.gigantism = False
         self.player = [u for u in self.user.level.units if u.is_player_controlled][0]
-        for skill in self.player.get_skills():
-            if skill.name == "Äther Gigantism":
-                self.gigantism = True
+        self.gigantism = any(item.name == "Äther Gigantism" for item in self.player.get_equipment())
 
     def get_description(self):
         return ("%s in Stasis\n%d turns remaining\n"

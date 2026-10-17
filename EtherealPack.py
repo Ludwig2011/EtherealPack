@@ -1,7 +1,7 @@
-from Level import *
 import Spells
-import Upgrades
-import mods.API_Universal.Modred as Modred
+import Equipment as EquipmentContent
+import ModHandler
+from mods.EtherealPack.models.components import EtherealDust, EtherealLens, EtherealBloom, EtherealFrost
 from mods.EtherealPack.models.skills.beholding_eyes import BeholdingEyes
 from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
 from mods.EtherealPack.models.skills.ether_gigantism import EtherGigantism
@@ -29,46 +29,41 @@ from mods.EtherealPack.tags.Ethereal import Ethereal, Etherealness
 from mods.EtherealPack.models.spells.pyre_of_wyverns import PyreOfWyvernsSpell
 from mods.EtherealPack.models.spells.ether_storm import EtherStormSpell
 
-#demons undead dark holy weak, arcane strong (living/nature aswell?)
-Tags.elements.append(Ethereal)
-Modred.add_tag_keybind(Ethereal, 'Ä')
-
-#Overwrite Level set_default_resistances. Resists API?
-Modred.add_tag_tooltip(Ethereal)
-Modred.add_tag_tooltip(Etherealness)
-
-# Add custom spells
-Modred.add_tag_effect_simple(Ethereal, os.path.join('mods','EtherealPack', 'ether'))
-
-Modred.add_shrine_option(Ethereal, 1)
-
 #enemy frog which etherealness debuff on attack
 
-Spells.all_player_spell_constructors.append(EtherBolt)
-Spells.all_player_spell_constructors.append(SummonEtherHydraSpell)
-Spells.all_player_spell_constructors.append(Hex)
-Spells.all_player_spell_constructors.append(WordOfDisjunction)
-Spells.all_player_spell_constructors.append(PyreOfWyvernsSpell)
-Spells.all_player_spell_constructors.append(MomentInHell)
-Spells.all_player_spell_constructors.append(PureEtherSphere)
-Spells.all_player_spell_constructors.append(EtherStormSpell)
-Spells.all_player_spell_constructors.append(SummonFrostSpire)
-Spells.all_player_spell_constructors.append(Railgun)
-Spells.all_player_spell_constructors.append(EtherStream)
-Spells.all_player_spell_constructors.append(ExpandingForceSpell)
-Spells.all_player_spell_constructors.append(EyeOfEtherSpell)
-Spells.all_player_spell_constructors.append(MomentOfBliss)
-Spells.all_player_spell_constructors.append(PiercingGaze)
-Spells.all_player_spell_constructors.append(DomainExpansion)
-Spells.all_player_spell_constructors.append(Ethernity)
-Spells.all_player_spell_constructors.append(MassStasis)
-Upgrades.skill_constructors.append(Etherpredators)
-Upgrades.skill_constructors.append(CollectDispersion)
-Upgrades.skill_constructors.append(Ethertuned)
-Upgrades.skill_constructors.append(Vastness)
-Upgrades.skill_constructors.append(BeholdingEyes)
-Upgrades.skill_constructors.append(EtherLord)
-Upgrades.skill_constructors.append(EtherGigantism)
+Spells.all_player_spell_constructors.extend([
+	EtherBolt,
+	SummonEtherHydraSpell,
+	Hex,
+	WordOfDisjunction,
+	PyreOfWyvernsSpell,
+	MomentInHell,
+	PureEtherSphere,
+	EtherStormSpell,
+	SummonFrostSpire,
+	Railgun,
+	EtherStream,
+	ExpandingForceSpell,
+	EyeOfEtherSpell,
+	MomentOfBliss,
+	PiercingGaze,
+	DomainExpansion,
+	Ethernity,
+	MassStasis,
+])
+
+EquipmentContent.all_equipment.extend([
+	BeholdingEyes,
+	CollectDispersion,
+	EtherGigantism,
+	EtherLord,
+	Etherpredators,
+	Ethertuned,
+	Vastness,
+])
+
+for component in [EtherealDust, EtherealLens, EtherealBloom, EtherealFrost]:
+	ModHandler.register_component(component)
 #Monsters.spawn_options.append((SpriteCloud, 2))
 #Variants.variants[Monsters.HellHound].append((((SpiritHound, 2, 4, Variants.WEIGHT_COMMON))))
 #RareMonsters.rare_monsters.append((YukiOnna, RareMonsters.DIFF_EASY, 1, 2, Tags.Ice))

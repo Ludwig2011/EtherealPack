@@ -1,11 +1,62 @@
-#leaves trail of pure ether hazards, upgrade bolts that stun and spawn pure ether hazards
+import random
+
 from Level import *
-from Spells import OrbSpell
+from Spells import Orb
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
-class PureEtherSphere(OrbSpell):
+class PureEtherSphereBuff(Buff):
+
+	def __init__(self, spell):
+		self.spell = spell
+		self.discharge_cooldown = 0
+		Buff.__init__(self)
+
+	def on_init(self):
+		self.name = "Pure Ether Sphere"
+		self.color = Ethereal.color
+
+	def on_advance(self):
+		orb = self.owner
+		level = orb.level
+		spell = self.spell
+		radius = spell.get_stat('radius')
+		duration = spell.get_stat('duration')
+		damage = spell.get_stat('minion_damage')
+
+		if spell.get_stat('pure_discharge'):
+			if self.discharge_cooldown <= 0:
+				targets = [
+					unit for unit in level.get_units_in_los(orb)
+					if unit != orb and are_hostile(orb, unit) and unit.is_alive()
+				]
+				for target in random.sample(targets, min(3, len(targets))):
+					self.zap(target)
+				self.discharge_cooldown = 2
+			else:
+				self.discharge_cooldown -= 1
+
+		self.spread_ether(orb.x, orb.y, radius, duration, damage)
+
+	def zap(self, target):
+		spell = self.spell
+		level = self.owner.level
+		target.apply_buff(Stun(), 2)
+		self.spread_ether(target.x, target.y, spell.get_stat('radius'), spell.get_stat('duration'), spell.get_stat('minion_damage'))
+		for point in level.get_points_in_line(self.owner, target, find_clear=True)[1:-1]:
+			level.show_effect(point.x, point.y, Ethereal, minor=True)
+
+	def spread_ether(self, x, y, radius, duration, damage):
+		level = self.owner.level
+		for point in level.get_points_in_ball(x, y, radius, diag=True):
+			if level.tiles[point.x][point.y].prop is not None:
+				continue
+			hazard = PureEther(self.spell.caster, self.spell, duration, damage, level.tiles[point.x][point.y].is_chasm)
+			level.add_obj(hazard, point.x, point.y)
+
+
+class PureEtherSphere(Spell):
 
 	def on_init(self):
 		self.name = "Pure Ether Sphere"
@@ -16,14 +67,10 @@ class PureEtherSphere(OrbSpell):
 		self.max_charges = 3
 		self.pure_discharge = 0
 		self.duration = 7
-		self.zap_cooldwon = 0
-
-		self.melt_walls = True
-
+		self.must_target_empty = True
 		self.minion_health = 15
-
 		self.element = Ethereal
-		
+		self.damage_type = [Ethereal]
 		self.tags = [Ethereal, Tags.Orb, Tags.Conjuration]
 		self.level = 4
 
@@ -31,95 +78,31 @@ class PureEtherSphere(OrbSpell):
 		self.upgrades['max_charges'] = (4, 2)
 		self.upgrades['radius'] = (1, 2)
 		self.upgrades['minion_damage'] = (9, 3)
-		self.upgrades['pure_discharge'] = (1, 4, "Pure Discharge", "The sphere shoots out 3 ether bolts at random targets in line of sight every 3 turns. Stunning them for 2 turns and spreading pure ether on and around them.")
+		self.upgrades['pure_discharge'] = (1, 4, "Pure Discharge", "Every 3 turns, the sphere stuns up to 3 enemies in line of sight for 2 turns and spreads Pure Ether around them.")
 
-	def zap(self, orb, target):
-		target.apply_buff(Stun(),2)
-		for stage in Burst(self.caster.level, Point(target.x, target.y), self.get_stat('radius'), expand_diagonals=True):
-			for point in stage:
-				pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'),self.caster.level.tiles[point.x][point.y].is_chasm)
-				if self.caster.level.tiles[point.x][point.y].prop == None:
-					self.caster.level.add_obj(pure_ether, point.x, point.y)
-			for p in self.caster.level.get_points_in_line(orb, Point(target.x, target.y), find_clear=True)[1:-1]:
-				self.caster.level.show_effect(p.x, p.y, Ethereal, minor=True)
-
-	def on_orb_walk(self, existing):
-		# Burst
-		x = existing.x
-		y = existing.y
-
-		if self.get_stat('pure_discharge'):
-			if self.zap_cooldwon < 1:
-				targets = [u for u in self.level.get_units_in_los(existing) if u != self.caster and u != self.existing and are_hostile(self.caster, u) and u.cur_hp>0]
-				if not len(targets) == 0:
-					target = random.choice(targets)
-					self.zap(existing, target)
-					targets.remove(target)
-					if not len(targets) == 0:
-						target = random.choice(targets)
-						self.zap(existing, target)
-						targets.remove(target)
-						if not len(targets) == 0:
-							target = random.choice(targets)
-							self.zap(existing, target)
-					self.zap_cooldwon = 2
-			else:
-				self.zap_cooldwon -= 1
-
-		for stage in Burst(self.caster.level, Point(x, y), self.get_stat('radius')):
-			for point in stage:
-				if self.caster.level.tiles[point.x][point.y].prop == None:
-					pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'),self.caster.level.tiles[point.x][point.y].is_chasm)
-					self.caster.level.add_obj(pure_ether, point.x, point.y)
-			for i in range(3):
-				yield
-		
-		existing.kill()
-		self.caster.level.act_move(self.caster, x, y, teleport=True)
-
-	def on_make_orb(self, orb):
-		orb.resists[Ethereal] = 0
+	def make_orb(self):
+		orb = Orb()
+		orb.name = "Pure Ether Sphere"
 		orb.asset = ["EtherealPack", "pure_ether_sphere"]
+		orb.resists[Ethereal] = 0
 		orb.shields = 3
+		orb.buffs.append(PureEtherSphereBuff(self))
+		apply_minion_bonuses(self, orb)
+		return orb
 
-	def on_orb_move(self, orb, next_point):
-		x = next_point.x
-		y = next_point.y
-		level = orb.level
-
-		if self.get_stat('pure_discharge'):
-			if self.zap_cooldwon < 1:
-				targets = [u for u in level.get_units_in_los(orb) if u != self.caster and u != orb and are_hostile(self.caster, u) and u.cur_hp>0]
-				if not len(targets) == 0:
-					target = random.choice(targets)
-					self.zap(orb, target)
-					targets.remove(target)
-					if not len(targets) == 0:
-						target = random.choice(targets)
-						self.zap(orb, target)
-						targets.remove(target)
-						if not len(targets) == 0:
-							target = random.choice(targets)
-							self.zap(orb, target)
-					self.zap_cooldwon = 2
-			else:
-				self.zap_cooldwon -= 1
-
-		for stage in Burst(self.caster.level, Point(x, y), self.get_stat('radius'), expand_diagonals=True):
-			for point in stage:
-				if self.caster.level.tiles[point.x][point.y].prop == None:
-					pure_ether = PureEther(self.caster,self,self.get_stat('duration'),self.get_stat('minion_damage'),self.caster.level.tiles[point.x][point.y].is_chasm)
-					self.caster.level.add_obj(pure_ether, point.x, point.y)
-
-	def on_orb_collide(self, orb, next_point):
-		orb.level.show_effect(next_point.x, next_point.y, Ethereal)
+	def cast(self, x, y):
+		existing = next((unit for unit in self.caster.level.units if unit.source is self and unit.is_alive()), None)
+		if existing:
+			if self.caster.level.can_move(existing, x, y, teleport=True):
+				self.caster.level.act_move(existing, x, y, teleport=True)
+		else:
+			self.summon(self.make_orb(), target=Point(x, y))
 		yield
 
-	def get_orb_impact_tiles(self, orb):
-		return [p for stage in Burst(self.caster.level, orb, self.get_stat('radius')) for p in stage]
+	def get_extra_examine_tooltips(self):
+		return [self.make_orb()] + self.get_upgrade_tooltips()
 
 	def get_description(self):
-		return ("Summon a Pure Ether Sphere next to the caster.\n"
-				"The sphere spreads pure ether each turn to all adjacent tiles that deals [{minion_damage}_äthereal:äthereal] damage, applies [Atherealness:äthereal] for 2 turns and lasts 7 turns.\n"
-				"The orb has no will of its own, each turn it will float one tile towards the target and destroy walls in its path.\n"
-				"The orb can be destroyed by [äthereal:äthereal] damage.").format(**self.fmt_dict())
+		return ("Summon a Pure Ether Sphere at the target location.\n"
+				"Each turn, it spreads Pure Ether across a [{radius}:radius] radius, dealing [{minion_damage}_Ethereal:äthereal] damage and applying Etherealness for [{duration}:duration] turns.\n"
+				"Only one sphere may exist at a time. Casting the spell while it exists moves it to the selected location.").format(**self.fmt_dict())

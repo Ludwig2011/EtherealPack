@@ -1,12 +1,13 @@
 from Level import *
-from Upgrades import Upgrade
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class Ethertuned(Upgrade):
-	def __init__(self):
-		Upgrade.__init__(self)
+class Ethertuned(Equipment):
+
+	def on_init(self):
 		self.name = "Äthertuned"
-		#self.asset = ['EtherealPack', 'Äthertuned']
+		self.asset = ['EtherealPack', 'etherealness']
 		self.tags = [Ethereal]
-		self.description = "When Ätherealness is applied to allies it increases their phyiscal and [äthereal:äthereal] resistance by 50 aswell as their [poison:poison] resistane by 100"
-		self.level = 4
+		self.recipe = [(Ethereal, 1), (Tags.Any, 3)]
+
+	def get_description(self):
+		return "When Etherealness is applied to allies, it grants 50 Physical and Ethereal resistance and 100 Poison resistance for its duration."

@@ -15,21 +15,21 @@ class EtherStormSpell(Spell):
 
         self.num_targets = 7
         self.range = 11
-        self.max_charges = 10
+        self.max_charges = 6
         self.damage = 7
         self.radius = 5
         self.chance = 25
         self.duration = 7
         self.requires_los = True
+        self.damage_type = [Ethereal, Tags.Lightning]
 
-              
         self.upgrades['chance'] = (25, 1)      
         self.upgrades['num_targets'] = (7, 2)
-        self.upgrades['max_charges'] = (11, 3)
+        self.upgrades['max_charges'] = (8, 3)
         self.upgrades['requires_los'] = (-1, 2, "Blindcasting", "Äther Storm can be cast without line of sight")  
-        self.upgrades['endothermic_discharge'] = (1, 1, "Endothermic Discharge", "The bolts have a %d percent chance to freeze enemies for 1 turns" % (self.get_stat('chance')/2))
+        self.upgrades['endothermic_discharge'] = (1, 1, "Endothermic Discharge", "The bolts have a %d percent chance to freeze enemies for 1 turn" % (self.get_stat('chance')/2), [Tags.Ice])
         self.upgrades['lingering_static'] = (1, 2, "Lingering Static", "The Storms static field applies Ätherealness to all units for [{duration}_turns:duration]")
-        self.upgrades['searing_storm'] = (1, 3, "Searing Storm", "The bolts have a %d percent chance to leave enemies with burns dealing [{damage}_fire:fire] damage for 3 turns" % (self.get_stat('chance')/2))
+        self.upgrades['searing_storm'] = (1, 3, "Searing Storm", "The bolts have a %d percent chance to leave enemies with burns dealing [{damage}_fire:fire] damage for 3 turns" % (self.get_stat('chance')/2), [Tags.Fire], [Tags.Fire])
 
         self.tags = [Tags.Sorcery, Tags.Chaos, Tags.Lightning, Ethereal]
 
@@ -41,7 +41,7 @@ class EtherStormSpell(Spell):
                 "The Chance of added effects from this spell is doubled against [ätherealiesed:äthereal] targets" % (self.get_stat('num_targets'), self.get_stat('chance'))).format(**self.fmt_dict())
 
     def cast(self, x, y):
-        targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.radius) if u != self.caster and are_hostile(self.caster, u)]
+        targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.get_stat('radius')) if u != self.caster and are_hostile(self.caster, u)]
         
         for i in range(self.get_stat('num_targets')):
             if len(targets) < 1:
@@ -58,7 +58,7 @@ class EtherStormSpell(Spell):
             if target.cur_hp < 1:
                 targets.remove(target)
 
-        targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.radius) if u.cur_hp > 0]
+        targets = [u for u in self.caster.level.get_units_in_ball(Point(x, y), self.get_stat('radius')) if u.cur_hp > 0]
         if self.get_stat('lingering_static'):
             for target in targets:
                 target.apply_buff(EtherealnessBuff(), self.get_stat('duration'))

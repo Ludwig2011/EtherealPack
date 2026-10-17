@@ -4,14 +4,14 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
-class CollectDispersion(Upgrade):
+class CollectDispersion(Equipment):
 
     def on_init(self):
-        self.global_triggers[EventOnDamaged] = self.on_damaged
         self.name = "Collect Dispersion"
         self.tags = [Ethereal]
         self.asset = ['EtherealPack', 'collect_dispersion']
-        self.level = 6
+        self.recipe = [(Ethereal, 3), (Tags.Any, 4)]
+        self.global_triggers[EventOnDamaged] = self.on_damaged
 
     def on_damaged(self, damage_event):
 
@@ -33,5 +33,4 @@ class CollectDispersion(Upgrade):
                         self.owner.level.show_effect(self.owner.x, self.owner.y, Ethereal)
 
     def get_description(self):
-        return ("Whenever an enemy unit dies, each of your [äthereal] spells has a chance euqal to 1/100 of the Ätherealness applied to the unit to gain a charge.\n"
-                "This chance is tripled if the unit died to [äthereal] damage.")
+        return "When an enemy affected by Etherealness dies, each of your Ethereal spells has a chance equal to the remaining Etherealness duration to regain a charge. The chance is tripled if Ethereal damage dealt the killing blow."

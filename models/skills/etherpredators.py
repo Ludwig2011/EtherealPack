@@ -1,21 +1,21 @@
 from CommonContent import Poison, SimpleMeleeAttack
-from Upgrades import Upgrade
 from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class Etherpredators(Upgrade):
-	def __init__(self):
-		Upgrade.__init__(self)
+class Etherpredators(Equipment):
+
+	def on_init(self):
 		self.name = "Äther Predators"
-		self.level = 6
 		self.tags = [Ethereal, Tags.Nature]
-		self.asset = ['EtherealPack', 'Ätherpredators']
+		self.asset = ['EtherealPack', 'ether_spider']
+		self.recipe = [(Ethereal, 1), (Tags.Nature, 1), (Tags.Any, 2)]
 		self.global_triggers[EventOnMoved] = self.on_moved
 		self.minion_damage = 7
 		self.minion_health = 14
 		self.minion_range = 7
-		self.spider_amount = 3
+		#TODO make this scale with number of summons
+		self.spider_amount = 1
 
 	def get_description(self):
 		return ("Enemies that dare jump through space get ambushed by ether spiders.\n"
@@ -25,7 +25,6 @@ class Etherpredators(Upgrade):
 
 	def on_advance(self):
 		self.spider_amount = 3
-		return super().on_advance()
 
 	def on_moved(self, evt):
 		if not evt.teleport or not are_hostile(evt.unit, self.owner) or self.spider_amount < 1:
@@ -35,9 +34,7 @@ class Etherpredators(Upgrade):
 
 def EtherSpider(health, damage, range):
 	unit = Unit()
-	unit.sprite.char = 'D'
-	unit.sprite.color = Color(1,255,188)
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_spider")
+	unit.asset = ["EtherealPack", "ether_spider"]
 	unit.name = "Äther Spider"
 	unit.description = "Teleports at enemies"
 	unit.max_hp = health

@@ -15,7 +15,7 @@ class Railgun(Spell):
         self.tags = [Tags.Sorcery, Tags.Metallic, Ethereal]
         self.level = 2
 
-        self.damage_types = [Ethereal, Tags.Physical]
+        self.damage_type = [Ethereal, Tags.Physical]
 
         self.max_charges = 7
         self.max_damage = 50

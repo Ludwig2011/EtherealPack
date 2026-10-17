@@ -13,17 +13,18 @@ class EtherBolt(Spell):#energy_disruption when self is Ätherealiesed aswell/ins
 
 		self.damage = 11
 		self.duration = 3
-		self.damage_type = Ethereal
+		self.damage_type = [Ethereal]
 		self.can_target_empty = False
 
 		self.max_charges = 21 
 
+		#TODO combine stat upgrades into one called "overcharge" It should also add 1 hp cost and blood tag as well
 		self.upgrades['max_charges'] = (14, 2)
 		self.upgrades['damage'] = (10, 3)
 		self.upgrades['range'] = (5, 1)
 		self.upgrades['energy_drain'] = (5, 2, "Energy Drain", "If Äther Bolt targets a unit affected by Ätherealness, it grants you a shield up to maximum of 5")
-		self.upgrades['energy_disruption'] = (1, 4, "Energy Disruption", "If Äther Bolt targets a unit affected by Ätherealness, it deals %d [fire], [lightning], and [ice] aswell" % (self.damage/2))
-		self.upgrades['energy_connection'] = (1, 6, "Energy Connection", "If Äther Bolt targets a unit affected by Ätherealness, Äther Bolt is cast again at units affected by Ätherealness in line of sight.")
+		self.upgrades['energy_disruption'] = (1, 4, "Energy Disruption", "If Äther Bolt targets a unit affected by Ätherealness, it deals %d [fire], [lightning], and [ice] aswell" % (self.damage/2), None, [Tags.Fire, Tags.Lightning, Tags.Ice])
+		self.upgrades['energy_connection'] = (1, 7, "Energy Connection", "If Äther Bolt targets a unit affected by Ätherealness, Äther Bolt is cast again at units affected by Ätherealness in line of sight.")
 
 
 	def cast(self, x, y, connected=True):
@@ -42,7 +43,7 @@ class EtherBolt(Spell):#energy_disruption when self is Ätherealiesed aswell/ins
 					dtypes = [Tags.Fire, Tags.Lightning, Tags.Ice]
 				if self.get_stat('energy_connection') and connected:
 					for u in self.caster.level.get_units_in_los(unit):
-						if u.has_buff(EtherealnessBuff) and are_hostile(self.caster, u):
+						if u is not unit and u.is_alive() and u.has_buff(EtherealnessBuff) and are_hostile(self.caster, u):
 							self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage'), Ethereal, self)
 							for dtype in dtypes:
 								self.caster.level.deal_damage(u.x, u.y, self.get_stat('damage')/2, dtype, self)

@@ -19,12 +19,9 @@ class EtherealnessBuff(Buff):
 	def on_applied(self, owner):
 		if self.player == None:
 			self.player = [u for u in self.owner.level.units if u.is_player_controlled][0]
-		for skill in self.player.get_skills():
-			if skill.name == "Äthertuned":
-				self.ethertuned = True
-		for skill in self.player.get_skills():
-			if skill.name == "Vastness":
-				self.vastness = True
+		equipment_names = {item.name for item in self.player.get_equipment()}
+		self.ethertuned = "Äthertuned" in equipment_names
+		self.vastness = "Vastness" in equipment_names
 		team = self.player.team
 		if owner.team==team and self.ethertuned:
 			owner.resists[Tags.Physical] += 50

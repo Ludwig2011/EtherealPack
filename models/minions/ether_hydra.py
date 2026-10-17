@@ -7,9 +7,7 @@ class EtherHydra(Unit):
 
 	def __init__(self, elemental=False):
 		super().__init__()
-		self.sprite.char = 'D'
-		self.sprite.color = Color(1,121,111)
-		self.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+		self.asset = ["EtherealPack", "ether_hydra"]
 		self.name = "Äther Hydra"
 		self.description = "Fires äther beams"
 		self.max_hp = 45
@@ -77,12 +75,12 @@ class EtherHydra(Unit):
 			path = self.find_path(self.level, Point(self.x, self.y), Point(target.x, target.y), self)
 
 			if path:
-				if libtcod.path_size(path) > 0:
-					x, y = libtcod.path_get(path, 0)
-					if self.level.can_move(self, x, y, force_swap=True):
+				if libtcodpy.path_size(path) > 0:
+					x, y = libtcodpy.path_get(path, 0)
+					if self.level.can_move(self, x, y):
 						return MoveAction(x, y)
 
-				libtcod.path_delete(path)
+				libtcodpy.path_delete(path)
 
 		return PassAction()
 
@@ -129,47 +127,14 @@ class EtherHydra(Unit):
 				return 5.0
 
 
-		path = libtcod.path_new_using_function(level.width, level.height, path_func)
-		libtcod.path_compute(path, start.x, start.y, target.x, target.y)
+		path = libtcodpy.path_new_using_function(level.width, level.height, path_func)
+		libtcodpy.path_compute(path, start.x, start.y, target.x, target.y)
 		if pythonize:
 			ppath = []
-			for i in range(libtcod.path_size(path)):
-				x, y = libtcod.path_get(path, i)
+			for i in range(libtcodpy.path_size(path)):
+				x, y = libtcodpy.path_get(path, i)
 				ppath.append(Point(x, y))
-			libtcod.path_delete(path)
+			libtcodpy.path_delete(path)
 			return ppath
 		return path
 	
-	def advance(self, orders=None):
-	
-		can_act = True
-		for b in self.buffs:
-			if not b.on_attempt_advance():
-				can_act = False
-
-		if can_act:
-			# Take an action
-			if not self.is_player_controlled:
-				action = self.get_ai_action()
-			else:
-				action = self.level.requested_action
-				self.level.requested_action = None
-				
-			logging.debug("%s will %s" % (self, action))
-			assert(action is not None)
-
-			if isinstance(action, MoveAction):
-				self.level.act_move(self, action.x, action.y, force_swap=True)
-			elif isinstance(action, CastAction):
-				self.level.act_cast(self, action.spell, action.x, action.y)
-				if action.spell.quick_cast:
-					return False
-			elif isinstance(action, PassAction):
-				self.level.event_manager.raise_event(EventOnPass(self), self)
-
-
-		self.try_dismiss_ally()
-
-		# TODO- post turn effects
-		# TODO- return False if a non turn consuming action was taken
-		return True

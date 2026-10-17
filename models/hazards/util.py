@@ -1,6 +1,18 @@
 import copy
 from Level import *
 
+def suspend_unit_events(unit):
+    if getattr(unit, '_stasis_events_suspended', False): return
+    for buff in unit.buffs:
+        if buff.applied: buff.unsubscribe()
+    unit._stasis_events_suspended = True
+
+def resume_unit_events(unit):
+    if not getattr(unit, '_stasis_events_suspended', False): return
+    unit._stasis_events_suspended = False
+    for buff in unit.buffs:
+        if buff.applied: buff.subscribe()
+
 def get_hazard_point(level, x, y, radius_limit=25, sort_dist=True, flying=False, diag=False):
 		options = list(level.get_points_in_ball(x, y, radius_limit, diag=diag))
 		random.shuffle(options)
@@ -22,99 +34,89 @@ def get_hazard_point(level, x, y, radius_limit=25, sort_dist=True, flying=False,
 
 		return None
 
-def deal_damage(level, unit, amount, damage_type, source):
-    # Raise pre damage event (for conversions)
-    pre_damage_event = EventOnPreDamaged(unit, amount, damage_type, source)
-    level.event_manager.raise_event(pre_damage_event, unit)
+def deal_off_grid_damage(level, unit, amount, damage_type, source):
+    """Damage a unit held off-grid in stasis without firing position-dependent callbacks."""
+    if unit in level.units:
+        raise ValueError("off-grid stasis damage requires a detached unit")
+    suspend_unit_events(unit)
 
-    # Factor in shields and resistances after raising the raw pre damage event
-    resist_amount = unit.resists.get(damage_type, 0)
-
-    # Cap effective resists at 100- shenanigans ensue if we do not
-    resist_amount = min(resist_amount, 100)
-
-    if resist_amount:
-        multiplier = (100 - resist_amount) / 100.0
-        amount = int(math.ceil(amount * multiplier))
-
-    if amount > 0 and unit.shields > 0:
-        unit.shields = unit.shields - 1
-        level.combat_log.debug("%s blocked %d %s damage from %s" % (unit.name, amount, damage_type.name, source.name))
-        level.show_effect(unit.x, unit.y, Tags.Shield_Expire)				
+    if amount == 0:
         return False
 
-    amount = min(amount, unit.cur_hp)
-    unit.cur_hp = unit.cur_hp - amount
+    if amount > 0:
+        damage_state = (unit, unit.cur_hp, unit.shields)
+        damage_instance_count = level.damage_instances.get(damage_state, 0)
+        if damage_instance_count >= DAMAGE_INSTANCE_CAP:
+            return False
+        level.damage_instances[damage_state] = damage_instance_count + 1
+
+    resist_amount = min(unit.resists.get(damage_type, 0), 100)
+    amount = int(math.ceil(amount * (100 - resist_amount) / 100.0))
+
+    if amount > 0 and unit.shields > 0:
+        unit.shields -= 1
+        level.log("%s blocked %d %s damage from %s" % (unit.name, amount, damage_type.name, source.name))
+        return False
 
     if amount > 0:
-        level.combat_log.debug("%s took %d %s damage from %s" % (unit.name, amount, damage_type.name, source.name))
+        amount = min(amount, unit.cur_hp)
+        if unit.damage_floors:
+            amount = min(amount, max(0, unit.cur_hp - unit.damage_floors[-1][1]))
+            if amount <= 0:
+                return False
     elif amount < 0:
-        level.combat_log.debug("%s healed %d from %s" % (unit.name, -amount, source.name))
+        amount = max(amount, unit.cur_hp - unit.max_hp)
 
-    if (amount > 0):
+    unit.cur_hp -= amount
+    if amount > 0:
+        level.log("%s took %d %s damage from %s" % (unit.name, amount, damage_type.name, source.name))
+    elif amount < 0:
+        level.log("%s healed %d from %s" % (unit.name, -amount, source.name))
 
-        # Record damage for post level summary
-        if source.owner and source.owner != level.player_unit:
-            source_key = "%s (%s)" % (source.name, source.owner.name)
-            level.damage_taken_sources
+    if amount <= 0:
+        return False
+    if level.player_unit:
+        if are_hostile(unit, level.player_unit):
+            key = source.name
+            if source.owner and source.owner.source:
+                key = source.owner.name
+            level.damage_dealt_sources[key] += amount
+            level.turn_summary.damage_dealt[key] += amount
+        elif unit == level.player_unit:
+            key = source.owner.name if source.owner else source.name
+            level.damage_taken_sources[key] += amount
+            level.turn_summary.self_damage_taken[key] += amount
         else:
-            source_key = "%s" % source.name
-
-        # Record damage sources when a player unit exists (aka not in unittests)
-        if level.player_unit:
-            if are_hostile(unit, level.player_unit):
+            if isinstance(source, Buff) and source.buff_type == BUFF_TYPE_CURSE:
                 key = source.name
-                if source.owner and source.owner.source:
-                    key = source.owner.name
+            elif source.owner:
+                key = source.owner.name
+            else:
+                key = source.name
+            level.turn_summary.ally_damage_taken[key] += amount
 
-                level.damage_dealt_sources[key] += amount
-            elif unit == level.player_unit:
-                if source.owner:
-                    key = source.owner.name
-                else:
-                    key = source.name	
-                level.damage_taken_sources[key] += amount
-    
-        if (unit.cur_hp <= 0):
-            if not unit.killed:
-                unit.cur_hp = 0
-                unit.killed = True
-                damage_event = EventOnDamaged(unit, amount, damage_type, source)
-                level.event_manager.raise_event(damage_event, unit)
-                for buff in unit.buffs:
-                    buff.unapply()
-                unit.level.event_manager.raise_event(EventOnDeath(unit, damage_event), unit)
-
-            if (unit.cur_hp <= 0):
-                if not unit.killed:
-                    unit.cur_hp = 0
-                    unit.killed = True
-                    damage_event = EventOnDamaged(unit, amount, damage_type, source)
-                    level.event_manager.raise_event(damage_event, unit)
-                    for buff in unit.buffs:
-                        buff.unapply()
-                    unit.level.event_manager.raise_event(EventOnDeath(unit, damage_event), unit)	
-
-            return True
+    if unit.cur_hp > 0 or unit.killed:
+        return False
+    unit.cur_hp = 0
+    if level.player_unit and level.player_unit != unit:
+        if are_hostile(level.player_unit, unit):
+            level.turn_summary.enemy_kill_counts[unit.name] += 1
         else:
-            damage_event = EventOnDamaged(unit, amount, damage_type, source)
-            level.event_manager.raise_event(damage_event, unit)
-
-        if (unit.cur_hp > unit.max_hp):
-            unit.cur_hp = unit.max_hp
-    # set amount to 0 if there is no unit- ie, if an empty tile or dead unit was hit
-    else:
-        amount = 0
-
-    if (unit.cur_hp > unit.max_hp):
-        unit.cur_hp = unit.max_hp
-
-    return False
+            level.turn_summary.ally_kill_counts[unit.name] += 1
+    unit.killed = True
+    for buff in list(unit.buffs):
+        if buff.applied:
+            buff.unsubscribe()
+            buff.applied = False
+    unit.buffs.clear()
+    return True
 
 def add_unit(level, unit, x, y, unit_buffs, trigger_summon_event=True):
             unit.x = x
             unit.y = y
             unit.level = level
+
+            resume_unit_events(unit)
 
             if not hasattr(unit, 'level_id'):
                 unit.level_id = level.level_id

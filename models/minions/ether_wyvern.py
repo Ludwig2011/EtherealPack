@@ -8,7 +8,7 @@ def EtherWyvern(shields=2):
 	unit = Unit()
 	unit.name = "Äther Wyvern"
 	unit.description = "Lets out ether waves"
-	unit.asset_name = os.path.join("..", "..", "mods", "EtherealPack", "ether_hydra")
+	unit.asset = ["EtherealPack", "ether_hydra"]
 	unit.max_hp = 10
 	unit.spells.append(SimpleMeleeAttack(3))
 	unit.spells.append(EtherWave())

@@ -19,7 +19,7 @@ class Ethernity(Spell): # mordred???????????????????????????????
 
 		self.duration = 7
 		self.damage = 5
-		self.damage_type = Ethereal
+		self.damage_type = [Ethereal]
 
 		self.max_charges = 11
 		self.can_target_empty = False
@@ -49,7 +49,10 @@ class Ethernity(Spell): # mordred???????????????????????????????
 			self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 		else:
 			unit.apply_buff(Stun(), self.get_stat('duration'))
-			stasis = Stasis(self.caster,self,self.get_stat('duration'),Goblin(),hazards)
+			dummy = Goblin()
+			dummy.x = x
+			dummy.y = y
+			stasis = Stasis(self.caster,self,self.get_stat('duration'),dummy,hazards)
 			self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
 		yield

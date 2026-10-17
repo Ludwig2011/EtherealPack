@@ -24,11 +24,11 @@ class MomentOfBliss(Spell):
 		self.upgrades['range'] = (7, 2)
 		self.upgrades['duration'] = (-4, 2)
 		self.upgrades['blind'] = (1, 3, "Blinding Grace", "Blind enemies in [{radius}_radius:radius] for 3 turns every turn")
-		self.upgrades['bless'] = (1, 5, "Blessing", "Yor ally gains 100 Holy resist, a ranged attack that deals [7_holy:holy] damage with 7 range and 3 HP regen")
+		self.upgrades['bless'] = (1, 5, "Blessing", "Yor ally gains 100 Holy resist, a ranged attack that deals [7_holy:holy] damage with 7 range and 3 HP regen", [Tags.Holy])
 
 	def can_cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x,y)
-		if unit and ((are_hostile(unit, self.caster)) or get_hazard_point(self.caster.level,x,y,flying=unit.flying))==None:
+		if unit and (are_hostile(unit, self.caster) or get_hazard_point(self.caster.level, x, y, flying=unit.flying) is None):
 			return False
 		return super().can_cast(x, y)
 

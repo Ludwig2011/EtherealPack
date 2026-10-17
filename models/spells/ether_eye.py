@@ -55,6 +55,7 @@ class EyeOfEtherSpell(Spell):
 		self.asset = ['EtherealPack', 'ether_eye']
 		self.requires_los = True
 		self.damage = 15
+		self.damage_type = [Ethereal]
 		self.element = Ethereal
 		self.duration = 30
 		self.shot_cooldown = 3

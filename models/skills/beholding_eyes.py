@@ -3,13 +3,13 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
-class BeholdingEyes(Upgrade):#prioritise enemies!
-    def __init__(self):
-        Upgrade.__init__(self)
+class BeholdingEyes(Equipment):
+
+    def on_init(self):
         self.name = "Beholding Eyes"
         self.asset = ['EtherealPack', 'beholding_eyes']
         self.tags = [Ethereal, Tags.Eye]
-        self.level = 4
+        self.recipe = [(Ethereal, 1), (Tags.Eye, 1), (Tags.Any, 2)]
         
     def on_advance(self):
         eyes = [u for u in self.owner.level.units if not are_hostile(u, self.owner) and ("Eye" in u.name or Tags.Eye in u.tags or "Lens" in u.name)]
@@ -38,5 +38,4 @@ class BeholdingEyes(Upgrade):#prioritise enemies!
         chosen_target.apply_buff(EtherealnessBuff(), 3)
         
     def get_description(self):
-        return ("Each turn you and your eye minions [ätherealies:äthereal] one unit in line of sight for 3 turns\n"
-                "Prioretises enemies").format(**self.fmt_dict())
+        return "Each turn, you and your Eye minions apply 3 turns of Etherealness to one unit in line of sight, prioritizing enemies."

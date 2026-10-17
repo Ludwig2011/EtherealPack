@@ -3,6 +3,7 @@
 from CommonContent import RegenBuff
 from Level import *
 from mods.EtherealPack.models.buffs.lost_heads_buff import LostHeadsBuff
+from mods.EtherealPack.models.minions.ether_breath import EtherBreath
 from mods.EtherealPack.models.minions.ether_hydra import EtherHydra
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.tags.Ethereal import Ethereal
@@ -20,7 +21,7 @@ class SummonEtherHydraSpell(Spell):
 
 		self.minion_health = 45
 		self.minion_damage = 9
-		self.breath_damage = EtherHydra().spells[0].damage
+		self.breath_damage = EtherBreath(True).damage
 		self.minion_range = 7
 		self.minion_regen = 1
 		self.upgrades['minion_health'] = (30, 2)
