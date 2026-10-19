@@ -27,7 +27,7 @@ class SummonEtherHydraSpell(Spell):
 		self.upgrades['minion_health'] = (30, 2)
 		self.upgrades['breath_damage'] = (7, 2)
 		self.upgrades['minion_regen'] = (1, 1)
-		self.upgrades['element_mother'] = (1, 3, "Element Mother", "Each of the Äther Hydras Äther Beams redeals its damage as either fire lightning or ice damage")
+		self.upgrades['element_mother'] = (1, 3, "Element Mother", "Each of the Äther Hydras Äther Beams redeals its damage as either fire lightning or ice damage", [Tags.Chaos])
 		self.upgrades['lost_heads'] = (1, 4, "Lost Heads", "Whenever the hydra loses 15 hp spawn a stationary minion with an äther beam attack nearby")
 		self.upgrades['dragon_mage'] = (1, 6, "Dragon Mage", "Summoned Äther Hydras can cast Äther Bolt with a 3 turn cooldown.\nThis Äther Bolt gains all of your upgrades and bonuses.")
 
@@ -52,7 +52,7 @@ class SummonEtherHydraSpell(Spell):
 			fball.max_charges = 0
 			fball.cur_charges = 0
 			fball.cool_down = 3
-			drake.spells.insert(1, fball)
+			drake.spells.insert(0, fball)
 
 		self.summon(drake, Point(x, y))
 

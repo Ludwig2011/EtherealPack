@@ -25,7 +25,7 @@ class EtherStream(Spell):
 		self.requires_los = False
 		self.range = 99
 		self.name = "Äther Stream"
-		self.max_charges = 4
+		self.max_charges = 12
 		self.asset = ['EtherealPack', 'ether_stream']
 		self.tags = [Ethereal, Tags.Sorcery, Tags.Translocation]
 		self.level = 3
@@ -33,7 +33,9 @@ class EtherStream(Spell):
 		self.minion_health = 0
 		self.minion_damage = 0
 
-		self.upgrades['max_charges'] = (3, 2)
+		#TODO make upgrade allow you to start from anywhare
+		#TODO make upgrade mini domain expansion
+		#TODO make upgrade always active, when etherlised enemy dies summon imp with remaining turns equal to debuff
 		self.upgrades['num_summons'] = (3, 3, "Imp Friends", "Summon Äther Imps at the beginning of the stream")
 
 	def get_description(self):

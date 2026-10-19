@@ -45,7 +45,7 @@ class EtherEyeBuff(Buff):
 
 		self.owner.level.deal_damage(target.x, target.y, self.damage, self.damage_type, self)
 
-
+#TODO make more interesting
 class EyeOfEtherSpell(Spell):
 
 	def on_init(self):
@@ -60,10 +60,14 @@ class EyeOfEtherSpell(Spell):
 		self.duration = 30
 		self.shot_cooldown = 3
 		
-		self.upgrades['shot_cooldown'] = (-1, 1)
+		#TODO replace with shield burn
 		self.upgrades['duration'] = 15
+		#TODO replace with focus weak to ether enemies
 		self.upgrades['damage'] = (7, 2)
+		#TODO replace with shot a bolt from each etherealised enemy expensive
 		self.upgrades['requires_los'] = (-1, 1)
+		#TODO replace with cast hex on target
+		self.upgrades['shot_cooldown'] = (-1, 1)
 
 		self.tags = [Ethereal, Tags.Enchantment, Tags.Eye]
 		self.level = 2

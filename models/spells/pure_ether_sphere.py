@@ -5,7 +5,7 @@ from Spells import Orb
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-
+#TODO make work like old orb spell
 class PureEtherSphereBuff(Buff):
 
 	def __init__(self, spell):

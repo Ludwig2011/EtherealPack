@@ -9,7 +9,7 @@ from mods.EtherealPack.models.hazards.stasis import Stasis
 from mods.EtherealPack.models.hazards.util import get_hazard_point
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class Ethernity(Spell): # mordred???????????????????????????????
+class Ethernity(Spell):
 
 	def on_init(self):
 		self.name = "Äthernity"
@@ -24,6 +24,7 @@ class Ethernity(Spell): # mordred???????????????????????????????
 		self.max_charges = 11
 		self.can_target_empty = False
 
+		#TODO make more interesting
 		self.upgrades['max_charges'] = (10, 2)
 		self.upgrades['duration'] = (7, 2)
 		self.upgrades['range'] = (7, 2)
@@ -41,7 +42,7 @@ class Ethernity(Spell): # mordred???????????????????????????????
 		hazards = 3 if self.get_stat('hazards') else 0
 
 		if not unit.gets_clarity:
-			unit_copy = copy.copy(unit)
+			unit_copy = copy(unit)
 			unit.kill(None, False) 
 			for buff in unit.buffs:
 				buff.apply(unit_copy)

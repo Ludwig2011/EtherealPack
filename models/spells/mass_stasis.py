@@ -9,24 +9,23 @@ from mods.EtherealPack.models.hazards.stasis import Stasis
 from mods.EtherealPack.models.hazards.util import get_hazard_point
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-class MassStasis(Spell): # mordred???????????????????????????????
-
+class MassStasis(Spell):
     def on_init(self):
         self.name = "Mass Stasis"
         self.range = 10 
         self.tags = [Ethereal, Tags.Enchantment, Tags.Translocation]
         self.level = 3
 
-        self.duration = 4
+        self.duration = 7
         self.radius = 5
         self.damage_type = [Ethereal]
 
-        self.max_charges = 4
+        self.max_charges = 7
 
-        self.upgrades['max_charges'] = (3, 2)
-        self.upgrades['duration'] = (3, 2)
         self.upgrades['radius'] = (2, 2)
         self.upgrades['linger'] = (1, 2, "Äther Lag", "Targets also get ätherealiesed for the same duration after they return")
+        #TODO make upgrade random basic status effect and chaos tag
+        #TODO make upgrade "Entaglement" shared pain effect
 
     def can_cast(self, x, y):
         unit = self.caster.level.get_unit_at(x,y)
@@ -45,7 +44,7 @@ class MassStasis(Spell): # mordred???????????????????????????????
             if self.get_stat('linger'):
                 unit.apply_buff(EtherealnessBuff(),self.get_stat('duration')*2)
             if not unit.gets_clarity:
-                unit_copy = copy.copy(unit)
+                unit_copy = copy(unit)
                 unit.kill(None, False) 
                 for buff in unit.buffs:
                     buff.apply(unit_copy)

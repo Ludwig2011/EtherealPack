@@ -10,7 +10,7 @@ class CollectDispersion(Equipment):
         self.name = "Collect Dispersion"
         self.tags = [Ethereal]
         self.asset = ['EtherealPack', 'collect_dispersion']
-        self.recipe = [(Ethereal, 3), (Tags.Any, 4)]
+        self.recipe = [(Ethereal, 4), (Tags.Any, 4)]
         self.global_triggers[EventOnDamaged] = self.on_damaged
 
     def on_damaged(self, damage_event):

@@ -17,18 +17,17 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 		self.asset = ['EtherealPack', 'hell_moment']
 		self.level = 3
 
-		self.duration = 3
+		self.duration = 4
 		self.damage = 5
 		self.damage_type = [Tags.Fire, Ethereal]
 
-		self.max_charges = 4
+		self.max_charges = 11
 		self.can_target_empty = False
 
-		self.upgrades['max_charges'] = (3, 1)
 		self.upgrades['damage'] = (9, 4)
-		self.upgrades['duration'] = (4, 2)
+		self.upgrades['duration'] = (3, 1)
 		self.upgrades['brimstone'] = (1, 3, "Brimstone", "Fragments leave behind brimstone hazards for 3 turns that deal [fire:fire] damage")
-		self.upgrades['explosive_entry'] = (1, 5, "Explosive Entry", "When the target reappiers or dies in the Fire Plane deal [fire:fire] and [äthereal:äthereal] damage equal to 1/4 of the targets missing hp to all units in a radius equal to 1/8 of the targets maximum hp until 32 hp then 1/16")
+		self.upgrades['explosive_entry'] = (1, 4, "Explosive Entry", "When the target reappiers or dies in the Fire Plane deal [fire:fire] and [äthereal:äthereal] damage equal to 1/4 of the targets missing hp to all units in a radius equal to 1/8 of the targets maximum hp until 32 hp then 1/16")
 
 	def can_cast(self, x, y):
 		unit = self.caster.level.get_unit_at(x,y)
@@ -40,7 +39,7 @@ class MomentInHell(Spell): # mordred???????????????????????????????
 		unit = self.caster.level.get_unit_at(x, y)
 		hazard_point = get_hazard_point(self.caster.level,x,y,flying=unit.flying)
 		if not unit.gets_clarity:
-			unit_copy = copy.copy(unit)
+			unit_copy = copy(unit)
 			unit.kill(None, False) 
 			for buff in unit.buffs:
 				buff.apply(unit_copy)

@@ -23,8 +23,8 @@ class DomainExpansion(Spell):
 
 
         self.upgrades['duration'] = (7, 1)
-        self.upgrades['radius'] = (7, 2)
-        self.upgrades['stun'] = (2, 3)
+        self.upgrades['radius'] = (5, 4)
+        self.upgrades['stun'] = (2, 4)
         self.upgrades['shielding'] = (1, 1, "Shielding Zone", "Give allied units 1 shield if they have less then 2")
 
         self.tags = [Tags.Sorcery, Ethereal]

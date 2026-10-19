@@ -16,17 +16,15 @@ class SummonFrostSpire(Spell):
 		self.must_target_walkable = True
 
 		self.minion_health = 40
-		self.minion_damage = 4
+		self.minion_damage = 7
 		self.radius = 4
 		self.duration = 3
 		self.upgrades['minion_health'] = (30, 2)
-		self.upgrades['minion_damage'] = (3, 1)
 		self.upgrades['radius'] = (3, 3)
-		self.upgrades['faulty_rift'] = (1, 2, "Faulty Rift", "The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns")
-		self.upgrades['implosive_entry'] = (1, 4, "Implosive Entry", "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage", None, [Tags.Ice, Ethereal])
-		self.upgrades['frost_mortem'] = (1, 6, "Frost Mortem", "Units that die within the Frost Aura of the Spire leave behind frost Golems\n"
+		self.upgrades['implosive_entry'] = (1, 4, "Implosive Entry", "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage. The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns", None, [Tags.Ice, Ethereal])
+		self.upgrades['frost_mortem'] = (1, 9, "Frost Mortem", "Units that die within the Frost Aura of the Spire leave behind frost Golems\n"
 		"Frost Golems have half the units hp, 1 shield and a melee attack that deals 4 [ice:ice] and 3 [physical:physical] damage\n"
-		"Frost Golems have [75_ice:ice], [100_poison:poison], [25_physical:physical], [-25_fire:fire] resistance")
+		"Frost Golems have [75_ice:ice], [100_poison:poison], [50_lightning:lightning], [25_physical:physical], [-25_fire:fire] resistance")
 		self.must_target_empty = True
 
 	def cast(self, x, y):		
@@ -52,7 +50,7 @@ class SummonFrostSpire(Spell):
 					self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Ethereal, self)
 				if unit.cur_hp > 0:
 					unit.apply_buff(FrozenBuff(), self.get_stat('duration'))
-				if unit.cur_hp > 0 and self.get_stat('faulty_rift'):
+				if unit.cur_hp > 0 and self.get_stat('implosive_entry'):
 					unit.apply_buff(EtherealnessBuff(), 7)
 					self.caster.level.show_effect(p.x,p.y, Ethereal)
 
@@ -83,7 +81,7 @@ class SummonFrostSpire(Spell):
 	
 	def get_description(self):
 		return ("Open a Rift to the Ice Plane that freezes all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.\n"
-				"Frost Spire has [{minion_health}_HP:minion_health] and [100_ice:ice], [100_poison:poison], [25_physical:physical], [-50_fire:fire] resistance.\n"
+				"Frost Spire has [{minion_health}_HP:minion_health] and [100_ice:ice], [100_poison:poison], [50_lightning:lightning], [25_physical:physical], [-50_fire:fire] resistance.\n"
 				"Frost Spire has a Forst Bolt attack which deals [{minion_damage}_ice:ice] damage and [freezes:ice] the target for 3 turns with [{radius}_range:range].\n"
 				"Frost Spire has a Forst Aura which deals [3_ice:ice] damage to all units in [{radius}_radius:radius] around the Spire every turn.").format(**self.fmt_dict())
 
@@ -98,6 +96,7 @@ def FrostSpire(health,damage,range):
 	unit.tags = [Tags.Ice, Tags.Construct]
 	unit.resists[Tags.Ice] = 100
 	unit.resists[Tags.Poison] = 100
+	unit.resists[Tags.Lightning] = 50
 	unit.resists[Tags.Physical] = 25
 	unit.resists[Tags.Fire] = -50
 	return unit
@@ -172,6 +171,7 @@ def FrostGolem(health):
 	unit.tags = [Tags.Ice, Tags.Construct]
 	unit.resists[Tags.Poison] = 100
 	unit.resists[Tags.Ice] = 75
+	unit.resists[Tags.Lightning] = 50
 	unit.resists[Tags.Physical] = 25
 	unit.resists[Tags.Fire] = -50
 	return unit

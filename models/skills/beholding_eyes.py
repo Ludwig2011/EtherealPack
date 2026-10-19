@@ -8,8 +8,9 @@ class BeholdingEyes(Equipment):
     def on_init(self):
         self.name = "Beholding Eyes"
         self.asset = ['EtherealPack', 'beholding_eyes']
-        self.tags = [Ethereal, Tags.Eye]
-        self.recipe = [(Ethereal, 1), (Tags.Eye, 1), (Tags.Any, 2)]
+        self.tags = [Ethereal, Tags.Eye, Tags.Enchantment]
+        self.recipe = [(Ethereal, 1), (Tags.Eye, 1), (Tags.Enchantment, 1), (Tags.Any, 1)]
+        self.duration = 3
         
     def on_advance(self):
         eyes = [u for u in self.owner.level.units if not are_hostile(u, self.owner) and ("Eye" in u.name or Tags.Eye in u.tags or "Lens" in u.name)]
@@ -24,7 +25,7 @@ class BeholdingEyes(Equipment):
                     target = random.choice(targets)
                 else:
                     continue
-            target.apply_buff(EtherealnessBuff(), 3)
+            target.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
 
         enemy_targets = [u for u in self.owner.level.get_units_in_los(self.owner) if are_hostile(u, self.owner)]
         if len(enemy_targets) > 0:
@@ -35,7 +36,7 @@ class BeholdingEyes(Equipment):
                 chosen_target = random.choice(targets)
             else:
                 return
-        chosen_target.apply_buff(EtherealnessBuff(), 3)
+        chosen_target.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
         
     def get_description(self):
         return "Each turn, you and your Eye minions apply 3 turns of Etherealness to one unit in line of sight, prioritizing enemies."

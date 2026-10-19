@@ -16,13 +16,12 @@ class MomentOfBliss(Spell):
 		self.damage = 3
 		self.radius = 7
 
-		self.max_charges = 4
+		self.max_charges = 21
 		self.can_target_empty = False
 		self.requires_los = False
 
-		self.upgrades['max_charges'] = (3, 1)
-		self.upgrades['range'] = (7, 2)
-		self.upgrades['duration'] = (-4, 2)
+		#TODO make this only affect the time spent inside not the bonuses of the hazard / aura
+		self.upgrades['duration'] = (-4, 1)
 		self.upgrades['blind'] = (1, 3, "Blinding Grace", "Blind enemies in [{radius}_radius:radius] for 3 turns every turn")
 		self.upgrades['bless'] = (1, 5, "Blessing", "Yor ally gains 100 Holy resist, a ranged attack that deals [7_holy:holy] damage with 7 range and 3 HP regen", [Tags.Holy])
 
@@ -36,7 +35,7 @@ class MomentOfBliss(Spell):
 		unit = self.caster.level.get_unit_at(x, y)
 		hazard_point = get_hazard_point(self.caster.level,x,y,flying=unit.flying)
 
-		unit_copy = copy.copy(unit)
+		unit_copy = copy(unit)
 		unit.kill(None, False) 
 		for buff in unit.buffs:
 			buff.apply(unit_copy)

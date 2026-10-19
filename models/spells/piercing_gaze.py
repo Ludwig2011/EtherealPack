@@ -22,7 +22,6 @@ class PiercingGaze(Spell): # cone?
         self.level = 3
         self.upgrades['requires_los'] = (-1, 2)
         self.upgrades['duration'] = (7, 2)
-        #self.upgrades['damage'] = (6, 4)
         self.upgrades['unnerving_gaze'] = (1, 2, "Unnerving Gaze", "Ätherealies enemies aswell")
         self.upgrades['shocking_gaze'] = (1, 4, "Shocking Gaze", "Petrify affected enemies for 2 turns")
 

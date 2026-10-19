@@ -8,11 +8,12 @@ class Vastness(Equipment):
 	def on_init(self):
 		self.name = "Vastness"
 		self.asset = ['EtherealPack', 'pure_ether']
-		self.tags = [Ethereal, Tags.Ice]
-		self.recipe = [(Ethereal, 1), (Tags.Ice, 1), (Tags.Any, 2)]
+		self.tags = [Ethereal, Tags.Ice, Tags.Enchantment]
+		self.recipe = [(Ethereal, 2), (Tags.Ice, 2), (Tags.Enchantment, 2), (Tags.Any, 2)]
 		self.global_triggers[EventOnDamaged] = self.on_damaged
-		self.radius = 4
+		self.radius = 3
 		self.damage = 7
+		self.duration = 1
 
 	def on_damaged(self, damage_event):
 
@@ -26,7 +27,7 @@ class Vastness(Equipment):
 					self.owner.level.deal_damage(point.x, point.y, self.get_stat('damage'), Tags.Ice, self)
 					self.owner.level.deal_damage(point.x, point.y, self.get_stat('damage'), Ethereal, self)
 					if unit.cur_hp > 0:
-						unit.apply_buff(EtherealnessBuff(), 7)
+						unit.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
 				else:
 					self.owner.level.show_effect(point.x, point.y, Ethereal)
 			

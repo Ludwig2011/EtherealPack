@@ -7,24 +7,24 @@ class Etherpredators(Equipment):
 
 	def on_init(self):
 		self.name = "Äther Predators"
-		self.tags = [Ethereal, Tags.Nature]
+		self.tags = [Ethereal, Tags.Nature, Tags.Conjuration]
 		self.asset = ['EtherealPack', 'ether_spider']
-		self.recipe = [(Ethereal, 1), (Tags.Nature, 1), (Tags.Any, 2)]
+		self.recipe = [(Tags.Conjuration, 1), (Ethereal, 1), (Tags.Nature, 1), (Tags.Any, 3)]
 		self.global_triggers[EventOnMoved] = self.on_moved
 		self.minion_damage = 7
 		self.minion_health = 14
 		self.minion_range = 7
-		#TODO make this scale with number of summons
-		self.spider_amount = 1
+		self.num_summons = 1
+		self.spider_amount = self.get_stat('num_summons')
 
 	def get_description(self):
 		return ("Enemies that dare jump through space get ambushed by ether spiders.\n"
 				"Ether spiders have {minion_health} hp, 2 shields and have teleport attacks with {minion_range} range that deal [{minion_damage}_äthereal:äthereal] damage and apply [poison:poison] aswell as [ätherealness:äthereal] for 7 turns\n"
 				"Most forms of movement other than a unit's movement action count as jumping through space.\n"
-				"Summon at most 3 spiders per turn").format(**self.fmt_dict())
+				"Summon at most [{num_summons}:num_summons] spiders per turn").format(**self.fmt_dict())
 
 	def on_advance(self):
-		self.spider_amount = 3
+		self.spider_amount = self.get_stat('num_summons')
 
 	def on_moved(self, evt):
 		if not evt.teleport or not are_hostile(evt.unit, self.owner) or self.spider_amount < 1:

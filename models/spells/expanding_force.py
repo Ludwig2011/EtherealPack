@@ -110,8 +110,9 @@ class ExpandingForceSpell(Spell):
 		self.stats.append('aura_damage')
 
 		self.upgrades['radius'] = (2, 1)
+        #TODO collision upgrade like mayhem augment
 		self.upgrades['duration'] = (7, 2)
-
+        #TODO add damage to this
 		self.upgrades['teleport_blocker'] = (1, 3, "Teleport Blocker", "When an enemy teleports inside this radius [stun] them for [3_turns:duration].")
 		
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Arcane]
