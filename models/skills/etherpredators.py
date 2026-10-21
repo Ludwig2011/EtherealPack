@@ -3,6 +3,7 @@ from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
+#TODO make sure spiders spawn if forcefully teleporting enemies
 class Etherpredators(Equipment):
 
 	def on_init(self):

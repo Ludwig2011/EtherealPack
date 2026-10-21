@@ -81,7 +81,6 @@ class SummonFrostSpire(Spell):
 	
 	def get_description(self):
 		return ("Open a Rift to the Ice Plane that freezes all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.\n"
-				"Frost Spire has [{minion_health}_HP:minion_health] and [100_ice:ice], [100_poison:poison], [50_lightning:lightning], [25_physical:physical], [-50_fire:fire] resistance.\n"
 				"Frost Spire has a Forst Bolt attack which deals [{minion_damage}_ice:ice] damage and [freezes:ice] the target for 3 turns with [{radius}_range:range].\n"
 				"Frost Spire has a Forst Aura which deals [3_ice:ice] damage to all units in [{radius}_radius:radius] around the Spire every turn.").format(**self.fmt_dict())
 

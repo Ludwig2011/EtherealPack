@@ -26,7 +26,7 @@ class EtherealDust(EtherealComponent):
 
 
 class EtherealLens(EtherealComponent):
-
+#TODO ether debuff all enemies
     def on_init(self):
         self.name = "Ethereal Lens"
         self.asset = ["EtherealPack", "beholding_eyes"]
@@ -35,7 +35,7 @@ class EtherealLens(EtherealComponent):
 
 
 class EtherealBloom(EtherealComponent):
-
+#TODO summon spuders
     def on_init(self):
         self.name = "Ethereal Bloom"
         self.asset = ["EtherealPack", "ether_lord"]
@@ -44,7 +44,7 @@ class EtherealBloom(EtherealComponent):
 
 
 class EtherealFrost(EtherealComponent):
-
+#TODO reduce resistances in line of sight
     def on_init(self):
         self.name = "Ethereal Frost"
         self.asset = ["EtherealPack", "pure_ether"]

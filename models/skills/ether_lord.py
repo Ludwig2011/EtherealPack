@@ -1,7 +1,6 @@
 from Level import Equipment, Tags
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-
 class EtherLord(Equipment):
 
 	def on_init(self):
@@ -14,6 +13,4 @@ class EtherLord(Equipment):
 		self.tag_bonuses[Ethereal]['radius'] = 2
 		self.tag_bonuses[Ethereal]['range'] = 3
 		self.tag_bonuses[Ethereal]['duration'] = 4
-		
-	def on_init(self):
 		self.resists[Ethereal] = 75
