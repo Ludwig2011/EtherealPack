@@ -112,14 +112,14 @@ class ExpandingForceSpell(Spell):
 		self.upgrades['radius'] = (2, 1)
         #TODO collision upgrade like mayhem augment
 		self.upgrades['duration'] = (7, 2)
-        #TODO add damage to this
+		self.upgrades['aura_damage'] = (2, 2)
 		self.upgrades['teleport_blocker'] = (1, 3, "Teleport Blocker", "When an enemy teleports inside this radius [stun] them for [3_turns:duration].")
 		
 		self.tags = [Tags.Enchantment, Ethereal, Tags.Arcane]
 		self.level = 4
 
 	def cast_instant(self, x, y):
-		buff = ExpandingForceBuff( self.aura_damage, [Ethereal], self.get_stat('radius'), self.get_stat('teleport_blocker'))
+		buff = ExpandingForceBuff(self.get_stat('aura_damage'), [Ethereal], self.get_stat('radius'), self.get_stat('teleport_blocker'))
 		buff.stack_type = STACK_REPLACE
 		buff.color = Ethereal.color
 		buff.name = "Expanding Force Aura"
@@ -128,5 +128,5 @@ class ExpandingForceSpell(Spell):
 
 	def get_description(self):
 		return ("Each turn, deals [{aura_damage}_äthereal:äthereal] damage to each enemy and push them [1_tile:radius] away from the caster in a [{radius}_tile:radius] radius.\n"
-				"This damage is fixed, and cannot be increased using shrines, skills, or buffs.\n"
+				"Damage can only be increased by this spell's damage upgrade, not by shrines or buffs.\n"
 				"Lasts [{duration}_turns:duration].").format(**self.fmt_dict())
