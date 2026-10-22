@@ -5,188 +5,243 @@ from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
 class SummonFrostSpire(Spell):
+    def on_init(self):
+        self.name = "Frost Spire"
+        self.range = 10
+        self.max_charges = 3
+        self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
+        self.asset = ["EtherealPack", "frost_spire_spell"]
+        self.level = 4
+        self.must_target_walkable = True
 
-	def on_init(self):
-		self.name = "Frost Spire"
-		self.range = 10
-		self.max_charges = 3
-		self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
-		self.asset = ['EtherealPack', 'frost_spire_spell']
-		self.level = 4
-		self.must_target_walkable = True
+        self.minion_health = 40
+        self.minion_damage = 7
+        self.radius = 4
+        self.duration = 3
+        self.upgrades["minion_health"] = (30, 2)
+        self.upgrades["radius"] = (3, 3)
+        self.upgrades["implosive_entry"] = (
+            1,
+            4,
+            "Implosive Entry",
+            "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage. The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns",
+            None,
+            [Tags.Ice, Ethereal],
+        )
+        self.upgrades["frost_mortem"] = (
+            1,
+            9,
+            "Frost Mortem",
+            (
+                "Units that die within the Frost Aura of the Spire leave behind frost Golems\n"
+                "Frost Golems have half the units hp, 1 shield and a melee attack that deals 4 [ice:ice] and 3 [physical:physical] damage\n"
+                "Frost Golems have [75_ice:ice], [100_poison:poison], [50_lightning:lightning], [25_physical:physical], [-25_fire:fire] resistance"
+            ),
+        )
+        self.must_target_empty = True
 
-		self.minion_health = 40
-		self.minion_damage = 7
-		self.radius = 4
-		self.duration = 3
-		self.upgrades['minion_health'] = (30, 2)
-		self.upgrades['radius'] = (3, 3)
-		self.upgrades['implosive_entry'] = (1, 4, "Implosive Entry", "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage. The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns", None, [Tags.Ice, Ethereal])
-		self.upgrades['frost_mortem'] = (1, 9, "Frost Mortem", "Units that die within the Frost Aura of the Spire leave behind frost Golems\n"
-		"Frost Golems have half the units hp, 1 shield and a melee attack that deals 4 [ice:ice] and 3 [physical:physical] damage\n"
-		"Frost Golems have [75_ice:ice], [100_poison:poison], [50_lightning:lightning], [25_physical:physical], [-25_fire:fire] resistance")
-		self.must_target_empty = True
+    def cast(self, x, y):
+        spire = FrostSpire(
+            self.get_stat("minion_health"),
+            self.get_stat("minion_damage"),
+            self.get_stat("radius"),
+        )
+        spire.team = self.caster.team
+        spire.buffs.append(
+            FrostAuraBuff(self.get_stat("radius"), self.get_stat("frost_mortem"), self)
+        )
+        self.summon(spire, Point(x, y))
 
-	def cast(self, x, y):		
-		spire = FrostSpire(self.get_stat('minion_health'),self.get_stat('minion_damage'), self.get_stat('radius'))
-		spire.team = self.caster.team
-		spire.buffs.append(FrostAuraBuff(self.get_stat('radius'),self.get_stat('frost_mortem'),self))
-		self.summon(spire, Point(x, y))
-		
-		if self.get_stat('implosive_entry'):
-			units_to_pull = []
-			for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')+1):
-				unit = self.caster.level.get_unit_at(p.x, p.y)
-				if unit:
-					units_to_pull.append(unit)
-			for unit in units_to_pull:
-				self.pull(unit, spire, 1)
+        if self.get_stat("implosive_entry"):
+            units_to_pull = []
+            for p in self.caster.level.get_points_in_ball(
+                x, y, self.get_stat("radius") + 1
+            ):
+                unit = self.caster.level.get_unit_at(p.x, p.y)
+                if unit:
+                    units_to_pull.append(unit)
+            for unit in units_to_pull:
+                self.pull(unit, spire, 1)
 
-		for p in self.caster.level.get_points_in_ball(x, y, self.get_stat('radius')):
-			unit = self.caster.level.get_unit_at(p.x, p.y)
-			if unit:
-				if self.get_stat('implosive_entry') and not (p.x == x and p.y == y):
-					self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Tags.Ice, self)
-					self.caster.level.deal_damage(p.x, p.y, self.get_stat('minion_health')/14, Ethereal, self)
-				if unit.cur_hp > 0:
-					unit.apply_buff(FrozenBuff(), self.get_stat('duration'))
-				if unit.cur_hp > 0 and self.get_stat('implosive_entry'):
-					unit.apply_buff(EtherealnessBuff(), 7)
-					self.caster.level.show_effect(p.x,p.y, Ethereal)
+        for p in self.caster.level.get_points_in_ball(x, y, self.get_stat("radius")):
+            unit = self.caster.level.get_unit_at(p.x, p.y)
+            if unit:
+                if self.get_stat("implosive_entry") and not (p.x == x and p.y == y):
+                    self.caster.level.deal_damage(
+                        p.x, p.y, self.get_stat("minion_health") / 14, Tags.Ice, self
+                    )
+                    self.caster.level.deal_damage(
+                        p.x, p.y, self.get_stat("minion_health") / 14, Ethereal, self
+                    )
+                if unit.cur_hp > 0:
+                    unit.apply_buff(FrozenBuff(), self.get_stat("duration"))
+                if unit.cur_hp > 0 and self.get_stat("implosive_entry"):
+                    unit.apply_buff(EtherealnessBuff(), 7)
+                    self.caster.level.show_effect(p.x, p.y, Ethereal)
 
-		yield
+        yield
 
-	def pull(self, target, source, squares):
-		direction_x = target.x - source.x
-		direction_y = target.y - source.y
+    def pull(self, target, source, squares):
+        direction_x = target.x - source.x
+        direction_y = target.y - source.y
 
-		new_x = target.x
-		new_y = target.y
+        new_x = target.x
+        new_y = target.y
 
-		if direction_x > 0:
-			new_x -= squares
-		elif direction_x < 0:
-			new_x += squares
+        if direction_x > 0:
+            new_x -= squares
+        elif direction_x < 0:
+            new_x += squares
 
-		if direction_y > 0:
-			new_y -= squares
-		elif direction_y < 0:
-			new_y += squares
+        if direction_y > 0:
+            new_y -= squares
+        elif direction_y < 0:
+            new_y += squares
 
-		if target.level.can_move(target, new_x, new_y, teleport=True):
-			target.level.act_move(target, new_x, new_y, teleport=True)
-			return True
-		else:
-			return False
-	
-	def get_description(self):
-		return ("Open a Rift to the Ice Plane that freezes all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.\n"
-				"Frost Spire has a Forst Bolt attack which deals [{minion_damage}_ice:ice] damage and [freezes:ice] the target for 3 turns with [{radius}_range:range].\n"
-				"Frost Spire has a Forst Aura which deals [3_ice:ice] damage to all units in [{radius}_radius:radius] around the Spire every turn.").format(**self.fmt_dict())
+        if target.level.can_move(target, new_x, new_y, teleport=True):
+            target.level.act_move(target, new_x, new_y, teleport=True)
+            return True
+        else:
+            return False
 
-def FrostSpire(health,damage,range):
-	unit = Unit()
-	unit.asset = ["EtherealPack", "frost_spire"]
-	unit.name = "Frost Spire"
-	unit.stationary = True
-	unit.description = "Fires Frost Bolts that freeze enemies"
-	unit.max_hp = health
-	unit.spells.append(SimpleRangedAttack("Frost Bolt", damage, Tags.Ice, range, cool_down=3, buff=FrozenBuff, buff_duration=3))
-	unit.tags = [Tags.Ice, Tags.Construct]
-	unit.resists[Tags.Ice] = 100
-	unit.resists[Tags.Poison] = 100
-	unit.resists[Tags.Lightning] = 50
-	unit.resists[Tags.Physical] = 25
-	unit.resists[Tags.Fire] = -50
-	return unit
+    def get_description(self):
+        return (
+            "Open a Rift to the Ice Plane that freezes all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.\n"
+            "Frost Spire has a Forst Bolt attack which deals [{minion_damage}_ice:ice] damage and [freezes:ice] the target for 3 turns with [{radius}_range:range].\n"
+            "Frost Spire has a Forst Aura which deals [3_ice:ice] damage to all units in [{radius}_radius:radius] around the Spire every turn."
+        ).format(**self.fmt_dict())
+
+
+def FrostSpire(health, damage, range):
+    unit = Unit()
+    unit.asset = ["EtherealPack", "frost_spire"]
+    unit.name = "Frost Spire"
+    unit.stationary = True
+    unit.description = "Fires Frost Bolts that freeze enemies"
+    unit.max_hp = health
+    unit.spells.append(
+        SimpleRangedAttack(
+            "Frost Bolt",
+            damage,
+            Tags.Ice,
+            range,
+            cool_down=3,
+            buff=FrozenBuff,
+            buff_duration=3,
+        )
+    )
+    unit.tags = [Tags.Ice, Tags.Construct]
+    unit.resists[Tags.Ice] = 100
+    unit.resists[Tags.Poison] = 100
+    unit.resists[Tags.Lightning] = 50
+    unit.resists[Tags.Physical] = 25
+    unit.resists[Tags.Fire] = -50
+    return unit
+
 
 class FrostAuraBuff(Buff):
+    def __init__(self, radius, frost_mortem, source):
+        Buff.__init__(self)
+        self.source = source
+        self.damage = 3
+        self.damage_type = Tags.Ice
+        self.radius = radius
+        self.friendly_fire = False
+        self.source = None
+        self.frost_mortem = frost_mortem
+        self.global_triggers[EventOnDeath] = self.on_death
+        if isinstance(self.damage_type, Tag):
+            self.name = f"{self.damage_type.name} Aura"
+        else:
+            self.name = "Damage Aura"
 
-	def __init__(self, radius, frost_mortem, source):
-		Buff.__init__(self)
-		self.source = source
-		self.damage = 3
-		self.damage_type = Tags.Ice
-		self.radius = radius
-		self.friendly_fire = False
-		self.source = None
-		self.frost_mortem = frost_mortem
-		self.global_triggers[EventOnDeath] = self.on_death
-		if isinstance(self.damage_type, Tag):
-			self.name = "%s Aura" % self.damage_type.name
-		else:
-			self.name = "Damage Aura" 
+    def on_advance(self):
 
-	def on_advance(self):
+        effects_left = 7
+        for unit in self.owner.level.get_units_in_ball(
+            Point(self.owner.x, self.owner.y), self.radius
+        ):
+            if unit == self.owner:
+                continue
 
-		effects_left = 7
-		for unit in self.owner.level.get_units_in_ball(Point(self.owner.x, self.owner.y), self.radius):
-			if unit == self.owner:
-				continue
+            if not self.friendly_fire and not self.owner.level.are_hostile(
+                self.owner, unit
+            ):
+                continue
 
-			if not self.friendly_fire and not self.owner.level.are_hostile(self.owner, unit):
-				continue
+            unit.deal_damage(self.damage, self.damage_type, self.source or self)
+            effects_left -= 1
 
-			unit.deal_damage(self.damage, self.damage_type, self.source or self)
-			effects_left -= 1
+        # Show some graphical indication of this aura if it didnt hit much
+        points = self.owner.level.get_points_in_ball(
+            self.owner.x, self.owner.y, self.radius
+        )
+        points = [p for p in points if not self.owner.level.get_unit_at(p.x, p.y)]
+        random.shuffle(points)
+        for i in range(effects_left):
+            if not points:
+                break
+            p = points.pop()
+            self.owner.level.deal_damage(
+                p.x, p.y, 0, self.damage_type, source=self.source or self
+            )
 
-		# Show some graphical indication of this aura if it didnt hit much
-		points = self.owner.level.get_points_in_ball(self.owner.x, self.owner.y, self.radius)
-		points = [p for p in points if not self.owner.level.get_unit_at(p.x, p.y)]
-		random.shuffle(points)
-		for i in range(effects_left):
-			if not points:
-				break
-			p = points.pop()
-			self.owner.level.deal_damage(p.x, p.y, 0, self.damage_type, source=self.source or self)
+    def on_death(self, evt):
+        if self.frost_mortem and are_hostile(self.owner, evt.unit):
+            points = []
+            for p in self.owner.level.get_points_in_ball(
+                self.owner.x, self.owner.y, self.radius
+            ):
+                points.append(Point(p.x, p.y))
+            if Point(evt.unit.x, evt.unit.y) in points:
+                frost_golem = FrostGolem(math.ceil(evt.unit.max_hp / 2))
+                frost_golem.team = self.owner.team
+                frost_golem.source = self.source
+                self.summon(frost_golem, Point(evt.unit.x, evt.unit.y))
 
-	def on_death(self, evt):
-		if self.frost_mortem and are_hostile(self.owner, evt.unit):
-			points = []
-			for p in self.owner.level.get_points_in_ball(self.owner.x, self.owner.y, self.radius):
-				points.append(Point(p.x, p.y))
-			if Point(evt.unit.x, evt.unit.y) in points:
-				frost_golem = FrostGolem(math.ceil(evt.unit.max_hp/2))
-				frost_golem.team = self.owner.team
-				frost_golem.source = self.source
-				self.summon(frost_golem, Point(evt.unit.x, evt.unit.y))
+    def can_threaten(self, x, y):
+        return distance(self.owner, Point(x, y)) <= self.radius
 
-	def can_threaten(self, x, y):
-		return distance(self.owner, Point(x, y)) <= self.radius
+    def get_tooltip(self):
+        damage_type_str = (
+            " or ".join(t.name for t in self.damage_type)
+            if isinstance(self.damage_type, list)
+            else self.damage_type.name
+        )
+        unit_type_str = "units" if self.friendly_fire else "enemy units"
+        return f"Each turn, deals {self.damage} {damage_type_str} damage to {unit_type_str} in a {self.radius} tile radius"
 
-	def get_tooltip(self):
-		damage_type_str = ' or '.join(t.name for t in self.damage_type) if isinstance(self.damage_type, list) else self.damage_type.name
-		unit_type_str = 'units' if self.friendly_fire else 'enemy units'
-		return "Each turn, deals %d %s damage to %s in a %d tile radius" % (self.damage, damage_type_str, unit_type_str, self.radius)
-	
+
 def FrostGolem(health):
-	unit = Unit()
-	unit.asset = ["EtherealPack", "frost_golem"]
-	unit.name = "Frost Golem"
-	unit.description = "Punches Things, is cold"
-	unit.shields = 1
-	unit.max_hp = health
-	unit.spells.append(FrostPunch())
-	unit.tags = [Tags.Ice, Tags.Construct]
-	unit.resists[Tags.Poison] = 100
-	unit.resists[Tags.Ice] = 75
-	unit.resists[Tags.Lightning] = 50
-	unit.resists[Tags.Physical] = 25
-	unit.resists[Tags.Fire] = -50
-	return unit
+    unit = Unit()
+    unit.asset = ["EtherealPack", "frost_golem"]
+    unit.name = "Frost Golem"
+    unit.description = "Punches Things, is cold"
+    unit.shields = 1
+    unit.max_hp = health
+    unit.spells.append(FrostPunch())
+    unit.tags = [Tags.Ice, Tags.Construct]
+    unit.resists[Tags.Poison] = 100
+    unit.resists[Tags.Ice] = 75
+    unit.resists[Tags.Lightning] = 50
+    unit.resists[Tags.Physical] = 25
+    unit.resists[Tags.Fire] = -50
+    return unit
+
 
 class FrostPunch(Spell):
+    def __init__(self):
+        Spell.__init__(self)
+        self.name = "Frost Punch"
+        self.range = 1.5
+        self.melee = True
+        self.damage = 4
 
-	def __init__(self):
-		Spell.__init__(self)
-		self.name = "Frost Punch"
-		self.range = 1.5
-		self.melee = True
-		self.damage = 4
+    def cast_instant(self, x, y):
+        self.caster.level.deal_damage(x, y, self.get_stat("damage"), Tags.Ice, self)
+        self.caster.level.deal_damage(
+            x, y, self.get_stat("damage") - 1, Tags.Physical, self
+        )
 
-	def cast_instant(self, x, y):
-		self.caster.level.deal_damage(x, y, self.get_stat('damage'), Tags.Ice, self)
-		self.caster.level.deal_damage(x, y, self.get_stat('damage')-1, Tags.Physical, self)
-
-	def get_description(self):
-		return ("Deals %d [ice:ice] and %d [physical:physical] damage" % (self.damage,self.damage-1)).format(**self.fmt_dict())
+    def get_description(self):
+        return f"Deals {self.damage} [ice:ice] and {self.damage - 1} [physical:physical] damage"

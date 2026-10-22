@@ -1,18 +1,17 @@
 import copy
+
 from Level import *
-from Monsters import Goblin
-from mods.API_TileHazards.API_TileHazards import TileHazardBasic
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
-from mods.EtherealPack.models.hazards.brimstone import Brimstone
-from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
 from mods.EtherealPack.models.hazards.stasis import Stasis
 from mods.EtherealPack.models.hazards.util import get_hazard_point
 from mods.EtherealPack.tags.Ethereal import Ethereal
+from Monsters import Goblin
+
 
 class MassStasis(Spell):
     def on_init(self):
         self.name = "Mass Stasis"
-        self.range = 10 
+        self.range = 10
         self.tags = [Ethereal, Tags.Enchantment, Tags.Translocation]
         self.level = 3
 
@@ -22,41 +21,50 @@ class MassStasis(Spell):
 
         self.max_charges = 7
 
-        self.upgrades['radius'] = (2, 2)
-        self.upgrades['linger'] = (1, 2, "Äther Lag", "Targets also get ätherealiesed for the same duration after they return")
-        #TODO make upgrade random basic status effect and chaos tag
-        #TODO make upgrade "Entaglement" shared pain effect
+        self.upgrades["radius"] = (2, 2)
+        self.upgrades["linger"] = (
+            1,
+            2,
+            "Äther Lag",
+            "Targets also get ätherealiesed for the same duration after they return",
+        )
+        # TODO make upgrade random basic status effect and chaos tag
+        # TODO make upgrade "Entaglement" shared pain effect
 
     def can_cast(self, x, y):
-        unit = self.caster.level.get_unit_at(x,y)
+        unit = self.caster.level.get_unit_at(x, y)
         if unit and unit.has_buff(StunImmune):
             return False
         return super().can_cast(x, y)
 
     def cast(self, x, y):
-        for tile in self.caster.level.get_points_in_ball(x,y,self.get_stat('radius')):
+        for tile in self.caster.level.get_points_in_ball(x, y, self.get_stat("radius")):
             unit = self.caster.level.get_unit_at(tile.x, tile.y)
             if not unit or unit == self.caster:
                 continue
-            hazard_point = get_hazard_point(self.caster.level,unit.x,unit.y,flying=unit.flying)
+            hazard_point = get_hazard_point(
+                self.caster.level, unit.x, unit.y, flying=unit.flying
+            )
             if not hazard_point:
                 continue
-            if self.get_stat('linger'):
-                unit.apply_buff(EtherealnessBuff(),self.get_stat('duration')*2)
+            if self.get_stat("linger"):
+                unit.apply_buff(EtherealnessBuff(), self.get_stat("duration") * 2)
             if not unit.gets_clarity:
                 unit_copy = copy(unit)
-                unit.kill(None, False) 
+                unit.kill(None, False)
                 for buff in unit.buffs:
                     buff.apply(unit_copy)
 
-                stasis = Stasis(self.caster,self,self.get_stat('duration'),unit_copy)
+                stasis = Stasis(self.caster, self, self.get_stat("duration"), unit_copy)
                 self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
             else:
-                unit.apply_buff(Stun(), self.get_stat('duration'))
-                stasis = Stasis(self.caster,self,self.get_stat('duration'),Goblin())
+                unit.apply_buff(Stun(), self.get_stat("duration"))
+                stasis = Stasis(self.caster, self, self.get_stat("duration"), Goblin())
                 self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
         yield
 
     def get_description(self):
-        return "Transport all targets in [{radius}_tile:radius] radius into the Ether Plane for [{duration}_turns:duration].\nLeaves behind a Rift that [ätherealieses:äthereal] units for 2 turns.".format(**self.fmt_dict())
+        return "Transport all targets in [{radius}_tile:radius] radius into the Ether Plane for [{duration}_turns:duration].\nLeaves behind a Rift that [ätherealieses:äthereal] units for 2 turns.".format(
+            **self.fmt_dict()
+        )
