@@ -2,7 +2,6 @@
 from CommonContent import RegenBuff
 from Level import *
 from mods.EtherealPack.models.buffs.lost_heads_buff import LostHeadsBuff
-from mods.EtherealPack.models.minions.ether_breath import EtherBreath
 from mods.EtherealPack.models.minions.ether_hydra import EtherHydra
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.tags.Ethereal import Ethereal
@@ -19,12 +18,9 @@ class SummonEtherHydraSpell(Spell):
 
         self.minion_health = 45
         self.minion_damage = 9
-        self.breath_damage = EtherBreath(True).damage
         self.minion_range = 7
-        self.minion_regen = 1
-        self.upgrades["minion_health"] = (30, 2)
-        self.upgrades["breath_damage"] = (7, 2)
-        self.upgrades["minion_regen"] = (1, 1)
+        self.minion_regen = 3
+        self.upgrades["minion_regen"] = (4, 1)
         self.upgrades["element_mother"] = (
             1,
             3,
@@ -51,7 +47,7 @@ class SummonEtherHydraSpell(Spell):
         drake = EtherHydra(self.get_stat("element_mother"))
         drake.team = self.caster.team
         drake.max_hp = self.get_stat("minion_health")
-        drake.spells[0].damage = self.get_stat("breath_damage")
+        drake.spells[0].damage = self.get_stat("minion_damage")
         drake.spells[0].range = self.get_stat("minion_range")
         drake.spells[1].damage = self.get_stat("minion_damage")
 
@@ -59,7 +55,7 @@ class SummonEtherHydraSpell(Spell):
         if self.get_stat("lost_heads"):
             drake.buffs.append(
                 LostHeadsBuff(
-                    self.get_stat("element_mother"), self.get_stat("breath_damage")
+                    self.get_stat("element_mother"), self.get_stat("minion_damage")
                 )
             )
 
@@ -76,8 +72,7 @@ class SummonEtherHydraSpell(Spell):
     def get_description(self):
         return (
             "Summon an Äther Hydra at target square.\n"
-            "Äther Hydras have [{minion_health}_HP:minion_health] and [100_äthereal:äthereal], [25_physical:physical] and [-50_arcane:arcane] resist.\n"
-            "Äther Hydras have a breath weapon which deals [{breath_damage}_äthereal:äthereal] damage.\n"
+            "Äther Hydras have a breath weapon which deals [{minion_damage}_äthereal:äthereal] damage.\n"
             "Äther Hydras have a melee attack which deals [{minion_damage}_physical:physical] damage.\n"
             "Äther Hydras trample over allies to get where they want"
         ).format(**self.fmt_dict())

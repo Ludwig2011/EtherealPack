@@ -14,7 +14,6 @@ class EtherHydra(Unit):
 		self.spells.append(EtherBreath(elemental))
 		self.spells.append(SimpleMeleeAttack(9))
 		self.resists[Ethereal] = 100
-		self.resists[Tags.Poison] = 100
 		self.resists[Tags.Dark] = 50
 		self.resists[Tags.Holy] = 50
 		self.resists[Tags.Physical] = 25

@@ -17,7 +17,7 @@ class EtherStormSpell(Spell):
         self.range = 7
         self.max_charges = 7
         self.damage = 7
-        self.radius = 7
+        self.radius = 4
         self.duration = 2
         self.requires_los = True
         self.damage_type = [Ethereal, Tags.Lightning]

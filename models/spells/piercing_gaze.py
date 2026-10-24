@@ -17,7 +17,7 @@ class PiercingGaze(Spell):  # cone?
         self.damage_type = [Tags.Physical, Ethereal]
         self.angle = math.pi / 5
 
-        self.tags = [Ethereal, Tags.Nature, Tags.Sorcery]
+        self.tags = [Ethereal, Tags.Eye, Tags.Nature, Tags.Sorcery]
         self.level = 3
         self.upgrades["requires_los"] = (-1, 2)
         self.upgrades["duration"] = (7, 2)
