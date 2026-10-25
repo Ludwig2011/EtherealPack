@@ -7,7 +7,7 @@ from mods.EtherealPack.tags.Ethereal import Ethereal
 class SummonFrostSpire(Spell):
     def on_init(self):
         self.name = "Frost Spire"
-        self.range = 10
+        self.range = 7
         self.max_charges = 3
         self.tags = [Tags.Enchantment, Ethereal, Tags.Conjuration, Tags.Ice]
         self.asset = ["EtherealPack", "frost_spire_spell"]

@@ -1,5 +1,10 @@
 import ModHandler
 from Level import Color, EventOnUnitAdded, Level, Tag, Tags, Upgrade
+# import sys
+# PyGameView = sys.modules["__main__"].PyGameView
+
+from RareMonsters import SlimeAdaptiveArmorBuff
+
 #TODO make euqipment staff that gives bonus charges and duration
 #TODO make icons animated again!
 #TODO fix level clear plus hazard remove chasms!?
@@ -45,3 +50,33 @@ def level_init_with_ethereal_rules(self, w, h):
 
 # Replace the initializer.
 Level.__init__ = level_init_with_ethereal_rules
+
+# original_get_sprite_sheet = PyGameView.get_sprite_sheet
+
+# def get_sprite_sheet_debug(self, asset, radius=0):
+#     print("DEBUG SpriteSheet asset:", repr(asset))
+#     print("DEBUG SpriteSheet radius:", repr(radius))
+#     return original_get_sprite_sheet(self, asset, radius)
+        
+# PyGameView.get_sprite_sheet = get_sprite_sheet_debug
+
+original_on_damaged = SlimeAdaptiveArmorBuff.on_damaged
+
+def on_damaged_patched(self, evt):
+    if evt.damage <= 0:
+        return
+
+    form = self.dtypes_to_assets.get(evt.damage_type)
+
+    # No sprite for this damage type: keep the current form.
+    if form is None:
+        if self.prev_res:
+            self.owner.resists[self.prev_res] -= 100
+        self.owner.resists[evt.damage_type] += 100
+        self.prev_res = evt.damage_type
+        return
+
+    return original_on_damaged(self, evt)
+
+SlimeAdaptiveArmorBuff.on_damaged = on_damaged_patched
+
