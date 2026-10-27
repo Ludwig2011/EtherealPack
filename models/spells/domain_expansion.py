@@ -2,7 +2,7 @@ from Level import *
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-
+#TODO fix inconsitency. with haste only stuns but does not cause etherealness via hazards. hazards sometimes removes chasms
 class DomainExpansion(Spell):
     def on_init(self):
 
