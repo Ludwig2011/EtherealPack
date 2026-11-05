@@ -3,7 +3,7 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
-class EtherBolt(Spell):  # energy_disruption when self is Ätherealiesed aswell/instead?
+class EtherBolt(Spell):
     def on_init(self):
         self.name = "Äther Bolt"
         self.range = 8
@@ -18,6 +18,8 @@ class EtherBolt(Spell):  # energy_disruption when self is Ätherealiesed aswell/
 
         self.max_charges = 21
         self.has_hit = []
+        self.cast_chain_active = False
+        self.cast_chain_pending = 0
 
         self.upgrades[("damage", "range", "hp_cost")] = (
             [11, 5, 1],
@@ -51,9 +53,18 @@ class EtherBolt(Spell):  # energy_disruption when self is Ätherealiesed aswell/
     def cast(self, x, y):
         dtypes = []
         to_hit_list = []
+
+        original = not self.cast_chain_active
+
+        if original:
+            self.cast_chain_active = True
+            self.cast_chain_pending = 1
+            self.has_hit.clear()
+
         unit = self.caster.level.get_unit_at(x, y)
-        original = not self.has_hit
-        self.has_hit.append(unit)
+
+        if unit and unit not in self.has_hit:
+            self.has_hit.append(unit)
 
         for p in self.caster.level.get_points_in_line(
             self.caster, Point(x, y), find_clear=True
@@ -71,11 +82,12 @@ class EtherBolt(Spell):  # energy_disruption when self is Ätherealiesed aswell/
             if self.get_stat("energy_connection"):
                 for u in self.caster.level.get_units_in_los(unit):
                     if (
-                        u not in self.has_hit
-                        and u.is_alive()
-                        and u.has_buff(EtherealnessBuff)
-                        and are_hostile(self.caster, u)
+                            u not in self.has_hit
+                            and u.is_alive()
+                            and u.has_buff(EtherealnessBuff)
+                            and are_hostile(self.caster, u)
                     ):
+                        self.has_hit.append(u)
                         to_hit_list.append(u)
         self.caster.level.deal_damage(x, y, self.get_stat("damage"), Ethereal, self)
         for dtype in dtypes:
@@ -85,6 +97,8 @@ class EtherBolt(Spell):  # energy_disruption when self is Ätherealiesed aswell/
         if unit and unit.resists[Ethereal] < 100:
             unit.apply_buff(EtherealnessBuff(), self.get_stat("duration"))
         for u in to_hit_list:
+            self.cast_chain_pending += 1
+
             self.caster.level.act_cast(
                 self.caster,
                 self.caster.get_or_make_spell(EtherBolt),
@@ -93,8 +107,11 @@ class EtherBolt(Spell):  # energy_disruption when self is Ätherealiesed aswell/
                 pay_costs=False,
             )
 
-        if original:
+        self.cast_chain_pending -= 1
+
+        if self.cast_chain_pending == 0:
             self.has_hit.clear()
+            self.cast_chain_active = False
         yield
 
     def get_description(self):
