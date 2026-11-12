@@ -1,3 +1,4 @@
+import LevelRewards
 import ModHandler
 from Level import Color, EventOnUnitAdded, Level, Tag, Tags, Upgrade
 # import sys
@@ -13,6 +14,7 @@ from RareMonsters import SlimeAdaptiveArmorBuff
 #TODO fix description color and variables in spells/equipment
 #TODO make spells/equipment scale with appropiate spell bonuses where not already done. Mostly missing for upgrades / equipment
 #TODO Rename skill folder to equipment and make sure imports etc dont break 
+#TODO Rework vanilla ether spider
 Ethereal = ModHandler.register_tag("Äthereal", Color(1, 255, 188), letter="v", asset=["EtherealPack", "ether"])
 Etherealness = Tag("Ätherealness", Color(1, 255, 188))
 
@@ -80,3 +82,17 @@ def on_damaged_patched(self, evt):
 
 SlimeAdaptiveArmorBuff.on_damaged = on_damaged_patched
 
+# # 1. Grab the original table reference
+# reward_table = LevelRewards.reward_table
+#
+# # 2. Iterate and locate the vault line by its unique string index (or identifier object)
+# for i, reward in enumerate(reward_table):
+#     # Depending on how the rift wizard variables are imported,
+#     # checking the first element index or string name is safest
+#     if reward[0] == LevelRewards.vault_portal_reward:
+#         # Reconstruct the immutable tuple with your new chance (e.g., 0.05)
+#         reward_table[i] = (LevelRewards.vault_portal_reward, 1, 4, LevelRewards.vault_valid, "Vault Portal")
+#         break
+#
+# # 3. Explicitly bind your modified table back to the vanilla module
+# LevelRewards.reward_table = reward_table
