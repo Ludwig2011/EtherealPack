@@ -23,8 +23,5 @@ def EtherWyvern(shields=2):
 	unit.flying = True
 	unit.buffs.append(TeleportyBuff())
 
-
-
-
 	return unit
 

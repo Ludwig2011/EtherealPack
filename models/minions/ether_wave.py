@@ -36,6 +36,7 @@ class EtherWave(Spell):
             desc += "\nThe burst ignores walls."
         return desc
 
+    #TODO red display does not get increased by link
     def get_impacted_tiles(self, x, y):
         radius = self.get_stat('radius')
         if self.has_ether_wyvern_nearby(x, y):
@@ -74,8 +75,7 @@ class EtherWave(Spell):
                 self.caster.level.show_effect(p.x, p.y, Ethereal)
 
     def has_ether_wyvern_nearby(self, x, y):
-        from mods.EtherealPack.models.minions.ether_wave import EtherWyvern
         return self.ether_link and any(
-            isinstance(unit, EtherWyvern)
+            "Äther Wyvern" in unit.name
             for unit in self.caster.level.get_units_in_ball(Point(x, y), 7)
         )

@@ -3,7 +3,7 @@ from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-
+#TODO grant this from a book
 class WordOfDisjunction(Spell):
     def on_init(self):
         self.name = "Word of Disjunction"
@@ -40,13 +40,13 @@ class WordOfDisjunction(Spell):
 
         for unit in list(level.units):
             if unit != self.caster:
-                if are_hostile(self.caster, unit) and Tags.Arcane in unit.tags:
+                if Tags.Arcane in unit.tags:
                     continue
 
                 unit.apply_buff(EtherealnessBuff(), self.get_stat("duration"))
                 unit.resists[Tags.Physical] = 0
 
-                if self.get_stat("shield_strip"):
+                if self.get_stat("shield_strip") and are_hostile(self.caster, unit):
                     add_shields = min(7, unit.shields)
                     self.caster.shields = min(20, self.caster.shields + add_shields)
                     unit.shields = max(0, unit.shields - 7)
@@ -77,6 +77,6 @@ class WordOfDisjunction(Spell):
         yield
 
     def get_description(self):
-        return "All units except the caster lose their [physical:physical] resistance and recieve Ätherealness for [{duration}_turns:duration].".format(
+        return "All non arcane units except the caster lose their [physical:physical] resistance and recieve Ätherealness for [{duration}_turns:duration].".format(
             **self.fmt_dict()
         )
