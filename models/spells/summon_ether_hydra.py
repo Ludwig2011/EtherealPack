@@ -21,6 +21,7 @@ class SummonEtherHydraSpell(Spell):
         self.minion_range = 7
         self.minion_regen = 3
         self.upgrades["minion_regen"] = (4, 1)
+        #TODO more resistances
         self.upgrades["element_mother"] = (
             1,
             3,
@@ -30,7 +31,7 @@ class SummonEtherHydraSpell(Spell):
         )
         self.upgrades["lost_heads"] = (
             1,
-            4,
+            3,
             "Lost Heads",
             "Whenever the hydra loses 15 hp spawn a stationary minion with an äther beam attack nearby",
         )

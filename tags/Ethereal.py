@@ -6,6 +6,8 @@ from Level import Color, EventOnUnitAdded, Level, Tag, Tags, Upgrade
 
 from RareMonsters import SlimeAdaptiveArmorBuff
 
+#TODO repalce dummy goblins in hazards with unit free clartiy versions of the hazards 
+#TODO unit previews !?
 #TODO make euqipment staff that gives bonus charges and duration
 #TODO make icons animated again!
 #TODO fix level clear plus hazard remove chasms!?
@@ -82,17 +84,57 @@ def on_damaged_patched(self, evt):
 
 SlimeAdaptiveArmorBuff.on_damaged = on_damaged_patched
 
-# # 1. Grab the original table reference
-# reward_table = LevelRewards.reward_table
-#
-# # 2. Iterate and locate the vault line by its unique string index (or identifier object)
-# for i, reward in enumerate(reward_table):
-#     # Depending on how the rift wizard variables are imported,
-#     # checking the first element index or string name is safest
-#     if reward[0] == LevelRewards.vault_portal_reward:
-#         # Reconstruct the immutable tuple with your new chance (e.g., 0.05)
-#         reward_table[i] = (LevelRewards.vault_portal_reward, 1, 4, LevelRewards.vault_valid, "Vault Portal")
-#         break
-#
-# # 3. Explicitly bind your modified table back to the vanilla module
-# LevelRewards.reward_table = reward_table
+reward_table = LevelRewards.reward_table
+
+for i, reward in enumerate(reward_table):
+    if reward[0] == LevelRewards.vault_portal_reward:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.vault_portal_reward, .02, 4, LevelRewards.vault_valid, "Vault Portal")
+        continue
+    if reward[0] == LevelRewards.reformation_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.reformation_shrine, .005, 4, None, "Shrine of Reformation")
+        continue
+    if reward[0] == LevelRewards.offering_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.offering_shrine, .005, None, LevelRewards.good_offering, "Shrine of Offering")
+        continue
+    if reward[0] == LevelRewards.rare_component_reward:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.rare_component_reward, .4, None, None, "Rare Component")
+        continue
+    if reward[0] == LevelRewards.knowledge_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.knowledge_shrine, .05, None, LevelRewards.spellslots_available, "Shrine of Knowledge")
+        continue
+    if reward[0] == LevelRewards.haste_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.haste_shrine, .05, None, None, "Shrine of Haste")
+        continue
+    if reward[0] == LevelRewards.chronomancy_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.chronomancy_shrine, .05, 5, None, "Chronomancy Shrine")
+        continue
+    if reward[0] == LevelRewards.duplication_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.duplication_shrine, .05, 5, None, "Duplication Shrine")
+        continue
+    if reward[0] == LevelRewards.perfection_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.perfection_shrine, .05, 8, None, "Shrine of Perfection")
+        continue
+    if reward[0] == LevelRewards.spellgraft_shrine:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.spellgraft_shrine, .05, 5, None, "Spellgraft Shrine")
+        continue
+    
+    if reward[0] == LevelRewards.bookshelf:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards.bookshelf, .05, None, None, "Bookshelf")
+        continue
+    if reward[0] == LevelRewards.scroll:
+        # reward, weight, min_level, restrict fn, name
+        reward_table[i] = (LevelRewards, .05, None, LevelRewards.spellslots_available, "Spell Scroll")
+        continue
+
+LevelRewards.reward_table = reward_table
