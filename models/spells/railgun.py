@@ -1,9 +1,3 @@
-# charge railgun cast -> gain charge buff every turn and change name to fire railgun
-# fire railgun cast -> change name back and has range and damage based on turns charged(buff duration goes up instead of down?) and gets rid of buff
-# max pool of damage that gets reduced per unit hit? to a max per unit?
-# damage in straight line, ?destroy walls based on charge or upgrade?
-# charge speed upgrade
-
 from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
@@ -19,16 +13,13 @@ class Railgun(Spell):
         self.damage_type = [Ethereal, Tags.Physical]
 
         self.max_charges = 7
-        self.max_damage = 50
         self.range = 0
         self.damage = 0
         self.radius = 1
         self.charge_speed = 4
         self.requires_los = True
 
-        self.upgrades["charge_speed"] = (3, 2)
-        self.upgrades["max_damage"] = (50, 2)
-        self.upgrades["max_charges"] = (7, 2)
+        self.upgrades["charge_speed"] = (3, 1)
         self.upgrades["radius"] = (1, 2)
         self.upgrades["requires_los"] = (
             -1,
@@ -100,7 +91,7 @@ class Railgun(Spell):
         else:
             self.caster.apply_buff(
                 RailgunBuff(
-                    self.get_stat("charge_speed"), self.get_stat("max_damage"), self
+                    self.get_stat("charge_speed"), self
                 ),
                 1,
             )
@@ -126,22 +117,20 @@ class Railgun(Spell):
         return (
             "Trap a coin between two rifts steadily increasing its momentum\n"
             "Then shoot the coin across a line that deals [physical:physical] damage to all units [hit:damage] and half [äthereal:äthereal] damage to all units in and surounding the line aswell.\n"
-            "Cast once to start charging. Recast to fire. Gains {} range and {} damage for every turn charged (at most {}). Loses 5 damage for every target [hit:damage]".format(
+            "Cast once to start charging. Recast to fire. Gains {} range and {} damage for every turn charged. Loses 5 damage for every target [hit:damage]".format(
                 math.floor(self.get_stat("charge_speed") / 3),
                 self.get_stat("charge_speed"),
-                self.get_stat("max_damage"),
             )
         ).format(**self.fmt_dict())
 
 
 class RailgunBuff(Buff):
-    def __init__(self, charge_speed, max_damage, railgun):
+    def __init__(self, charge_speed, railgun):
         Buff.__init__(self)
         self.name = "Charging Railgun"
         self.buff_type = BUFF_TYPE_BLESS
         self.stack_type = STACK_REPLACE
         self.charge_speed = charge_speed
-        self.max_damage = max_damage
         self.railgun = railgun
 
     def advance(self):
@@ -149,7 +138,6 @@ class RailgunBuff(Buff):
             if self.turns_left > 0:
                 self.turns_left += 1
                 self.railgun.damage += self.charge_speed
-                self.railgun.damage = min(self.railgun.damage, self.max_damage)
                 self.railgun.range += math.floor(self.charge_speed / 3)
             else:
                 self.owner.remove_buff(self)
