@@ -6,6 +6,8 @@ from Level import Color, EventOnUnitAdded, Level, Tag, Tags, Upgrade
 
 from RareMonsters import SlimeAdaptiveArmorBuff
 
+#TODO staff with minion health / number
+#TODO staff with damage, range and minion damage, range 4 3 4 3
 #TODO repalce dummy goblins in hazards with unit free clartiy versions of the hazards 
 #TODO unit previews !?
 #TODO make euqipment staff that gives bonus charges and duration
@@ -134,7 +136,7 @@ for i, reward in enumerate(reward_table):
         continue
     if reward[0] == LevelRewards.scroll:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards, .05, None, LevelRewards.spellslots_available, "Spell Scroll")
+        reward_table[i] = (LevelRewards.scroll, .05, None, LevelRewards.spellslots_available, "Spell Scroll")
         continue
 
 LevelRewards.reward_table = reward_table
