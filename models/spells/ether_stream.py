@@ -38,19 +38,18 @@ class EtherStream(Spell):
         self.minion_health = 0
         self.minion_damage = 0
 
-        # TODO make upgrade allow you to start from anywhare
         # TODO make upgrade mini domain expansion
-        # TODO make upgrade always active, when etherlised enemy dies summon imp with remaining turns equal to debuff
         self.upgrades["num_summons"] = (
             3,
             3,
             "Imp Friends",
-            "Summon Äther Imps at the beginning of the stream",
+            "Summon Äther Imps at the beginning and end of the stream",
         )
+        self.add_upgrade(NetherAlone())
 
     def get_description(self):
         return (
-            "Jump into an Äther Stream found next to an [Äther:äthereal] or [ätherealiesed:äthereal] unit and leave next to one aswell"
+            "Jump out of the Äther Stream found next to an [Äther:äthereal] or [ätherealiesed:äthereal] unit"
             "Teleport to any tile adjacent to an [Äther:äthereal] or [ätherealiesed:äthereal] unit.\n"
             "Can only be cast while adjacent to an [Äther:äthereal] or [ätherealiesed:äthereal] unit."
         ).format(**self.fmt_dict())
@@ -60,17 +59,16 @@ class EtherStream(Spell):
         if not self.caster.level.can_stand(x, y, self.caster):
             return False
 
-        for center in [self.caster, Point(x, y)]:
-            next_to_äther = False
-            for p in self.caster.level.get_points_in_ball(
-                center.x, center.y, 1.5, diag=True
-            ):
-                unit = self.caster.level.tiles[p.x][p.y].unit
-                if unit and (unit.has_buff(EtherealnessBuff) or Ethereal in unit.tags):
-                    next_to_äther = True
-                    break
-            if not next_to_äther:
-                return False
+        next_to_äther = False
+        for p in self.caster.level.get_points_in_ball(
+            x, y, 1.5, diag=True
+        ):
+            unit = self.caster.level.tiles[p.x][p.y].unit
+            if unit and (unit.has_buff(EtherealnessBuff) or Ethereal in unit.tags):
+                next_to_äther = True
+                break
+        if not next_to_äther:
+            return False
         return Spell.can_cast(self, x, y)
 
     def cast_instant(self, x, y):
@@ -89,3 +87,36 @@ class EtherStream(Spell):
                     imp.spells[0].damage += self.get_stat("minion_damage")
                     imp.team = self.caster.team
                     self.summon(imp, p)
+
+class NetherAlone(Upgrade):
+
+    def on_init(self):
+        self.level = 6
+        self.name = "Nether Alone"
+        self.description = "When an [ätherealiesed:äthereal] enemy dies, summon an Äther Imp with remaining turns equal to the debuff.\nAlways Active"
+        self.global_triggers[EventOnDeath] = self.on_death
+
+    def on_death(self, evt):
+        unit = evt.unit
+        if not unit or unit.team == self.owner.team:
+            return
+
+        buff = unit.get_buff(EtherealnessBuff)
+        if not buff:
+            return
+
+        p = self.owner.level.get_summon_point(
+            unit.x, unit.y, sort_dist=False
+        )
+
+        if not p:
+            return
+
+        imp = ÄtherImp()
+        imp.max_hp += self.get_stat("minion_health")
+        imp.spells[0].damage += self.get_stat("minion_damage")
+        imp.team = self.owner.team
+        imp.turns_to_death = buff.turns_left + 1
+
+        self.summon(imp, p)
+                    
