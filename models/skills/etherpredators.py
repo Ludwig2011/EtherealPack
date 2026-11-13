@@ -39,6 +39,7 @@ def EtherSpider(health, damage, range):
 	unit.name = "Äther Spider"
 	unit.description = "Teleports at enemies"
 	unit.max_hp = health
+	unit.shields = 1
 	unit.spells.append(TeleportAttack(damage,range))
 	unit.spells.append(SimpleMeleeAttack(damage,Poison,7))
 	unit.resists[Ethereal] = 75
