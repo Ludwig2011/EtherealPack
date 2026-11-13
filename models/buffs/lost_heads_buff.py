@@ -26,13 +26,16 @@ class LostHeadsBuff(Buff):
 				head.description = "Fires äther beam"
 				head.max_hp = 15
 				head.stationary = True
-				head.spells.append(EtherBeam(self.elemental,self.damage))
+				head.spells.append(EtherBeam(self.elemental, self.damage))
 				head.spells.append(SimpleMeleeAttack(3))
 				head.resists[Ethereal] = 100
-				head.resists[Tags.Poison] = 100
 				head.resists[Tags.Dark] = 50
 				head.resists[Tags.Holy] = 50
 				head.resists[Tags.Arcane] = -50
+				if self.elemental:
+					self.resists[Tags.Fire] = 50
+					self.resists[Tags.Ice] = 50
+					self.resists[Tags.Lightning] = 50
 				head.tags = [Tags.Dragon, Tags.Living, Ethereal]
 				head.team = self.owner.team
 				self.summon(head, Point(evt.unit.x, evt.unit.y), 5)

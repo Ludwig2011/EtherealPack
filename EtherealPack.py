@@ -38,7 +38,7 @@ Spells.all_player_spell_constructors.extend([
 	WordOfDisjunction,
 	PyreOfWyvernsSpell,
 	MomentInHell,
-	PureEtherSphere,
+	# PureEtherSphere,
 	EtherStormSpell,
 	SummonFrostSpire,
 	Railgun,

@@ -1,4 +1,5 @@
 from Level import *
+from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
@@ -16,7 +17,7 @@ class DomainExpansion(Spell):
         self.radius = 7
         self.range = 0
 
-        self.shielding = 0  # might have base functionality?
+        self.shielding = 0
 
         self.stun = 1
 
@@ -56,6 +57,7 @@ class DomainExpansion(Spell):
         ]
         for target in hostile_targets:
             target.apply_buff(Stun(), self.get_stat("stun"))
+            target.apply_buff(EtherealnessBuff(), 1)
 
         if self.get_stat("shielding"):
             for target in friendly_targets:

@@ -21,12 +21,11 @@ class SummonEtherHydraSpell(Spell):
         self.minion_range = 7
         self.minion_regen = 3
         self.upgrades["minion_regen"] = (4, 1)
-        #TODO more resistances
         self.upgrades["element_mother"] = (
             1,
             3,
             "Element Mother",
-            "Each of the Äther Hydras Äther Beams redeals its damage as either fire lightning or ice damage",
+            "Each of the Äther Hydras Äther Beams redeals its damage as either fire lightning or ice damage.\nHydra gains 50 elemental resistance.",
             [Tags.Chaos],
         )
         self.upgrades["lost_heads"] = (

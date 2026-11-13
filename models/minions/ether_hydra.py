@@ -8,6 +8,7 @@ class EtherHydra(Unit):
 	def __init__(self, elemental=False):
 		super().__init__()
 		self.asset = ["EtherealPack", "ether_hydra"]
+		self.tags = [Tags.Dragon, Tags.Living, Ethereal]
 		self.name = "Äther Hydra"
 		self.description = "Fires äther beams"
 		self.max_hp = 45
@@ -18,7 +19,11 @@ class EtherHydra(Unit):
 		self.resists[Tags.Holy] = 50
 		self.resists[Tags.Physical] = 25
 		self.resists[Tags.Arcane] = -50
-		self.tags = [Tags.Dragon, Tags.Living, Ethereal]
+		if elemental:
+			self.resists[Tags.Fire] = 50
+			self.resists[Tags.Ice] = 50
+			self.resists[Tags.Lightning] = 50
+			
 
 	def get_ai_action(self):
 		assert(not self.is_player_controlled)
