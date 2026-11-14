@@ -22,7 +22,7 @@ class BlissStasis(TileHazardBasic):
 
     def get_description(self):
         return ("%s in Stasis heals %d [hp:heal] every turn\n%d turns remaining\n"
-                "Allies standing on top heal for the same amount and get [Ätherealiesed:äthereal] for 2 turns" % (self.unit.name, self.damage, self.duration))
+                "Allies standing on top heal for the same amount and anyone gets [Ätherealiesed:äthereal] for 2 turns" % (self.unit.name, self.damage, self.duration))
 
     def effect(self, unit):
         pass

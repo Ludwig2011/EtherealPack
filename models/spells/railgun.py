@@ -31,7 +31,7 @@ class Railgun(Spell):
             1,
             4,
             "Discharging Velocity",
-            "For every 25 damage more then needed to kill a unit launch an äther spark dealing [7_äthereal:äthereal] damage and aplying [Ätherealness:äthereal] for 2 turns at a random enemy in line of sight".format(
+            "For every 25 damage more then needed to kill a unit launch an äther spark dealing [7_äthereal:äthereal] damage and aplying [Ätherealness:äthereal] for 3 turns at a random enemy in line of sight".format(
                 **self.fmt_dict()
             ),
         )
@@ -58,7 +58,7 @@ class Railgun(Spell):
                             self.caster.level.deal_damage(
                                 target.x, target.y, 7, Ethereal, self
                             )
-                            target.apply_buff(EtherealnessBuff(), 2)
+                            target.apply_buff(EtherealnessBuff(), 3)
                 self.caster.level.deal_damage(
                     p.x, p.y, self.get_stat("damage"), Tags.Physical, self
                 )

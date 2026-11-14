@@ -107,36 +107,36 @@ for i, reward in enumerate(reward_table):
         continue
     if reward[0] == LevelRewards.knowledge_shrine:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.knowledge_shrine, .05, None, LevelRewards.spellslots_available, "Shrine of Knowledge")
+        reward_table[i] = (LevelRewards.knowledge_shrine, .04, None, LevelRewards.spellslots_available, "Shrine of Knowledge")
         continue
     if reward[0] == LevelRewards.haste_shrine:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.haste_shrine, .05, None, None, "Shrine of Haste")
+        reward_table[i] = (LevelRewards.haste_shrine, .03, None, None, "Shrine of Haste")
         continue
     if reward[0] == LevelRewards.chronomancy_shrine:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.chronomancy_shrine, .05, 5, None, "Chronomancy Shrine")
+        reward_table[i] = (LevelRewards.chronomancy_shrine, .03, 5, None, "Chronomancy Shrine")
         continue
     if reward[0] == LevelRewards.duplication_shrine:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.duplication_shrine, .05, 5, None, "Duplication Shrine")
+        reward_table[i] = (LevelRewards.duplication_shrine, .03, 5, None, "Duplication Shrine")
         continue
     if reward[0] == LevelRewards.perfection_shrine:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.perfection_shrine, .05, 8, None, "Shrine of Perfection")
+        reward_table[i] = (LevelRewards.perfection_shrine, .03, 8, None, "Shrine of Perfection")
         continue
     if reward[0] == LevelRewards.spellgraft_shrine:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.spellgraft_shrine, .05, 5, None, "Spellgraft Shrine")
+        reward_table[i] = (LevelRewards.spellgraft_shrine, .03, 5, None, "Spellgraft Shrine")
         continue
     
     if reward[0] == LevelRewards.bookshelf:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.bookshelf, .05, None, None, "Bookshelf")
+        reward_table[i] = (LevelRewards.bookshelf, .04, None, None, "Bookshelf")
         continue
     if reward[0] == LevelRewards.scroll:
         # reward, weight, min_level, restrict fn, name
-        reward_table[i] = (LevelRewards.scroll, .05, None, LevelRewards.spellslots_available, "Spell Scroll")
+        reward_table[i] = (LevelRewards.scroll, .04, None, LevelRewards.spellslots_available, "Spell Scroll")
         continue
 
 LevelRewards.reward_table = reward_table

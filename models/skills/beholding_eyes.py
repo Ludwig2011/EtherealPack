@@ -10,7 +10,7 @@ class BeholdingEyes(Equipment):
         self.asset = ['EtherealPack', 'beholding_eyes']
         self.tags = [Ethereal, Tags.Eye, Tags.Enchantment]
         self.recipe = [(Ethereal, 1), (Tags.Eye, 1), (Tags.Enchantment, 1), (Tags.Any, 1)]
-        self.duration = 3
+        self.duration = 7
         
     def on_advance(self):
         eyes = [u for u in self.owner.level.units if not are_hostile(u, self.owner) and ("Eye" in u.name or Tags.Eye in u.tags or "Lens" in u.name)]
