@@ -1,6 +1,6 @@
 import LevelRewards
 import ModHandler
-from Level import Color, EventOnUnitAdded, Level, Tag, Tags, Upgrade
+from Level import Color, EventOnUnitAdded, LAST_LEVEL, Level, Portal, Tag, Tags, TEAM_PLAYER, Upgrade
 # import sys
 # PyGameView = sys.modules["__main__"].PyGameView
 
@@ -8,12 +8,9 @@ from RareMonsters import SlimeAdaptiveArmorBuff
 
 #TODO staff with minion health / number
 #TODO staff with damage, range and minion damage, range 4 3 4 3
-#TODO repalce dummy goblins in hazards with unit free clartiy versions of the hazards 
 #TODO make euqipment staff that gives bonus charges and duration
 #TODO make icons animated again!
-#TODO fix level clear plus hazard remove chasms!?
 #TODO ethermancer trial give ethermancer robe
-#TODO make offmap spells use same helper for unit copy etc
 #TODO make spells/equipment scale with appropiate spell bonuses where not already done. Mostly missing for upgrades / equipment
 #TODO Rework vanilla ether spider
 Ethereal = ModHandler.register_tag("Äthereal", Color(1, 255, 188), letter="v", asset=["EtherealPack", "ether"])
@@ -53,6 +50,81 @@ def level_init_with_ethereal_rules(self, w, h):
 
 # Replace the initializer.
 Level.__init__ = level_init_with_ethereal_rules
+
+
+_original_has_enemy_units = Level.has_enemy_units
+
+
+def has_enemy_units_with_stasis(self):
+    if _original_has_enemy_units(self):
+        return True
+
+    return any(
+        getattr(prop, "counts_for_level_clear", False)
+        and getattr(prop, "unit", None) is not None
+        and prop.unit.team != TEAM_PLAYER
+        and prop.unit.cur_hp > 0
+        and not prop.unit.killed
+        for prop in self.props
+    )
+
+
+Level.has_enemy_units = has_enemy_units_with_stasis
+
+
+def has_stasis_terrain_protection(prop):
+    return getattr(prop, "preserve_terrain_on_level_clear", False)
+
+
+_original_prop_mercy = Level.prop_mercy
+
+
+def prop_mercy_preserving_stasis_terrain(self):
+    if not any(has_stasis_terrain_protection(prop) for prop in self.props):
+        return _original_prop_mercy(self)
+
+    for prop in self.props:
+        if has_stasis_terrain_protection(prop):
+            continue
+        if not self.tiles[prop.x][prop.y].is_floor():
+            self.make_floor(prop.x, prop.y)
+
+
+Level.prop_mercy = prop_mercy_preserving_stasis_terrain
+
+
+_original_portal_mercy = Level.portal_mercy
+
+
+def portal_mercy_preserving_stasis_terrain(self):
+    if self.level_no == LAST_LEVEL or any(
+        isinstance(prop, Portal) for prop in self.props
+    ):
+        return _original_portal_mercy(self)
+
+    tiles = list(self.get_tiles_in_ball(self.player_unit.x, self.player_unit.y, 1.5))
+    safe_tiles = [
+        tile for tile in tiles if not has_stasis_terrain_protection(tile.prop)
+    ]
+    if len(safe_tiles) == len(tiles):
+        return _original_portal_mercy(self)
+
+    for tile in safe_tiles:
+        self.make_floor(tile.x, tile.y)
+
+    if not safe_tiles:
+        return
+
+    exit_loc = self.random.choice(safe_tiles)
+    self.add_portal(
+        Portal(self.gen_params.make_child_generator()),
+        exit_loc.x,
+        exit_loc.y,
+        locked=False,
+    )
+
+
+Level.portal_mercy = portal_mercy_preserving_stasis_terrain
 
 # original_get_sprite_sheet = PyGameView.get_sprite_sheet
 

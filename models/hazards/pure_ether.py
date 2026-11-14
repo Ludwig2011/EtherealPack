@@ -9,6 +9,7 @@ class PureEther(TileHazardBasic):
         TileHazardBasic.__init__(self, "Pure Ether", duration, user)
         self.damage = damage
         self.source = source
+        self.preserve_terrain_on_level_clear = True
         if is_chasm:
             self.asset = ["EtherealPack", "pure_ether_chasm"]
         else:

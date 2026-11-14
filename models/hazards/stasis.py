@@ -13,6 +13,8 @@ class TranslocationStasis(TileHazardBasic):
         TileHazardBasic.__init__(self, name, duration, user)
         self.source = source
         self.unit = unit
+        self.counts_for_level_clear = True
+        self.preserve_terrain_on_level_clear = True
         if unit is not None:
             suspend_unit_events(unit)
         self.unit_buffs = unit_buffs

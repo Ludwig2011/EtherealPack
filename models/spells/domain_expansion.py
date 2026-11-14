@@ -3,7 +3,6 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-#TODO hazards dont respawn chasms if removed by level end
 class DomainExpansion(Spell):
     def on_init(self):
 
