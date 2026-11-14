@@ -3,7 +3,7 @@ from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
-#TODO fix inconsitency. with haste only stuns but does not cause etherealness via hazards. hazards sometimes removes chasms
+#TODO hazards dont respawn chasms if removed by level end
 class DomainExpansion(Spell):
     def on_init(self):
 
