@@ -13,6 +13,17 @@ def resume_unit_events(unit):
     for buff in unit.buffs:
         if buff.applied: buff.subscribe()
 
+def prepare_stasis_unit(unit, duration):
+    if unit.gets_clarity:
+        unit.apply_buff(Stun(), duration)
+        return None
+
+    unit_copy = copy(unit)
+    unit.kill(None, False)
+    for buff in unit.buffs:
+        buff.apply(unit_copy)
+    return unit_copy
+
 def get_hazard_point(level, x, y, radius_limit=25, sort_dist=True, flying=False, diag=False):
 		options = list(level.get_points_in_ball(x, y, radius_limit, diag=diag))
 		random.shuffle(options)

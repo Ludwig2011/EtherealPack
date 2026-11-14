@@ -9,13 +9,11 @@ from RareMonsters import SlimeAdaptiveArmorBuff
 #TODO staff with minion health / number
 #TODO staff with damage, range and minion damage, range 4 3 4 3
 #TODO repalce dummy goblins in hazards with unit free clartiy versions of the hazards 
-#TODO unit previews !?
 #TODO make euqipment staff that gives bonus charges and duration
 #TODO make icons animated again!
 #TODO fix level clear plus hazard remove chasms!?
 #TODO ethermancer trial give ethermancer robe
 #TODO make offmap spells use same helper for unit copy etc
-#TODO fix description color and variables in spells/equipment
 #TODO make spells/equipment scale with appropiate spell bonuses where not already done. Mostly missing for upgrades / equipment
 #TODO Rework vanilla ether spider
 Ethereal = ModHandler.register_tag("Äthereal", Color(1, 255, 188), letter="v", asset=["EtherealPack", "ether"])

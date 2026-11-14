@@ -1,8 +1,9 @@
-import copy
-
 from Level import *
 from mods.EtherealPack.models.hazards.bliss_stasis import BlissStasis
-from mods.EtherealPack.models.hazards.util import get_hazard_point
+from mods.EtherealPack.models.hazards.util import (
+    get_hazard_point,
+    prepare_stasis_unit,
+)
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
@@ -50,18 +51,14 @@ class MomentOfBliss(Spell):
         unit = self.caster.level.get_unit_at(x, y)
         hazard_point = get_hazard_point(self.caster.level, x, y, flying=unit.flying)
 
-        unit_copy = copy(unit)
-        unit.kill(None, False)
-        for buff in unit.buffs:
-            buff.apply(unit_copy)
-
+        unit_in_stasis = prepare_stasis_unit(unit, self.get_stat("duration"))
         stasis = BlissStasis(
             self.caster,
             self,
             self.get_stat("duration"),
             self.get_stat("radius"),
             self.get_stat("damage"),
-            unit_copy,
+            unit_in_stasis,
             self.get_stat("blind"),
             self.get_stat("bless"),
         )

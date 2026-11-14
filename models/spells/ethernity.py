@@ -1,10 +1,10 @@
-import copy
-
 from Level import *
 from mods.EtherealPack.models.hazards.stasis import Stasis
-from mods.EtherealPack.models.hazards.util import get_hazard_point
+from mods.EtherealPack.models.hazards.util import (
+    get_hazard_point,
+    prepare_stasis_unit,
+)
 from mods.EtherealPack.tags.Ethereal import Ethereal
-from Monsters import Goblin
 
 
 class Ethernity(Spell):
@@ -36,8 +36,7 @@ class Ethernity(Spell):
         unit = self.caster.level.get_unit_at(x, y)
         if unit and (
             unit.has_buff(StunImmune)
-            or unit.has_buff(StunImmune)
-            or get_hazard_point(self.caster.level, x, y, flying=unit.flying) == None
+            or get_hazard_point(self.caster.level, x, y, flying=unit.flying) is None
         ):
             return False
         return super().can_cast(x, y)
@@ -46,25 +45,15 @@ class Ethernity(Spell):
         unit = self.caster.level.get_unit_at(x, y)
         hazard_point = get_hazard_point(self.caster.level, x, y, flying=unit.flying)
         hazards = 3 if self.get_stat("hazards") else 0
-
-        if not unit.gets_clarity:
-            unit_copy = copy(unit)
-            unit.kill(None, False)
-            for buff in unit.buffs:
-                buff.apply(unit_copy)
-            stasis = Stasis(
-                self.caster, self, self.get_stat("duration"), unit_copy, hazards
-            )
-            self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
-        else:
-            unit.apply_buff(Stun(), self.get_stat("duration"))
-            dummy = Goblin()
-            dummy.x = x
-            dummy.y = y
-            stasis = Stasis(
-                self.caster, self, self.get_stat("duration"), dummy, hazards
-            )
-            self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
+        unit_in_stasis = prepare_stasis_unit(unit, self.get_stat("duration"))
+        stasis = Stasis(
+            self.caster,
+            self,
+            self.get_stat("duration"),
+            unit_in_stasis,
+            hazards,
+        )
+        self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
         yield
 

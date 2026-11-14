@@ -1,10 +1,10 @@
-import copy
-
 from Level import *
 from mods.EtherealPack.models.hazards.hell_stasis import HellStasis
-from mods.EtherealPack.models.hazards.util import get_hazard_point
+from mods.EtherealPack.models.hazards.util import (
+    get_hazard_point,
+    prepare_stasis_unit,
+)
 from mods.EtherealPack.tags.Ethereal import Ethereal
-from Monsters import Goblin
 
 
 class MomentInHell(Spell):  # mordred???????????????????????????????
@@ -41,8 +41,7 @@ class MomentInHell(Spell):  # mordred???????????????????????????????
         unit = self.caster.level.get_unit_at(x, y)
         if unit and (
             unit.has_buff(StunImmune)
-            or unit.has_buff(StunImmune)
-            or get_hazard_point(self.caster.level, x, y, flying=unit.flying) == None
+            or get_hazard_point(self.caster.level, x, y, flying=unit.flying) is None
         ):
             return False
         return super().can_cast(x, y)
@@ -50,39 +49,17 @@ class MomentInHell(Spell):  # mordred???????????????????????????????
     def cast(self, x, y):
         unit = self.caster.level.get_unit_at(x, y)
         hazard_point = get_hazard_point(self.caster.level, x, y, flying=unit.flying)
-        if not unit.gets_clarity:
-            unit_copy = copy(unit)
-            unit.kill(None, False)
-            for buff in unit.buffs:
-                buff.apply(unit_copy)
-
-            stasis = HellStasis(
-                self.caster,
-                self,
-                self.get_stat("duration"),
-                self.get_stat("damage"),
-                unit_copy,
-                self.get_stat("brimstone"),
-                self.get_stat("explosive_entry"),
-            )
-            self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
-        else:
-            unit.apply_buff(Stun(), self.get_stat("duration"))
-            dummy = Goblin()
-            dummy.max_hp = self.get_stat("damage") * self.get_stat("duration") + 1
-            dummy.cur_hp = self.get_stat("damage") * self.get_stat("duration") + 1
-            dummy.x = x
-            dummy.y = y
-            stasis = HellStasis(
-                self.caster,
-                self,
-                self.get_stat("duration"),
-                self.get_stat("damage"),
-                dummy,
-                self.get_stat("brimstone"),
-                self.get_stat("explosive_entry"),
-            )
-            self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
+        unit_in_stasis = prepare_stasis_unit(unit, self.get_stat("duration"))
+        stasis = HellStasis(
+            self.caster,
+            self,
+            self.get_stat("duration"),
+            self.get_stat("damage"),
+            unit_in_stasis,
+            self.get_stat("brimstone"),
+            self.get_stat("explosive_entry"),
+        )
+        self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
         yield
 

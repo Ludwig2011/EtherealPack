@@ -1,45 +1,47 @@
 from CommonContent import SimpleRangedAttack
 from Level import *
-from mods.API_TileHazards.API_TileHazards import TileHazardBasic
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
-from mods.EtherealPack.models.hazards.util import add_unit, deal_off_grid_damage, suspend_unit_events
+from mods.EtherealPack.models.hazards.stasis import TranslocationStasis
+from mods.EtherealPack.models.hazards.util import deal_off_grid_damage
 
 
-class BlissStasis(TileHazardBasic):
+class BlissStasis(TranslocationStasis):
     def __init__(self, user, source, duration, radius, damage, unit, blind, bless, unit_buffs=None):
-        TileHazardBasic.__init__(self, "Bliss Portal", duration, user)
+        TranslocationStasis.__init__(
+            self,
+            "Bliss Portal",
+            ["EtherealPack", "bliss_stasis"],
+            user,
+            source,
+            duration,
+            unit,
+            unit_buffs,
+        )
         self.damage = damage
         self.radius = radius
-        self.source = source
-        self.unit = unit
-        suspend_unit_events(unit)
-        self.unit_buffs = unit_buffs
         self.blind = blind
         self.bless = bless
-        self.asset = ["EtherealPack", "bliss_stasis"]
-        self.player = [u for u in self.user.level.units if u.is_player_controlled][0]
-        self.gigantism = any(item.name == "Äther Gigantism" for item in self.player.get_equipment())
 
     def get_description(self):
+        unit_name = self.unit.name if self.unit is not None else "Empty Bliss Portal"
         return ("%s in Stasis heals %d [hp:heal] every turn\n%d turns remaining\n"
-                "Allies standing on top heal for the same amount and anyone gets [Ätherealiesed:äthereal] for 2 turns" % (self.unit.name, self.damage, self.duration))
-
-    def effect(self, unit):
-        pass
+                "Allies standing on top heal for the same amount and anyone gets [Ätherealiesed:äthereal] for 2 turns" % (unit_name, self.damage, self.duration))
 
     def advance_effect(self):
-        if self.gigantism and not are_hostile(self.unit, self.user):
-            self.unit.max_hp += 5
-            self.unit.cur_hp += 5
-            for spell in self.unit.spells:
-                if hasattr(spell, "damage"):
-                    spell.damage += 2
+        self.apply_gigantism()
+
         steppy = self.user.level.get_unit_at(self.x,self.y)
         if steppy: 
             if are_hostile(self.user, steppy):
                 self.user.level.deal_damage(self.x,self.y,-self.damage, Tags.Heal, self.source)
             steppy.apply_buff(EtherealnessBuff(), 2)
-        killed = deal_off_grid_damage(self.user.level, self.unit, -self.damage, Tags.Heal, self.source)
+
+        killed = False
+        if self.unit is not None:
+            killed = deal_off_grid_damage(
+                self.user.level, self.unit, -self.damage, Tags.Heal, self.source
+            )
+
         targets = [u for u in self.user.level.get_units_in_ball(self.user, self.radius) if u != self.user and u != self.unit and not are_hostile(self.user, u) and u.cur_hp>0]
         for target in targets:
             self.user.level.deal_damage(target.x,target.y,-self.damage, Tags.Heal, self.source)
@@ -47,26 +49,13 @@ class BlissStasis(TileHazardBasic):
             targets = [u for u in self.user.level.get_units_in_ball(self.user, self.radius) if u != self.user and u != self.unit and are_hostile(self.user, u) and u.cur_hp>0]
             for target in targets:
                 target.apply_buff(BlindBuff(), 3)
-        if killed or self.unit.cur_hp <= 0:
+        if self.unit is not None and (killed or self.unit.cur_hp <= 0):
             self.duration = 1
-        if self.duration <= 1 and not self.unit.cur_hp <= 0:
-            blocking_unit = self.user.level.get_unit_at(self.x,self.y)
-            if not blocking_unit:
-                add_unit(self.user.level,self.unit, self.x, self.y, self.unit_buffs)
-                if self.bless:
-                    self.unit.apply_buff(BlissfullBlessing())
-                self.user.level.show_effect(self.x, self.y, Tags.Conjuration)
-                if self.unit.gets_clarity:
-                    self.unit.apply_buff(StunImmune(),2)
-            else:
-                p = self.user.level.get_summon_point(self.x, self.y, 20)
-                if p:
-                    add_unit(self.user.level,self.unit, p.x, p.y, self.unit_buffs)
-                    if self.bless:
-                        self.unit.apply_buff(BlissfullBlessing())
-                    self.user.level.show_effect(p.x, p.y, Tags.Conjuration)
-                    if self.unit.gets_clarity:
-                        self.unit.apply_buff(StunImmune(),2)
+        self.return_unit()
+
+    def on_unit_returned(self):
+        if self.bless:
+            self.unit.apply_buff(BlissfullBlessing())
 
 class BlissfullBlessing(Buff):
     def __init__(self):

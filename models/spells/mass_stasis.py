@@ -1,11 +1,11 @@
-import copy
-
 from Level import *
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.stasis import Stasis
-from mods.EtherealPack.models.hazards.util import get_hazard_point
+from mods.EtherealPack.models.hazards.util import (
+    get_hazard_point,
+    prepare_stasis_unit,
+)
 from mods.EtherealPack.tags.Ethereal import Ethereal
-from Monsters import Goblin
 
 
 class MassStasis(Spell):
@@ -49,18 +49,11 @@ class MassStasis(Spell):
                 continue
             if self.get_stat("linger"):
                 unit.apply_buff(EtherealnessBuff(), self.get_stat("duration") * 2)
-            if not unit.gets_clarity:
-                unit_copy = copy(unit)
-                unit.kill(None, False)
-                for buff in unit.buffs:
-                    buff.apply(unit_copy)
-
-                stasis = Stasis(self.caster, self, self.get_stat("duration"), unit_copy)
-                self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
-            else:
-                unit.apply_buff(Stun(), self.get_stat("duration"))
-                stasis = Stasis(self.caster, self, self.get_stat("duration"), Goblin())
-                self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
+            unit_in_stasis = prepare_stasis_unit(unit, self.get_stat("duration"))
+            stasis = Stasis(
+                self.caster, self, self.get_stat("duration"), unit_in_stasis
+            )
+            self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
 
         yield
 
