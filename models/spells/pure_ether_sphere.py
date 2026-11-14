@@ -6,10 +6,10 @@ from mods.EtherealPack.tags.Ethereal import Ethereal
 from Spells import Orb
 
 
-# TODO make work like old orb spell
 class PureEtherSphereBuff(Buff):
-    def __init__(self, spell):
+    def __init__(self, spell, destination=None):
         self.spell = spell
+        self.destination = destination
         self.discharge_cooldown = 0
         Buff.__init__(self)
 
@@ -25,6 +25,19 @@ class PureEtherSphereBuff(Buff):
         duration = spell.get_stat("duration")
         damage = spell.get_stat("minion_damage")
 
+        if self.destination is None:
+            return
+
+        path = level.get_points_in_line(orb, self.destination)[1:]
+        next_point = path[0] if path else None
+        if next_point is not None:
+            if spell.get_stat("melt_walls") and level.tiles[
+                next_point.x
+            ][next_point.y].is_wall():
+                level.make_floor(next_point.x, next_point.y)
+            if level.can_move(orb, next_point.x, next_point.y, teleport=True):
+                level.act_move(orb, next_point.x, next_point.y, teleport=True)
+
         if spell.get_stat("pure_discharge"):
             if self.discharge_cooldown <= 0:
                 targets = [
@@ -39,6 +52,8 @@ class PureEtherSphereBuff(Buff):
                 self.discharge_cooldown -= 1
 
         self.spread_ether(orb.x, orb.y, radius, duration, damage)
+        if next_point is None:
+            orb.kill()
 
     def zap(self, target):
         spell = self.spell
@@ -58,7 +73,11 @@ class PureEtherSphereBuff(Buff):
 
     def spread_ether(self, x, y, radius, duration, damage):
         level = self.owner.level
-        for point in level.get_points_in_ball(x, y, radius, diag=True):
+        # Keep the original eight-neighbor spread at base radius.
+        use_diagonal_distance = radius <= 1
+        for point in level.get_points_in_ball(
+            x, y, radius, diag=use_diagonal_distance
+        ):
             if level.tiles[point.x][point.y].prop is not None:
                 continue
             hazard = PureEther(
@@ -78,10 +97,11 @@ class PureEtherSphere(Spell):
         self.minion_damage = 5
         self.range = 9
         self.radius = 1
-        self.max_charges = 3
+        self.max_charges = 7
         self.pure_discharge = 0
         self.duration = 7
-        self.must_target_empty = True
+        self.requires_los = False
+        self.melt_walls = True
         self.minion_health = 15
         self.element = Ethereal
         self.damage_type = [Ethereal]
@@ -89,8 +109,7 @@ class PureEtherSphere(Spell):
         self.level = 4
 
         self.upgrades["range"] = (5, 2)
-        self.upgrades["max_charges"] = (4, 2)
-        self.upgrades["radius"] = (1, 2)
+        self.upgrades["radius"] = (1.5, 2)
         self.upgrades["minion_damage"] = (9, 3)
         self.upgrades["pure_discharge"] = (
             1,
@@ -99,38 +118,69 @@ class PureEtherSphere(Spell):
             "Every 3 turns, the sphere [stuns:physical] up to 3 enemies in line of sight for 2 turns and spreads Pure Ether around them.",
         )
 
-    def make_orb(self):
+    def make_orb(self, destination=None):
         orb = Orb()
         orb.name = "Pure Ether Sphere"
         orb.asset = ["EtherealPack", "pure_ether_sphere"]
+        for res in orb.resists:
+            orb.resists[res] = 100
         orb.resists[Ethereal] = 0
         orb.shields = 3
-        orb.buffs.append(PureEtherSphereBuff(self))
+        orb.buffs.append(PureEtherSphereBuff(self, destination))
         apply_minion_bonuses(self, orb)
         return orb
 
-    def cast(self, x, y):
-        existing = next(
-            (
-                unit
-                for unit in self.caster.level.units
-                if unit.source is self and unit.is_alive()
-            ),
-            None,
+    def can_cast(self, x, y):
+        level = self.caster.level
+        path = level.get_points_in_line(
+            Point(self.caster.x, self.caster.y), Point(x, y)
         )
-        if existing:
-            if self.caster.level.can_move(existing, x, y, teleport=True):
-                self.caster.level.act_move(existing, x, y, teleport=True)
-        else:
-            self.summon(self.make_orb(), target=Point(x, y))
+        if len(path) < 2:
+            return False
+
+        start_point = path[1]
+        if level.get_unit_at(start_point.x, start_point.y):
+            return False
+
+        if not self.get_stat("melt_walls"):
+            for point in path:
+                if level.tiles[point.x][point.y].is_wall():
+                    return False
+
+        return Spell.can_cast(self, x, y)
+
+    def cast(self, x, y):
+        level = self.caster.level
+        path = level.get_points_in_line(
+            Point(self.caster.x, self.caster.y), Point(x, y)
+        )
+        if len(path) < 2:
+            return
+
+        start_point = path[1]
+        if level.get_unit_at(start_point.x, start_point.y):
+            return
+
+        if self.get_stat("melt_walls") and level.tiles[
+            start_point.x
+        ][start_point.y].is_wall():
+            level.make_floor(start_point.x, start_point.y)
+
+        orb = self.make_orb(Point(x, y))
+        orb.turns_to_death = len(path) + 1
+        self.summon(orb, target=start_point, radius=0)
         yield
+
+    def get_impacted_tiles(self, x, y):
+        return self.caster.level.get_points_in_line(
+            Point(self.caster.x, self.caster.y), Point(x, y)
+        )[1:]
 
     def get_extra_examine_tooltips(self):
         return [self.make_orb()] + self.get_upgrade_tooltips()
 
     def get_description(self):
         return (
-            "Summon a Pure Ether Sphere at the target location.\n"
-            "Each turn, it spreads Pure Ether across a [{radius}:radius] radius, dealing [{minion_damage}_Äthereal:äthereal] damage and applying [Ätherealness:äthereal] for [{duration}:duration] turns.\n"
-            "Only one sphere may exist at a time. Casting the spell while it exists moves it to the selected location."
+            "Summon a Pure Ether Sphere next to you. Each turn, it moves one tile toward the target, melting walls in its path and spreading Pure Ether across a [{radius}:radius] radius.\n"
+            "Pure Ether deals [{minion_damage}_Äthereal:äthereal] damage and applies [Ätherealness:äthereal] for [{duration}:duration] turns. The sphere disappears after reaching its destination."
         ).format(**self.fmt_dict())

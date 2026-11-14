@@ -6,6 +6,7 @@ from Level import Color, EventOnUnitAdded, LAST_LEVEL, Level, Portal, Tag, Tags,
 
 from RareMonsters import SlimeAdaptiveArmorBuff
 
+#TODO can we make hazards on top of other props?
 #TODO staff with minion health / number
 #TODO staff with damage, range and minion damage, range 4 3 4 3
 #TODO make euqipment staff that gives bonus charges and duration
