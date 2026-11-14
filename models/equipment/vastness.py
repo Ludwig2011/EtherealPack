@@ -33,4 +33,7 @@ class Vastness(Equipment):
 			
 		
 	def get_description(self):
-		return "Etherealness lowers affected enemies' Ice resistance by 50. When an affected enemy dies, deal 7 Ice and Ethereal damage to hostile units in a 4-tile radius and apply 7 turns of Etherealness to survivors."
+		return ("[Ätherealness:äthereal] lowers affected enemies' [Ice:ice] resistance by [50%:ice]. "
+				"When an affected enemy dies, deal [{damage}:damage] [Ice:ice] and [Äthereal:äthereal] damage to hostile units in a [{radius}_tile:radius] radius and apply [Ätherealness:äthereal] for [{duration}_turns:duration] to survivors.").format(
+					**self.fmt_dict()
+				)

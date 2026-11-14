@@ -96,7 +96,7 @@ class PureEtherSphere(Spell):
             1,
             4,
             "Pure Discharge",
-            "Every 3 turns, the sphere stuns up to 3 enemies in line of sight for 2 turns and spreads Pure Ether around them.",
+            "Every 3 turns, the sphere [stuns:physical] up to 3 enemies in line of sight for 2 turns and spreads Pure Ether around them.",
         )
 
     def make_orb(self):
@@ -131,6 +131,6 @@ class PureEtherSphere(Spell):
     def get_description(self):
         return (
             "Summon a Pure Ether Sphere at the target location.\n"
-            "Each turn, it spreads Pure Ether across a [{radius}:radius] radius, dealing [{minion_damage}_Ethereal:äthereal] damage and applying Etherealness for [{duration}:duration] turns.\n"
+            "Each turn, it spreads Pure Ether across a [{radius}:radius] radius, dealing [{minion_damage}_Äthereal:äthereal] damage and applying [Ätherealness:äthereal] for [{duration}:duration] turns.\n"
             "Only one sphere may exist at a time. Casting the spell while it exists moves it to the selected location."
         ).format(**self.fmt_dict())

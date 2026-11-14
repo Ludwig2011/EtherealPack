@@ -3,6 +3,28 @@ from Level import *
 from mods.EtherealPack.models.minions.ether_beam import EtherBeam
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
+
+def make_lost_head(elemental, damage):
+	head = Unit()
+	head.asset = ["EtherealPack", "ether_hydra_head"]
+	head.name = "Äther Hydra Head"
+	head.description = "Fires äther beam"
+	head.max_hp = 15
+	head.stationary = True
+	head.spells.append(EtherBeam(elemental, damage))
+	head.spells.append(SimpleMeleeAttack(3))
+	head.resists[Ethereal] = 100
+	head.resists[Tags.Dark] = 50
+	head.resists[Tags.Holy] = 50
+	head.resists[Tags.Arcane] = -50
+	if elemental:
+		head.resists[Tags.Fire] = 50
+		head.resists[Tags.Ice] = 50
+		head.resists[Tags.Lightning] = 50
+	head.tags = [Tags.Dragon, Tags.Living, Ethereal]
+	return head
+
+
 class LostHeadsBuff(Buff):
 	def __init__(self, elemental, damage):
 		Buff.__init__(self)
@@ -20,22 +42,6 @@ class LostHeadsBuff(Buff):
 			self.stored_damage += evt.damage
 			if self.stored_damage > 15:
 				self.stored_damage -= 15
-				head = Unit()
-				head.asset = ["EtherealPack", "ether_hydra_head"]
-				head.name = "Äther Hydra Head"
-				head.description = "Fires äther beam"
-				head.max_hp = 15
-				head.stationary = True
-				head.spells.append(EtherBeam(self.elemental, self.damage))
-				head.spells.append(SimpleMeleeAttack(3))
-				head.resists[Ethereal] = 100
-				head.resists[Tags.Dark] = 50
-				head.resists[Tags.Holy] = 50
-				head.resists[Tags.Arcane] = -50
-				if self.elemental:
-					self.resists[Tags.Fire] = 50
-					self.resists[Tags.Ice] = 50
-					self.resists[Tags.Lightning] = 50
-				head.tags = [Tags.Dragon, Tags.Living, Ethereal]
+				head = make_lost_head(self.elemental, self.damage)
 				head.team = self.owner.team
 				self.summon(head, Point(evt.unit.x, evt.unit.y), 5)

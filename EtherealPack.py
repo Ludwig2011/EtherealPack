@@ -2,13 +2,13 @@ import Spells
 import Equipment as EquipmentContent
 import ModHandler
 from mods.EtherealPack.models.components import EtherealDust, EtherealLens, EtherealBloom, EtherealFrost
-from mods.EtherealPack.models.skills.beholding_eyes import BeholdingEyes
-from mods.EtherealPack.models.skills.collect_dispersion import CollectDispersion
-from mods.EtherealPack.models.skills.ether_gigantism import EtherGigantism
-from mods.EtherealPack.models.skills.ether_lord import EtherLord
-from mods.EtherealPack.models.skills.etherpredators import Etherpredators
-from mods.EtherealPack.models.skills.ethertuned import Ethertuned
-from mods.EtherealPack.models.skills.vastness import Vastness
+from mods.EtherealPack.models.equipment.beholding_eyes import BeholdingEyes
+from mods.EtherealPack.models.equipment.collect_dispersion import CollectDispersion
+from mods.EtherealPack.models.equipment.ether_gigantism import EtherGigantism
+from mods.EtherealPack.models.equipment.ether_lord import EtherLord
+from mods.EtherealPack.models.equipment.etherpredators import Etherpredators
+from mods.EtherealPack.models.equipment.ethertuned import Ethertuned
+from mods.EtherealPack.models.equipment.vastness import Vastness
 from mods.EtherealPack.models.spells.domain_expansion import DomainExpansion
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell

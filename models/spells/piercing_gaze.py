@@ -25,13 +25,13 @@ class PiercingGaze(Spell):  # cone?
             1,
             2,
             "Unnerving Gaze",
-            "Ätherealies enemies aswell",
+            "Also applies [Ätherealness:äthereal] to affected enemies",
         )
         self.upgrades["shocking_gaze"] = (
             1,
             4,
             "Shocking Gaze",
-            "Petrify affected enemies for 2 turns",
+            "[Petrifies:construct] affected enemies for 2 turns",
         )
 
     def get_description(self):

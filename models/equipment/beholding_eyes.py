@@ -39,4 +39,6 @@ class BeholdingEyes(Equipment):
         chosen_target.apply_buff(EtherealnessBuff(), self.get_stat('duration'))
         
     def get_description(self):
-        return "Each turn, you and your Eye minions apply 3 turns of Etherealness to one unit in line of sight, prioritizing enemies."
+        return "Each turn, you and your Eye minions each apply [Ätherealness:äthereal] for [{duration}_turns:duration] to one unit in line of sight, prioritizing enemies.".format(
+            **self.fmt_dict()
+        )

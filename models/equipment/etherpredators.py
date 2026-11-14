@@ -18,8 +18,8 @@ class Etherpredators(Equipment):
 		self.spider_amount = self.get_stat('num_summons')
 
 	def get_description(self):
-		return ("Enemies that dare jump through space get ambushed by ether spiders.\n"
-				"Ether spiders have {minion_health} hp, 2 shields and have teleport attacks with {minion_range} range that deal [{minion_damage}_äthereal:äthereal] damage and apply [poison:poison] aswell as [ätherealness:äthereal] for 7 turns\n"
+		return ("Enemies that dare jump through space get ambushed by [Äther Spiders:äthereal].\n"
+				"Äther Spiders have [{minion_health}_HP:minion_health], [1 SH:shields], and teleport attacks with [{minion_range}_range:range] that deal [{minion_damage}_äthereal:äthereal] damage and apply [poison:poison] and [Ätherealness:äthereal] for 7 turns.\n"
 				"Most forms of movement other than a unit's movement action count as jumping through space.\n"
 				"Summon at most [{num_summons}:num_summons] spiders per turn").format(**self.fmt_dict())
 
@@ -71,7 +71,7 @@ class TeleportAttack(Spell):
 		return None		
 
 	def get_description(self):
-		fmt = "Applies 7 turns of [poison:poison] and [ätherealness:äthereal]"
+		fmt = "Applies [poison:poison] and [Ätherealness:äthereal] for 7 turns"
 		return fmt
 
 	def can_cast(self, x, y):

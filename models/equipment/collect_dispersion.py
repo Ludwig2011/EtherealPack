@@ -33,4 +33,4 @@ class CollectDispersion(Equipment):
                         self.owner.level.show_effect(self.owner.x, self.owner.y, Ethereal)
 
     def get_description(self):
-        return "When an enemy affected by Etherealness dies, each of your Ethereal spells has a chance equal to the remaining Etherealness duration to regain a charge. The chance is tripled if Ethereal damage dealt the killing blow."
+        return "When an enemy affected by [Ätherealness:äthereal] dies, each of your [Äthereal:äthereal] spells has a percent chance equal to the remaining [Ätherealness:äthereal] duration to regain a charge. The chance is tripled if [Äthereal:äthereal] damage dealt the killing blow."

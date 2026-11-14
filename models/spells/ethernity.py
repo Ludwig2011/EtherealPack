@@ -29,7 +29,7 @@ class Ethernity(Spell):
             1,
             2,
             "Pertrusion",
-            "Leave behind 3 pure ether hazards for 3 turns that deal [7_äthereal:äthereal] damage in a 5 tile radius around the rift",
+            "Leave behind 3 Pure Ether hazards for 3 turns that deal [7_äthereal:äthereal] damage in a [5_tile:radius] radius around the Rift",
         )
 
     def can_cast(self, x, y):
@@ -69,6 +69,6 @@ class Ethernity(Spell):
         yield
 
     def get_description(self):
-        return "Transport target into the Ether Plane for [{duration}_turns:duration].\nLeaves behind a Rift that [ätherealieses:äthereal] units for 2 turns.".format(
+        return         "Transport target into the Ether Plane for [{duration}_turns:duration].\nLeaves behind a Rift that applies [Ätherealness:äthereal] to units for 2 turns.".format(
             **self.fmt_dict()
         )

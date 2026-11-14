@@ -24,7 +24,7 @@ class SummonFrostSpire(Spell):
             1,
             4,
             "Implosive Entry",
-            "The rift pulls on all units in [{radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage. The rift applies [Ätherealness:äthereal] to all units in [{radius}_radius:radius] for 7 turns",
+            f"The rift pulls on all units in [{self.radius}_radius:radius] + 1 and deals 1/14 of its hp as [ice:ice] and [äthereal:äthereal] damage. The rift applies [Ätherealness:äthereal] to all units in [{self.radius}_radius:radius] for 7 turns",
             None,
             [Tags.Ice, Ethereal],
         )
@@ -32,24 +32,13 @@ class SummonFrostSpire(Spell):
             1,
             9,
             "Frost Mortem",
-            (
-                "Units that die within the Frost Aura of the Spire leave behind frost Golems\n"
-                "Frost Golems have half the units hp, 1 shield and a melee attack that deals 4 [ice:ice] and 3 [physical:physical] damage\n"
-                "Frost Golems have [75_ice:ice], [100_poison:poison], [50_lightning:lightning], [25_physical:physical], [-25_fire:fire] resistance"
-            ),
+            "Enemies that die within the Frost Aura leave behind Frost Golems with half their max HP.",
         )
+        self.add_upgrade_tooltip("Frost Mortem", self.make_frost_golem)
         self.must_target_empty = True
 
     def cast(self, x, y):
-        spire = FrostSpire(
-            self.get_stat("minion_health"),
-            self.get_stat("minion_damage"),
-            self.get_stat("radius"),
-        )
-        spire.team = self.caster.team
-        spire.buffs.append(
-            FrostAuraBuff(self.get_stat("radius"), self.get_stat("frost_mortem"), self)
-        )
+        spire = self.make_spire()
         self.summon(spire, Point(x, y))
 
         if self.get_stat("implosive_entry"):
@@ -81,6 +70,23 @@ class SummonFrostSpire(Spell):
 
         yield
 
+    def make_spire(self):
+        spire = FrostSpire(
+            self.get_stat("minion_health"),
+            self.get_stat("minion_damage"),
+            self.get_stat("radius"),
+        )
+        spire.buffs.append(
+            FrostAuraBuff(self.get_stat("radius"), self.get_stat("frost_mortem"), self)
+        )
+        return spire
+
+    def make_frost_golem(self):
+        return FrostGolem(20)
+
+    def get_extra_examine_tooltips(self):
+        return [self.make_spire()] + self.get_upgrade_tooltips()
+
     def pull(self, target, source, squares):
         direction_x = target.x - source.x
         direction_y = target.y - source.y
@@ -105,11 +111,9 @@ class SummonFrostSpire(Spell):
             return False
 
     def get_description(self):
-        return (
-            "Open a Rift to the Ice Plane that freezes all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.\n"
-            "Frost Spire has a Forst Bolt attack which deals [{minion_damage}_ice:ice] damage and [freezes:ice] the target for 3 turns with [{radius}_range:range].\n"
-            "Frost Spire has a Forst Aura which deals [3_ice:ice] damage to all units in [{radius}_radius:radius] around the Spire every turn."
-        ).format(**self.fmt_dict())
+        return "Open a Rift to the Ice Plane that [freezes:ice] all units in [{radius}_radius:radius] around the Rift for [{duration}:duration] turns and leave behind a stationary Frost Spire.".format(
+            **self.fmt_dict()
+        )
 
 
 def FrostSpire(health, damage, range):
@@ -117,7 +121,7 @@ def FrostSpire(health, damage, range):
     unit.asset = ["EtherealPack", "frost_spire"]
     unit.name = "Frost Spire"
     unit.stationary = True
-    unit.description = "Fires Frost Bolts that freeze enemies"
+    unit.description = "Fires Frost Bolts that [freeze:ice] enemies"
     unit.max_hp = health
     unit.spells.append(
         SimpleRangedAttack(

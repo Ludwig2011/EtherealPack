@@ -34,7 +34,7 @@ class MomentInHell(Spell):  # mordred???????????????????????????????
             1,
             4,
             "Explosive Entry",
-            "When the target reappiers or dies in the Fire Plane deal [fire:fire] and [äthereal:äthereal] damage equal to 1/4 of the targets missing hp to all units in a radius equal to 1/8 of the targets maximum hp until 32 hp then 1/16",
+            "When the target reappears or dies in the Fire Plane, deal [Fire:fire] and [Äthereal:äthereal] damage equal to 1/4 of its maximum HP in a radius of round(max HP / 8) if max HP is under 33, or 2 + round(max HP / 16) otherwise. The radius is capped at 10 tiles.",
         )
 
     def can_cast(self, x, y):
@@ -87,6 +87,6 @@ class MomentInHell(Spell):  # mordred???????????????????????????????
         yield
 
     def get_description(self):
-        return "Transport target into the Plane of Fire for [{duration}_turns:duration]. Target suffers [{damage}_fire:fire] every turn until it reappiers.\nLeaves behind a Hell Rift that deals [{damage}_fire:fire] to enemies and applies [Ätherealness:äthereal] for 2 turns\n Every turn fragments deal [{damage}_fire:fire] and [{damage}_äthereal:äthereal] to 3 random enemies in a [5_tile:radius] radius around the rift.".format(
+        return "Transport the target into the Plane of Fire for [{duration}_turns:duration]. It takes [{damage}_fire:fire] damage each turn until it reappears.\nLeaves behind a Hell Rift that deals [{damage}_fire:fire] damage to enemies and applies [Ätherealness:äthereal] for 2 turns.\nEach turn, fragments deal [{damage}_fire:fire] and [{damage}_äthereal:äthereal] damage to 3 random enemies in a [5_tile:radius] radius around the rift.".format(
             **self.fmt_dict()
         )

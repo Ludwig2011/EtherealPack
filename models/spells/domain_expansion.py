@@ -28,14 +28,14 @@ class DomainExpansion(Spell):
             1,
             1,
             "Shielding Zone",
-            "Give allied units 1 shield if they have less then 2",
+            "Give allied units [1 SH:shields] if they have fewer than [2 SH:shields]",
         )
 
         self.tags = [Tags.Sorcery, Ethereal]
 
     def get_description(self):
         return (
-            "Expand your domain in a [{radius}_tile:radius] radius stunning all enemies present for [{stun}_turns:stun]\n"
+            "Expand your domain in a [{radius}_tile:radius] radius and [stuns:physical] all enemies present for [{stun}_turns:stun]\n"
             "Leave behind hazards in the same radius for [{duration}_turns:duration] that apply [Ätherealness:äthereal] for [2_turns:duration]\n"
             "This spell has a 21 turn cooldown instead of charges"
         ).format(**self.fmt_dict())

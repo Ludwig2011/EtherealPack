@@ -10,4 +10,4 @@ class EtherGigantism(Equipment):
 		self.recipe = [(Ethereal, 1), (Tags.Nature, 1), (Tags.Conjuration, 1), (Tags.Any, 1)]
 
 	def get_description(self):
-		return "Each turn an allied unit remains in Ethereal stasis, it gains 5 max HP and its spells with damage gain 2 damage."
+		return "Each turn an allied unit remains in [Äther Stasis:äthereal], it gains [5 max HP:heal] and its spells with damage gain [2 damage:damage]."

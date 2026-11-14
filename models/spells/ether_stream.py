@@ -20,7 +20,7 @@ def ÄtherImp():
     unit.max_hp = 7
     unit.spells.append(
         SimpleRangedAttack(
-            "Äther Bolt", 7, Ethereal, 5, buff=EtherealnessBuff, buff_duration=3
+            "Äther Bolt", 3, Ethereal, 4, buff=EtherealnessBuff, buff_duration=3
         )
     )
     return unit
@@ -40,17 +40,40 @@ class EtherStream(Spell):
             [1, 3, 7, 3, 4],
             3,
             "Imp Friends",
-            "Summon [{num_summons}:num_summons] Äther Imps at the beginning and end of the stream. They gain [{minion_health}:minion_health] bonus HP and [{minion_damage}:minion_damage] damage",
+            "Summon [{num_summons}:num_summons] Äther Imps at the beginning and end of the stream with [{minion_health}_HP:minion_health], [{minion_damage}_damage:damage], and [{minion_range}_range:range].",
             [Tags.Conjuration]
         )
         self.add_upgrade(NetherAlone())
-        self.upgrades[('make_home', 'radius')] = ([1, 5], 2, "Make Home", "Create hazards that [ätherealies:äthereal] units in a [{radius}_tile:radius] radius at the destination")
+        self.add_upgrade_tooltip(
+            "Imp Friends", lambda: self.make_upgrade_imp("Imp Friends")
+        )
+        self.add_upgrade_tooltip(
+            "Nether Alone", lambda: self.make_upgrade_imp("Nether Alone")
+        )
+        self.upgrades[('make_home', 'radius')] = ([1, 5], 2, "Make Home", "Create hazards that apply [Ätherealness:äthereal] to units in a [{radius}_tile:radius] radius at the destination")
+
+    def make_imp(self, stat_source=None):
+        imp = ÄtherImp()
+        if hasattr(self, "minion_health"):
+            stat_source = self
+        if stat_source is not None:
+            imp.max_hp = stat_source.get_stat("minion_health")
+            imp.spells[0].damage = stat_source.get_stat("minion_damage")
+            imp.spells[0].range = stat_source.get_stat("minion_range")
+        return imp
+
+    def make_upgrade_imp(self, upgrade_name):
+        upgrade = next(upg for upg in self.spell_upgrades if upg.name == upgrade_name)
+        return self.make_imp(upgrade)
+
+    def get_extra_examine_tooltips(self):
+        return self.get_upgrade_tooltips()
 
     def get_description(self):
         return (
-            "Jump out of the Äther Stream found next to an [Äther:äthereal] or [ätherealiesed:äthereal] unit"
-            "Teleport to any tile adjacent to an [Äther:äthereal] or [ätherealiesed:äthereal] unit.\n"
-            "Can only be cast while adjacent to an [Äther:äthereal] or [ätherealiesed:äthereal] unit."
+            "Jump out of the Äther Stream next to an [Äther:äthereal] unit or a unit affected by [Ätherealness:äthereal].\n"
+            "Teleport to any tile adjacent to an [Äther:äthereal] unit or a unit affected by [Ätherealness:äthereal].\n"
+            "Can only be cast while adjacent to an [Äther:äthereal] unit or a unit affected by [Ätherealness:äthereal]."
         ).format(**self.fmt_dict())
 
     def can_cast(self, x, y):
@@ -100,10 +123,7 @@ class EtherStream(Spell):
                     point.x, point.y, sort_dist=True
                 )
                 if p:
-                    imp = ÄtherImp()
-                    imp.max_hp = self.get_stat("minion_health")
-                    imp.spells[0].damage = self.get_stat("minion_damage")
-                    imp.spells[0].range = self.get_stat("minion_range")
+                    imp = self.make_imp()
                     imp.team = self.caster.team
                     self.summon(imp, p)
 
@@ -112,8 +132,11 @@ class NetherAlone(Upgrade):
     def on_init(self):
         self.level = 6
         self.name = "Nether Alone"
-        self.description = "When an [ätherealiesed:äthereal] enemy dies, summon an Äther Imp with remaining turns equal to the debuff.\nAlways Active"
+        self.description = "When an enemy affected by [Ätherealness:äthereal] dies, summon an Äther Imp that lasts 1 turn longer than the debuff's remaining duration.\nAlways Active"
         self.tags = [Tags.Conjuration]
+        self.minion_health = 7
+        self.minion_damage = 3
+        self.minion_range = 4
         self.global_triggers[EventOnDeath] = self.on_death
 
     def on_death(self, evt):
@@ -132,10 +155,7 @@ class NetherAlone(Upgrade):
         if not p:
             return
 
-        imp = ÄtherImp()
-        imp.max_hp = self.prereq.get_stat("minion_health")
-        imp.spells[0].damage = self.prereq.get_stat("minion_damage")
-        imp.spells[0].range = self.prereq.get_stat("minion_range")
+        imp = self.prereq.make_imp(self)
         imp.team = self.owner.team
         imp.turns_to_death = buff.turns_left + 1
 

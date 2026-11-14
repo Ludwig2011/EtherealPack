@@ -33,13 +33,13 @@ class EtherBolt(Spell):
             5,
             2,
             "Energy Drain",
-            "If Äther Bolt targets a unit affected by Ätherealness, it grants you a shield up to maximum of 5",
+            "If Äther Bolt targets a unit affected by [Ätherealness:äthereal], it grants you shields up to a maximum of [5 SH:shields]",
         )
         self.upgrades["energy_disruption"] = (
             1,
             4,
             "Energy Disruption",
-            f"If Äther Bolt targets a unit affected by Ätherealness, it deals {int(self.damage / 2)} [fire], [lightning], and [ice] aswell",
+            f"If Äther Bolt targets a unit affected by [Ätherealness:äthereal], it also deals {int(self.damage / 2)} [Fire:fire], [Lightning:lightning], and [Ice:ice] damage",
             [Tags.Chaos],
             [Tags.Fire, Tags.Lightning, Tags.Ice],
         )
@@ -47,7 +47,7 @@ class EtherBolt(Spell):
             1,
             6,
             "Energy Connection",
-            "If Äther Bolt targets a unit affected by Ätherealness, Äther Bolt is cast again at units affected by Ätherealness in line of sight.",
+            "If Äther Bolt targets a unit affected by [Ätherealness:äthereal], Äther Bolt is cast again at other units affected by [Ätherealness:äthereal] in line of sight.",
         )
 
     def cast(self, x, y):
@@ -115,6 +115,6 @@ class EtherBolt(Spell):
         yield
 
     def get_description(self):
-        return "Deal [{damage}_äthereal:äthereal] damage to the target and apply Ätherealness for [{duration}_turns:duration].".format(
+        return "Deal [{damage}_äthereal:äthereal] damage to the target and apply [Ätherealness:äthereal] for [{duration}_turns:duration].".format(
             **self.fmt_dict()
         )

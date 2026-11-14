@@ -31,7 +31,7 @@ class Railgun(Spell):
             1,
             4,
             "Discharging Velocity",
-            "For every 25 damage more then needed to kill a unit launch an äther spark dealing [7_äthereal:äthereal] damage and aplying [Ätherealness:äthereal] for 3 turns at a random enemy in line of sight".format(
+            "For every 25 damage dealt beyond what's needed to kill a unit, launch an Äther spark that deals [7_äthereal:äthereal] damage and applies [Ätherealness:äthereal] for 3 turns to a random enemy in line of sight".format(
                 **self.fmt_dict()
             ),
         )
@@ -116,8 +116,8 @@ class Railgun(Spell):
     def get_description(self):
         return (
             "Trap a coin between two rifts steadily increasing its momentum\n"
-            "Then shoot the coin across a line that deals [physical:physical] damage to all units [hit:damage] and half [äthereal:äthereal] damage to all units in and surounding the line aswell.\n"
-            "Cast once to start charging. Recast to fire. Gains {} range and {} damage for every turn charged. Loses 5 damage for every target [hit:damage]".format(
+            "Then shoot the coin along a line, dealing [Physical:physical] damage to all units [hit:damage] and half [Äthereal:äthereal] damage to units along and around the line.\n"
+            "Cast once to start charging. Recast to fire. Gains [{}:range] range and [{}:damage] damage for every turn charged. Loses 5 damage for every target [hit:damage]".format(
                 math.floor(self.get_stat("charge_speed") / 3),
                 self.get_stat("charge_speed"),
             )

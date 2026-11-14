@@ -2,7 +2,7 @@ import random
 
 from Level import Component, Tags, are_hostile
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
-from mods.EtherealPack.models.skills.etherpredators import EtherSpider
+from mods.EtherealPack.models.equipment.etherpredators import EtherSpider
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 class EtherealDust(Component):

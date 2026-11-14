@@ -25,13 +25,13 @@ class PyreOfWyvernsSpell(Spell):
             1,
             4,
             "Embracing Waves",
-            "The wyverns ether waves provide up to 2 shields to allies",
+            "The Wyverns' Äther Waves grant allies up to [2 SH:shields].",
         )
         self.upgrades["ether_link"] = (
             1,
             5,
             "Link",
-            "Wyverns link up to each other if they stay near their radius increases by 3 and their wave cooldown is set to 2",
+            "Wyverns link to each other when nearby, increasing their radius by [3:radius] and reducing their wave cooldown to [2_turns:duration].",
         )
 
         self.range = 0
@@ -40,24 +40,31 @@ class PyreOfWyvernsSpell(Spell):
     def get_description(self):
         return (
             "Summons [{num_summons}_wyverns:num_summons] near the caster.\n"
-            "Wyverns have [{minion_health}_HP:minion_health] and [50_äthereal:äthereal], [25_physical:physical] and [-25_arcane:arcane] resist.\n"
-            "Wyverns have a ether wave attack which deals [{minion_damage}_äthereal:äthereal] damage in a [4_tile:radius] radius and applies [Ätherealness:äthereal] for 3 turns.\n"
+            "Wyverns have [{minion_health}_HP:minion_health], [{shields}_SH:shields], and [50% Äthereal:äthereal], [25% Physical:physical], and [-25% Arcane:arcane] resistance.\n"
+            "Wyverns have an Äther Wave attack that deals [{minion_damage}_äthereal:äthereal] damage in a [4_tile:radius] radius and applies [Ätherealness:äthereal] for 3 turns.\n"
             "Wyverns have a melee attack which deals [{minion_damage}_physical:physical] damage."
         ).format(**self.fmt_dict())
 
+    def make_wyvern(self):
+        wyvern = EtherWyvern(shields=self.get_stat("shields"))
+        wyvern.max_hp = self.get_stat("minion_health")
+        wyvern.spells.clear()
+        wyvern.spells.append(
+            EtherWave(
+                self.get_stat("minion_damage") + self.get_stat("breath_damage"),
+                self.get_stat("minion_range"),
+                self.get_stat("shielding_waves"),
+                self.get_stat("ether_link"),
+            )
+        )
+        wyvern.spells.append(SimpleMeleeAttack(self.get_stat("minion_damage")))
+        return wyvern
+
+    def get_extra_examine_tooltips(self):
+        return [self.make_wyvern()] + self.get_upgrade_tooltips()
+
     def cast_instant(self, x, y):
         for i in range(self.get_stat("num_summons")):
-            wyvern = EtherWyvern(shields=self.get_stat("shields"))
-            wyvern.max_hp = self.get_stat("minion_health")
-            wyvern.spells.clear()
-            wyvern.spells.append(
-                EtherWave(
-                    self.get_stat("minion_damage") + self.get_stat("breath_damage"),
-                    self.get_stat("minion_range"),
-                    self.get_stat("shielding_waves"),
-                    self.get_stat("ether_link"),
-                )
-            )
-            wyvern.spells.append(SimpleMeleeAttack(self.get_stat("minion_damage")))
+            wyvern = self.make_wyvern()
             wyvern.team = self.caster.team
             self.summon(wyvern, Point(x, y))

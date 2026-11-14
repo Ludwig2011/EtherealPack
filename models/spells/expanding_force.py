@@ -145,7 +145,7 @@ class ExpandingForceSpell(Spell):
             1,
             3,
             "Teleport Blocker",
-            "When an enemy teleports inside this radius, it takes [2_äthereal:äthereal] damage and is [stun]ned for [3_turns:duration].",
+            "When an enemy teleports inside this radius, it takes [2_äthereal:äthereal] damage and is [stunned:physical] for [3_turns:duration].",
         )
 
         self.tags = [Tags.Enchantment, Ethereal, Tags.Arcane]

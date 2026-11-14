@@ -32,20 +32,20 @@ class EtherStormSpell(Spell):
             1,
             2,
             "Endothermic Discharge",
-            "The bolts freeze enemies for 1 turn",
+            "The bolts [freeze:ice] enemies for 1 turn",
             [Tags.Ice],
         )
         self.upgrades["lingering_static"] = (
             1,
             2,
             "Lingering Static",
-            "The Storms static field applies Ätherealness to all units for [{duration}_turns:duration]",
+            f"The Storm's static field applies [Ätherealness:äthereal] to all units for [{self.duration}_turns:duration]",
         )
         self.upgrades["searing_storm"] = (
             1,
             2,
             "Searing Storm",
-            "The bolts leave enemies with burns dealing [{damage}_fire:fire] damage for 3 turns",
+            f"The bolts leave enemies [burning:fire], dealing [{self.damage}_fire:fire] damage for 3 turns",
             [Tags.Fire],
         )
 
@@ -54,7 +54,7 @@ class EtherStormSpell(Spell):
     def get_description(self):
         description = (
             "Open a Rift to the Energy Plane through which {} energy bolts strike random enemies in [{radius}_radius:radius]\n"
-            "Each bolt deals [{damage}_äthereal:äthereal] damage and deals lightning damage against [ätherealiesed:äthereal] targets aswell"
+            "Each bolt deals [{damage}_äthereal:äthereal] damage and deals [Lightning:lightning] damage to targets affected by [Ätherealness:äthereal]"
         )
         return description.format(self.get_stat("num_targets"), **self.fmt_dict())
 

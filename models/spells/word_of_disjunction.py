@@ -19,7 +19,7 @@ class WordOfDisjunction(Spell):
             1,
             7,
             "Recombobulate",
-            "Steal 7 shields of all units",
+            "Steal [7 SH:shields] from all units",
             None,
             [],
         )
@@ -30,10 +30,35 @@ class WordOfDisjunction(Spell):
             [1, 7, 7, 7],
             7,
             "Manifest",
-            "Summon an Äther Ghost next to every unit",
+            "Summon an [Äther Ghost:äthereal] next to each unit except non-caster [Arcane:arcane] units",
             None,
             [Tags.Conjuration],
         )
+        self.add_upgrade_tooltip("Manifest", self.make_ghost)
+
+    def make_ghost(self):
+        spirit = Unit()
+        spirit.name = "Äther Ghost"
+        spirit.asset = ["EtherealPack", "ether_ghost"]
+        spirit.max_hp = self.get_stat("minion_health", base=7)
+        spirit.cur_hp = spirit.max_hp
+        spirit.shields = 0
+        spirit.spells.append(
+            SimpleRangedAttack(
+                damage=self.get_stat("minion_damage", base=7),
+                damage_type=Ethereal,
+                range=self.get_stat("minion_range", base=7),
+            )
+        )
+        spirit.tags = [Ethereal, Tags.Undead]
+        spirit.buffs.append(TeleportyBuff())
+        spirit.resists[Tags.Holy] = 100
+        spirit.resists[Tags.Dark] = 100
+        spirit.resists[Ethereal] = 50
+        spirit.resists[Tags.Physical] = 50
+        spirit.resists[Tags.Arcane] = -100
+        spirit.flying = True
+        return spirit
 
     def cast(self, x, y):
         level = self.caster.level
@@ -52,31 +77,10 @@ class WordOfDisjunction(Spell):
                     unit.shields = max(0, unit.shields - 7)
 
             if self.get_stat("summon_ghosts"):
-                spirit = Unit()
-                spirit.name = "Äther Ghost"
-                spirit.asset = ["EtherealPack", "ether_ghost"]
-                spirit.max_hp = self.get_stat("minion_health")
-                spirit.cur_hp = spirit.max_hp
-                spirit.shields = 0
-                spirit.spells.append(
-                    SimpleRangedAttack(
-                        damage=self.get_stat("minion_damage"),
-                        damage_type=Ethereal,
-                        range=self.get_stat("minion_range"),
-                    )
-                )
-                spirit.tags = [Ethereal, Tags.Undead]
-                spirit.buffs.append(TeleportyBuff())
-                spirit.resists[Tags.Holy] = 100
-                spirit.resists[Tags.Dark] = 100
-                spirit.resists[Ethereal] = 50
-                spirit.resists[Tags.Physical] = 50
-                spirit.resists[Tags.Arcane] = -100
-                spirit.flying = True
-                self.summon(spirit, Point(unit.x, unit.y))
+                self.summon(self.make_ghost(), Point(unit.x, unit.y))
         yield
 
     def get_description(self):
-        return "All non arcane units except the caster lose their [physical:physical] resistance and recieve Ätherealness for [{duration}_turns:duration].".format(
+        return "All non-[Arcane:arcane] units except the caster lose their [Physical:physical] resistance and receive [Ätherealness:äthereal] for [{duration}_turns:duration].".format(
             **self.fmt_dict()
         )

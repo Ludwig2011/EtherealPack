@@ -1,7 +1,10 @@
 # Consitent naming scheme required
 from CommonContent import RegenBuff
 from Level import *
-from mods.EtherealPack.models.buffs.lost_heads_buff import LostHeadsBuff
+from mods.EtherealPack.models.buffs.lost_heads_buff import (
+    LostHeadsBuff,
+    make_lost_head as make_lost_head_unit,
+)
 from mods.EtherealPack.models.minions.ether_hydra import EtherHydra
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.tags.Ethereal import Ethereal
@@ -25,15 +28,16 @@ class SummonEtherHydraSpell(Spell):
             1,
             3,
             "Element Mother",
-            "Each of the Äther Hydras Äther Beams redeals its damage as either fire lightning or ice damage.\nHydra gains 50 elemental resistance.",
+            "Each of the Äther Hydra's Äther Beams also deals [Fire:fire], [Lightning:lightning], or [Ice:ice] damage.\nThe Hydra gains [50% Fire:fire], [50% Lightning:lightning], and [50% Ice:ice] resistance.",
             [Tags.Chaos],
         )
         self.upgrades["lost_heads"] = (
             1,
             3,
             "Lost Heads",
-            "Whenever the hydra loses 15 hp spawn a stationary minion with an äther beam attack nearby",
+            "Whenever the Hydra loses [15 HP:damage], it spawns a stationary minion with an Äther Beam attack nearby",
         )
+        self.add_upgrade_tooltip("Lost Heads", self.make_lost_head)
         self.upgrades["dragon_mage"] = (
             1,
             6,
@@ -43,9 +47,8 @@ class SummonEtherHydraSpell(Spell):
 
         self.must_target_empty = True
 
-    def cast_instant(self, x, y):
+    def make_hydra(self):
         drake = EtherHydra(self.get_stat("element_mother"))
-        drake.team = self.caster.team
         drake.max_hp = self.get_stat("minion_health")
         drake.spells[0].damage = self.get_stat("minion_damage")
         drake.spells[0].range = self.get_stat("minion_range")
@@ -66,7 +69,19 @@ class SummonEtherHydraSpell(Spell):
             fball.cur_charges = 0
             fball.cool_down = 3
             drake.spells.insert(0, fball)
+        return drake
 
+    def make_lost_head(self):
+        return make_lost_head_unit(
+            self.get_stat("element_mother"), self.get_stat("minion_damage")
+        )
+
+    def get_extra_examine_tooltips(self):
+        return [self.make_hydra()] + self.get_upgrade_tooltips()
+
+    def cast_instant(self, x, y):
+        drake = self.make_hydra()
+        drake.team = self.caster.team
         self.summon(drake, Point(x, y))
 
     def get_description(self):

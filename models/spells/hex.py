@@ -23,7 +23,7 @@ class Hex(Spell):
             1,
             2,
             "Deterioration",
-            "Targets effected by hex also lose [physical:physical], [poison:poison] and [ice:ice] resistance".format(
+            "Targets affected by Hex also lose [Physical:physical], [Poison:poison], and [Ice:ice] resistance".format(
                 **self.fmt_dict()
             ),
         )
@@ -31,13 +31,13 @@ class Hex(Spell):
             1,
             3,
             "Perpetual Curse",
-            "When a target effected by both Hex and [Ätherealness:äthereal] dies, reaply Hex the closest enemy in line of sight.",
+            "When a target affected by both Hex and [Ätherealness:äthereal] dies, reapply Hex to the closest enemy in line of sight.",
         )
         self.upgrades["volatile_death"] = (
             1,
             4,
             "Volatile Death",
-            "When a target effected by Hex dies, cause an explosion with [5_tile:radius] dealing [7_dark:dark] and [7_äthereal:äthereal] damage that apllies [Ätherealness:äthereal] for [{duration}_turns:duration]".format(
+            "When a target affected by Hex dies, cause an explosion in a [5_tile:radius] radius that deals [7_dark:dark] and [7_äthereal:äthereal] damage and applies [Ätherealness:äthereal] for [{duration}_turns:duration]".format(
                 **self.fmt_dict()
             ),
         )
@@ -66,7 +66,7 @@ class Hex(Spell):
 
     def get_description(self):
         description = (
-            "Curse enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever they take damage for [{duration}_turns:duration], they also lose {} [dark:dark] and [äthereal:äthereal] resistance.".format(
+            "Curse an enemy to take [{damage}_äthereal:äthereal] and [{damage}_dark:dark] damage whenever it takes damage for [{duration}_turns:duration]. It also loses {} [Dark:dark] and [Äthereal:äthereal] resistance.".format(
                 self.resist_loss, **self.fmt_dict()
             )
         )

@@ -10,4 +10,4 @@ class Ethertuned(Equipment):
 		self.recipe = [(Ethereal, 1), (Tags.Enchantment, 1), (Tags.Any, 2)]
 
 	def get_description(self):
-		return "When Etherealness is applied to allies, it grants 50 Physical and Ethereal resistance and 100 Poison resistance for its duration."
+		return "When [Ätherealness:äthereal] is applied to allies, it grants [50% Physical:physical], [50% Äthereal:äthereal], and [100% Poison:poison] resistance for its duration."

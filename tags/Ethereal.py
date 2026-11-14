@@ -17,7 +17,6 @@ from RareMonsters import SlimeAdaptiveArmorBuff
 #TODO make offmap spells use same helper for unit copy etc
 #TODO fix description color and variables in spells/equipment
 #TODO make spells/equipment scale with appropiate spell bonuses where not already done. Mostly missing for upgrades / equipment
-#TODO Rename skill folder to equipment and make sure imports etc dont break 
 #TODO Rework vanilla ether spider
 Ethereal = ModHandler.register_tag("Äthereal", Color(1, 255, 188), letter="v", asset=["EtherealPack", "ether"])
 Etherealness = Tag("Ätherealness", Color(1, 255, 188))

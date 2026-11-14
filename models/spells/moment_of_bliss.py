@@ -27,13 +27,13 @@ class MomentOfBliss(Spell):
             1,
             3,
             "Blinding Grace",
-            "Blind enemies in [{radius}_radius:radius] for 3 turns every turn",
+            f"[Blinds:holy] enemies in [{self.radius}_radius:radius] for 3 turns every turn",
         )
         self.upgrades["bless"] = (
             1,
             5,
             "Blessing",
-            "Yor ally gains 100 Holy resist, a ranged attack that deals [7_holy:holy] damage with 7 range and 3 HP regen",
+            "Your ally gains [100% Holy:holy] resistance, a ranged attack that deals [7_holy:holy] damage with [7_range:range] range, and [3 HP:heal] regeneration",
             [Tags.Holy],
         )
 
@@ -70,6 +70,6 @@ class MomentOfBliss(Spell):
         yield
 
     def get_description(self):
-        return "Transport ally into the Plane of Bliss for [{duration}_turns:duration]. Ally restores [{damage}_hp:heal] every turn until they reappier.\nLeaves behind a blissfull Rift that heals allies [{damage}_hp:heal] hp in [{radius}_tile:range] range around the rift every turn and applies Ätherealness to units ontop for 2 turns.".format(
+        return "Transport an ally into the Plane of Bliss for [{duration}_turns:duration]. The ally restores [{damage}_hp:heal] HP each turn until it reappears.\nLeaves behind a Bliss Rift that heals allies for [{damage}_hp:heal] HP each turn within [{radius}_tile:range] and applies [Ätherealness:äthereal] to units on it for 2 turns.".format(
             **self.fmt_dict()
         )

@@ -26,7 +26,7 @@ class MassStasis(Spell):
             1,
             2,
             "Äther Lag",
-            "Targets also get ätherealiesed for the same duration after they return",
+            "Targets are also affected by [Ätherealness:äthereal] for the same duration after they return",
         )
         # TODO make upgrade random basic status effect and chaos tag
         # TODO make upgrade "Entaglement" shared pain effect
@@ -65,6 +65,6 @@ class MassStasis(Spell):
         yield
 
     def get_description(self):
-        return "Transport all targets in [{radius}_tile:radius] radius into the Ether Plane for [{duration}_turns:duration].\nLeaves behind a Rift that [ätherealieses:äthereal] units for 2 turns.".format(
+        return "Transport all targets in a [{radius}_tile:radius] radius into the Ether Plane for [{duration}_turns:duration].\nLeaves behind a Rift that applies [Ätherealness:äthereal] to units for 2 turns.".format(
             **self.fmt_dict()
         )
