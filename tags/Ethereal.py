@@ -8,8 +8,6 @@ from RareMonsters import SlimeAdaptiveArmorBuff
 from mods.EtherealPack.models.hazards.base import EtherealHazard
 import mods.EtherealPack.models.hazards.layer
 
-#TODO staff with minion health / number
-#TODO staff with damage, range and minion damage, range 4 3 4 3
 #TODO make euqipment staff that gives bonus charges and duration
 #TODO make icons animated again!
 #TODO ethermancer trial give ethermancer robe

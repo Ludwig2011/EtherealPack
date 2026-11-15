@@ -9,6 +9,7 @@ from mods.EtherealPack.models.equipment.ether_lord import EtherLord
 from mods.EtherealPack.models.equipment.etherpredators import Etherpredators
 from mods.EtherealPack.models.equipment.ethertuned import Ethertuned
 from mods.EtherealPack.models.equipment.vastness import Vastness
+from mods.EtherealPack.models.equipment.bundle import BookOfDisjunction, EmergenceStaff, EtherStaff, StabelizationStaff
 from mods.EtherealPack.models.spells.domain_expansion import DomainExpansion
 from mods.EtherealPack.models.spells.ether_bolt import EtherBolt
 from mods.EtherealPack.models.spells.ether_eye import EyeOfEtherSpell
@@ -35,7 +36,6 @@ Spells.all_player_spell_constructors.extend([
 	EtherBolt,
 	SummonEtherHydraSpell,
 	Hex,
-	WordOfDisjunction,
 	PyreOfWyvernsSpell,
 	MomentInHell,
 	PureEtherSphere,
@@ -60,6 +60,10 @@ EquipmentContent.all_equipment.extend([
 	Etherpredators,
 	Ethertuned,
 	Vastness,
+	BookOfDisjunction,
+	EtherStaff,
+	EmergenceStaff,
+	StabelizationStaff,
 ])
 
 for component in [EtherealDust, EtherealLens, EtherealBloom, EtherealFrost]:
