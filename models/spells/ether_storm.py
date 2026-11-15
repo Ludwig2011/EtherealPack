@@ -59,6 +59,7 @@ class EtherStormSpell(Spell):
         return description.format(self.get_stat("num_targets"), **self.fmt_dict())
 
     def cast(self, x, y):
+        damage = self.get_stat("damage")
         targets = [
             u
             for u in self.caster.level.get_units_in_ball(
@@ -74,13 +75,13 @@ class EtherStormSpell(Spell):
             if self.get_stat("endothermic_discharge"):
                 target.apply_buff(FrozenBuff(), 1)
             if self.get_stat("searing_storm"):
-                target.apply_buff(EtherBuff(self.get_stat("damage")), 3)
-            if target.has_buff(EtherealnessBuff()):
+                target.apply_buff(BurningBuff(damage), 3)
+            if target.has_buff(EtherealnessBuff):
                 self.caster.level.deal_damage(
-                    target.x, target.y, self.damage, Tags.Lightning, self
+                    target.x, target.y, damage, Tags.Lightning, self
                 )
             self.caster.level.deal_damage(
-                target.x, target.y, self.damage, Ethereal, self
+                target.x, target.y, damage, Ethereal, self
             )
             if target.cur_hp < 1:
                 targets.remove(target)
@@ -98,7 +99,7 @@ class EtherStormSpell(Spell):
         yield
 
 
-class EtherBuff(Buff):
+class BurningBuff(Buff):
     def __init__(self, damage):
         self.damage = damage
         Buff.__init__(self)
