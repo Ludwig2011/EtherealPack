@@ -1,16 +1,16 @@
 	
 from Level import Tags, are_hostile
-from mods.API_TileHazards.API_TileHazards import TileHazardBasic
+from mods.EtherealPack.models.hazards.base import EtherealHazard
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 
 
-class Brimstone(TileHazardBasic):
+class Brimstone(EtherealHazard):
     def __init__(self, user, source, duration, damage, ether=False):
         if ether:
-            TileHazardBasic.__init__(self, "Hell Portal", duration, user)
+            EtherealHazard.__init__(self, "Hell Portal", duration, user)
             self.asset = ["EtherealPack", "Hell_Stasis"]
         else:
-            TileHazardBasic.__init__(self, "Brimstone", duration, user)
+            EtherealHazard.__init__(self, "Brimstone", duration, user)
             self.asset = ["EtherealPack", "brimstone"]
         self.damage = damage
         self.ether = ether

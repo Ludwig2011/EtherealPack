@@ -62,7 +62,7 @@ class MomentOfBliss(Spell):
             self.get_stat("blind"),
             self.get_stat("bless"),
         )
-        self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
+        self.caster.level.add_hazard(stasis, hazard_point.x, hazard_point.y)
 
         yield
 

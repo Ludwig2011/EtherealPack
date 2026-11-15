@@ -1,15 +1,14 @@
 from Level import *
-from mods.API_TileHazards.API_TileHazards import TileHazardBasic
+from mods.EtherealPack.models.hazards.base import EtherealHazard
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
 
-class PureEther(TileHazardBasic):
+class PureEther(EtherealHazard):
     def __init__(self, user, source, duration, damage, is_chasm):
-        TileHazardBasic.__init__(self, "Pure Ether", duration, user)
+        EtherealHazard.__init__(self, "Pure Ether", duration, user)
         self.damage = damage
         self.source = source
-        self.preserve_terrain_on_level_clear = True
         if is_chasm:
             self.asset = ["EtherealPack", "pure_ether_chasm"]
         else:

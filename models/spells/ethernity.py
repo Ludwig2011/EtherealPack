@@ -53,7 +53,7 @@ class Ethernity(Spell):
             unit_in_stasis,
             hazards,
         )
-        self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
+        self.caster.level.add_hazard(stasis, hazard_point.x, hazard_point.y)
 
         yield
 

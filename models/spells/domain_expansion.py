@@ -68,7 +68,9 @@ class DomainExpansion(Spell):
         ):
             if (
                 not self.caster.level.tiles[point.x][point.y].is_wall()
-                and self.caster.level.tiles[point.x][point.y].prop == None
+                and not getattr(
+                    self.caster.level.tiles[point.x][point.y], "hazards", None
+                )
             ):
                 pure_ether = PureEther(
                     self.caster,
@@ -77,4 +79,4 @@ class DomainExpansion(Spell):
                     0,
                     self.caster.level.tiles[point.x][point.y].is_chasm,
                 )
-                self.caster.level.add_obj(pure_ether, point.x, point.y)
+                self.caster.level.add_hazard(pure_ether, point.x, point.y)

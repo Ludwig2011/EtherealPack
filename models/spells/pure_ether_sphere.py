@@ -78,7 +78,7 @@ class PureEtherSphereBuff(Buff):
         for point in level.get_points_in_ball(
             x, y, radius, diag=use_diagonal_distance
         ):
-            if level.tiles[point.x][point.y].prop is not None:
+            if getattr(level.tiles[point.x][point.y], "hazards", None):
                 continue
             hazard = PureEther(
                 self.spell.caster,
@@ -87,7 +87,7 @@ class PureEtherSphereBuff(Buff):
                 damage,
                 level.tiles[point.x][point.y].is_chasm,
             )
-            level.add_obj(hazard, point.x, point.y)
+            level.add_hazard(hazard, point.x, point.y)
 
 
 class PureEtherSphere(Spell):

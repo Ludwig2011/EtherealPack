@@ -39,8 +39,6 @@ def get_hazard_point(level, x, y, radius_limit=25, sort_dist=True, flying=False,
 			else:
 				if not tile.can_fly:
 					continue
-			if not tile.prop == None:
-				continue
 			return o
 
 		return None

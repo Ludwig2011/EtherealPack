@@ -105,7 +105,7 @@ class EtherStream(Spell):
             ):
                 tile = self.caster.level.tiles[point.x][point.y]
 
-                if not tile.is_wall() and tile.prop is None:
+                if not tile.is_wall() and not getattr(tile, "hazards", None):
                     pure_ether = PureEther(
                         self.caster,
                         self,
@@ -113,7 +113,7 @@ class EtherStream(Spell):
                         0,
                         tile.is_chasm
                     )
-                    self.caster.level.add_obj(
+                    self.caster.level.add_hazard(
                         pure_ether, point.x, point.y
                     )
 

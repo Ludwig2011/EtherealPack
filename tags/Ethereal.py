@@ -1,12 +1,13 @@
 import LevelRewards
+import Game
 import ModHandler
-from Level import Color, EventOnUnitAdded, LAST_LEVEL, Level, Portal, Tag, Tags, TEAM_PLAYER, Upgrade
-# import sys
-# PyGameView = sys.modules["__main__"].PyGameView
+import sys
+from Level import Color, EventOnMoved, EventOnUnitAdded, Level, Portal, Tag, Tags, TEAM_PLAYER
 
 from RareMonsters import SlimeAdaptiveArmorBuff
+from mods.EtherealPack.models.hazards.base import EtherealHazard
+import mods.EtherealPack.models.hazards.layer
 
-#TODO can we make hazards on top of other props?
 #TODO staff with minion health / number
 #TODO staff with damage, range and minion damage, range 4 3 4 3
 #TODO make euqipment staff that gives bonus charges and duration
@@ -34,6 +35,21 @@ def on_unit_added(evt):
         unit.resists[Ethereal] -= 50
 
 
+def on_unit_moved(evt):
+    tile = evt.unit.level.tiles[evt.x][evt.y]
+    for hazard in list(getattr(tile, "hazards", ())):
+        if evt.unit.is_alive():
+            hazard.on_unit_enter(evt.unit)
+
+
+def register_level_rules(level):
+    if getattr(level, "_ethereal_rules_registered", False):
+        return
+    level.event_manager.register_global_trigger(EventOnUnitAdded, on_unit_added)
+    level.event_manager.register_global_trigger(EventOnMoved, on_unit_moved)
+    level._ethereal_rules_registered = True
+
+
 # Preserve the original initializer.
 _original_level_init = Level.__init__
 
@@ -41,91 +57,135 @@ _original_level_init = Level.__init__
 def level_init_with_ethereal_rules(self, w, h):
     # Initialize the level normally, including its event manager.
     _original_level_init(self, w, h)
+    self.hazards = []
+    register_level_rules(self)
 
-    # Register the rules for this level.
-    self.event_manager.register_global_trigger(
-        EventOnUnitAdded,
-        on_unit_added
-    )
+
+def add_hazard(self, hazard, x, y):
+    if not hasattr(self, "hazards"):
+        self.hazards = []
+    register_level_rules(self)
+
+    hazard.x = x
+    hazard.y = y
+    hazard.level = self
+    if not hasattr(hazard, "level_id"):
+        hazard.level_id = self.level_id
+
+    tile = self.tiles[x][y]
+    if not hasattr(tile, "hazards"):
+        tile.hazards = []
+    if hazard not in tile.hazards:
+        tile.hazards.append(hazard)
+    if hazard not in self.hazards:
+        self.hazards.append(hazard)
+    return hazard
+
+
+def remove_hazard(self, hazard):
+    if hazard in self.hazards:
+        self.hazards.remove(hazard)
+    tile_hazards = getattr(self.tiles[hazard.x][hazard.y], "hazards", ())
+    if hazard in tile_hazards:
+        tile_hazards.remove(hazard)
+    hazard.removed = True
 
 
 # Replace the initializer.
 Level.__init__ = level_init_with_ethereal_rules
-
-
-_original_has_enemy_units = Level.has_enemy_units
+Level.add_hazard = add_hazard
+Level.remove_hazard = remove_hazard
 
 
 def has_enemy_units_with_stasis(self):
-    if _original_has_enemy_units(self):
+    if any(u.team != TEAM_PLAYER for u in self.units):
         return True
 
     return any(
-        getattr(prop, "counts_for_level_clear", False)
-        and getattr(prop, "unit", None) is not None
-        and prop.unit.team != TEAM_PLAYER
-        and prop.unit.cur_hp > 0
-        and not prop.unit.killed
-        for prop in self.props
+        getattr(hazard, "counts_for_level_clear", False)
+        and getattr(hazard, "unit", None) is not None
+        and hazard.unit.team != TEAM_PLAYER
+        and hazard.unit.cur_hp > 0
+        and not hazard.unit.killed
+        for hazard in getattr(self, "hazards", ())
     )
 
 
 Level.has_enemy_units = has_enemy_units_with_stasis
 
 
-def has_stasis_terrain_protection(prop):
-    return getattr(prop, "preserve_terrain_on_level_clear", False)
+_original_rebuild_event_managers = Game.Game.rebuild_event_managers
 
 
-_original_prop_mercy = Level.prop_mercy
+def rebuild_event_managers_with_ethereal_rules(self):
+    _original_rebuild_event_managers(self)
+
+    levels = []
+    seen = set()
+
+    def add_level(level):
+        if not level:
+            return
+        key = id(level)
+        if key in seen:
+            return
+        seen.add(key)
+        levels.append(level)
+        for prop in getattr(level, "props", []):
+            if not isinstance(prop, Portal):
+                continue
+            for next_level in (
+                getattr(prop, "next_level", None),
+                getattr(prop.level_gen_params, "level", None),
+            ):
+                if next_level:
+                    add_level(next_level)
+
+    add_level(self.cur_level)
+    add_level(getattr(self, "next_level", None))
+    add_level(getattr(self, "prev_next_level", None))
+
+    for level in levels:
+        level._ethereal_rules_registered = False
+        if not hasattr(level, "hazards"):
+            level.hazards = []
+        for hazard in list(level.props):
+            if not isinstance(hazard, EtherealHazard):
+                continue
+            level.props.remove(hazard)
+            tile = level.tiles[hazard.x][hazard.y]
+            if tile.prop is hazard:
+                tile.prop = None
+            add_hazard(level, hazard, hazard.x, hazard.y)
+        register_level_rules(level)
 
 
-def prop_mercy_preserving_stasis_terrain(self):
-    if not any(has_stasis_terrain_protection(prop) for prop in self.props):
-        return _original_prop_mercy(self)
-
-    for prop in self.props:
-        if has_stasis_terrain_protection(prop):
-            continue
-        if not self.tiles[prop.x][prop.y].is_floor():
-            self.make_floor(prop.x, prop.y)
+Game.Game.rebuild_event_managers = rebuild_event_managers_with_ethereal_rules
 
 
-Level.prop_mercy = prop_mercy_preserving_stasis_terrain
+PyGameView = sys.modules["__main__"].PyGameView
+_original_try_examine_tile = PyGameView.try_examine_tile
 
 
-_original_portal_mercy = Level.portal_mercy
+def try_examine_tile_with_hazards(self, point):
+    if point is None:
+        return _original_try_examine_tile(self, point)
+
+    level = self.get_display_level()
+    if not level.is_point_in_bounds(point):
+        return _original_try_examine_tile(self, point)
+
+    tile = level.tiles[point.x][point.y]
+    target = (tile.unit if tile.unit != self.game.p1 else None) or tile.cloud
+    tile_hazards = getattr(tile, "hazards", ())
+    if target is None and tile_hazards:
+        target = tile_hazards[-1]
+    if target is None:
+        target = tile.prop
+    self.examine_target = target
 
 
-def portal_mercy_preserving_stasis_terrain(self):
-    if self.level_no == LAST_LEVEL or any(
-        isinstance(prop, Portal) for prop in self.props
-    ):
-        return _original_portal_mercy(self)
-
-    tiles = list(self.get_tiles_in_ball(self.player_unit.x, self.player_unit.y, 1.5))
-    safe_tiles = [
-        tile for tile in tiles if not has_stasis_terrain_protection(tile.prop)
-    ]
-    if len(safe_tiles) == len(tiles):
-        return _original_portal_mercy(self)
-
-    for tile in safe_tiles:
-        self.make_floor(tile.x, tile.y)
-
-    if not safe_tiles:
-        return
-
-    exit_loc = self.random.choice(safe_tiles)
-    self.add_portal(
-        Portal(self.gen_params.make_child_generator()),
-        exit_loc.x,
-        exit_loc.y,
-        locked=False,
-    )
-
-
-Level.portal_mercy = portal_mercy_preserving_stasis_terrain
+PyGameView.try_examine_tile = try_examine_tile_with_hazards
 
 # original_get_sprite_sheet = PyGameView.get_sprite_sheet
 

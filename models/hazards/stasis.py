@@ -1,5 +1,5 @@
 from Level import *
-from mods.API_TileHazards.API_TileHazards import TileHazardBasic
+from mods.EtherealPack.models.hazards.base import EtherealHazard
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.pure_ether import PureEther
 from mods.EtherealPack.models.hazards.util import (
@@ -8,13 +8,12 @@ from mods.EtherealPack.models.hazards.util import (
 )
 
 
-class TranslocationStasis(TileHazardBasic):
+class TranslocationStasis(EtherealHazard):
     def __init__(self, name, asset, user, source, duration, unit, unit_buffs=None):
-        TileHazardBasic.__init__(self, name, duration, user)
+        EtherealHazard.__init__(self, name, duration, user)
         self.source = source
         self.unit = unit
         self.counts_for_level_clear = True
-        self.preserve_terrain_on_level_clear = True
         if unit is not None:
             suspend_unit_events(unit)
         self.unit_buffs = unit_buffs
@@ -84,13 +83,13 @@ class Stasis(TranslocationStasis):
         steppy = self.user.level.get_unit_at(self.x,self.y)
         if steppy: 
             steppy.apply_buff(EtherealnessBuff(), 2)
-        tiles = [t for t in self.user.level.get_points_in_ball(self.x,self.y,5) if self.user.level.tiles[t.x][t.y].prop == None and self.user.level.tiles[t.x][t.y].can_see]
+        tiles = [t for t in self.user.level.get_points_in_ball(self.x,self.y,5) if not getattr(self.user.level.tiles[t.x][t.y], "hazards", None) and self.user.level.tiles[t.x][t.y].can_see]
         if len(tiles)>0:
             for i in range(self.hazards):
                 if len(tiles)<=0:
                     continue
                 tile = random.choice(tiles)
-                self.user.level.add_obj(PureEther(self.user,self.source,3,7, self.user.level.tiles[tile.x][tile.y].is_chasm), tile.x, tile.y)
+                self.user.level.add_hazard(PureEther(self.user,self.source,3,7, self.user.level.tiles[tile.x][tile.y].is_chasm), tile.x, tile.y)
                 tiles.remove(tile)
         if self.unit is not None and self.unit.cur_hp <= 0:
             self.duration = 1

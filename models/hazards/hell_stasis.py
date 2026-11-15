@@ -57,8 +57,13 @@ class HellStasis(TranslocationStasis):
             targets.remove(target)
             self.user.level.deal_damage(target.x,target.y,self.damage, Ethereal, self.source)
             self.user.level.deal_damage(target.x,target.y,self.damage, Tags.Fire, self.source)
-            if self.brimstone and self.user.level.tiles[target.x][target.y].prop == None:
-                self.user.level.add_obj(Brimstone(self.user,self.source,3,self.damage), target.x, target.y)
+            tile = self.user.level.tiles[target.x][target.y]
+            if self.brimstone and not getattr(tile, "hazards", None):
+                self.user.level.add_hazard(
+                    Brimstone(self.user, self.source, 3, self.damage),
+                    target.x,
+                    target.y,
+                )
         if self.unit is not None:
             if killed or self.unit.cur_hp <= 0:
                 self.duration = 1

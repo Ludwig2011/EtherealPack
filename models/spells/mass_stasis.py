@@ -53,7 +53,7 @@ class MassStasis(Spell):
             stasis = Stasis(
                 self.caster, self, self.get_stat("duration"), unit_in_stasis
             )
-            self.caster.level.add_obj(stasis, hazard_point.x, hazard_point.y)
+            self.caster.level.add_hazard(stasis, hazard_point.x, hazard_point.y)
 
         yield
 
