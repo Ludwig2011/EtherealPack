@@ -1,3 +1,4 @@
+from CommonContent import SharedPainBuff
 from Level import *
 from mods.EtherealPack.models.hazards.base import EtherealHazard
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
@@ -59,7 +60,18 @@ class TranslocationStasis(EtherealHazard):
 
 
 class Stasis(TranslocationStasis):
-    def __init__(self, user, source, duration, unit, hazards=0, unit_buffs=None):
+    def __init__(
+        self,
+        user,
+        source,
+        duration,
+        unit,
+        hazards=0,
+        unit_buffs=None,
+        return_debuff=None,
+        shared_pain=False,
+        return_duration=None,
+    ):
         TranslocationStasis.__init__(
             self,
             "Ether Portal",
@@ -71,6 +83,15 @@ class Stasis(TranslocationStasis):
             unit_buffs,
         )
         self.hazards = hazards
+        self.return_debuff = return_debuff
+        self.shared_pain = shared_pain
+        self.return_duration = return_duration or duration
+
+    def on_unit_returned(self):
+        if self.return_debuff:
+            self.unit.apply_buff(self.return_debuff(), self.return_duration)
+        if self.shared_pain:
+            self.unit.apply_buff(SharedPainBuff(), self.return_duration)
 
     def get_description(self):
         unit_name = self.unit.name if self.unit is not None else "Empty Ether Portal"

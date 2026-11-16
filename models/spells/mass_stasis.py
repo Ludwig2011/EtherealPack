@@ -1,4 +1,8 @@
+import random
+
+from CommonContent import BleedBuff, FrozenBuff, PetrifyBuff, Poison
 from Level import *
+from Monsters import HemorrhageBuff
 from mods.EtherealPack.models.buffs.etherealness_buff import EtherealnessBuff
 from mods.EtherealPack.models.hazards.stasis import Stasis
 from mods.EtherealPack.models.hazards.util import (
@@ -28,8 +32,31 @@ class MassStasis(Spell):
             "Äther Lag",
             "Targets are also affected by [Ätherealness:äthereal] for the same duration after they return",
         )
-        # TODO make upgrade random basic status effect and chaos tag
-        # TODO make upgrade "Entaglement" shared pain effect
+        self.upgrades["chaotic_return"] = (
+            1,
+            3,
+            "Äther Scramble",
+            "Returning enemies receive a random debuff for the duration of Mass Stasis",
+            [Tags.Chaos],
+        )
+        self.upgrades["entanglement"] = (
+            1,
+            4,
+            "Entanglement",
+            "Returning enemies receive [Shared Pain] for the duration of Mass Stasis",
+        )
+
+        self.return_debuffs = [
+            Poison,
+            BleedBuff,
+            NecrosisBuff,
+            BerserkBuff,
+            HemorrhageBuff,
+            Silence,
+            Stun,
+            FrozenBuff,
+            PetrifyBuff,
+        ]
 
     def can_cast(self, x, y):
         unit = self.caster.level.get_unit_at(x, y)
@@ -51,7 +78,17 @@ class MassStasis(Spell):
                 unit.apply_buff(EtherealnessBuff(), self.get_stat("duration") * 2)
             unit_in_stasis = prepare_stasis_unit(unit, self.get_stat("duration"))
             stasis = Stasis(
-                self.caster, self, self.get_stat("duration"), unit_in_stasis
+                self.caster,
+                self,
+                self.get_stat("duration"),
+                unit_in_stasis,
+                return_debuff=(
+                    random.choice(self.return_debuffs)
+                    if self.get_stat("chaotic_return") and are_hostile(self.caster, unit)
+                    else None
+                ),
+                shared_pain=self.get_stat("entanglement"),
+                return_duration=self.get_stat("duration"),
             )
             self.caster.level.add_hazard(stasis, hazard_point.x, hazard_point.y)
 
