@@ -2,7 +2,7 @@ import LevelRewards
 import Game
 import ModHandler
 import sys
-from Level import Color, EventOnMoved, EventOnUnitAdded, Level, Portal, Tag, Tags, TEAM_PLAYER
+from Level import Color, EventOnMoved, EventOnUnitAdded, Level, Portal, Tag, Tags, TEAM_PLAYER, are_hostile
 
 from RareMonsters import SlimeAdaptiveArmorBuff
 from mods.EtherealPack.models.hazards.base import EtherealHazard
@@ -107,7 +107,82 @@ def has_enemy_units_with_stasis(self):
     )
 
 
+def has_stasis_hostile_units(level):
+    player_unit = level.player_unit
+    for hazard in getattr(level, "hazards", ()):
+        unit = getattr(hazard, "unit", None)
+        if not (
+            getattr(hazard, "counts_for_level_clear", False)
+            and unit is not None
+            and unit.cur_hp > 0
+            and not unit.killed
+        ):
+            continue
+        if (
+            unit.team != TEAM_PLAYER
+            if player_unit is None
+            else are_hostile(player_unit, unit)
+        ):
+            return True
+    return False
+
+
+_original_has_hostile_units = Level.has_hostile_units
+
+
+def has_hostile_units_with_stasis(self):
+    return _original_has_hostile_units(self) or has_stasis_hostile_units(self)
+
+
 Level.has_enemy_units = has_enemy_units_with_stasis
+Level.has_hostile_units = has_hostile_units_with_stasis
+
+
+_original_find_path = Level.find_path
+
+
+def find_path_with_stasis_step(
+    self, start, target, pather, pythonize=False, cosmetic=False, unit_penalty=4
+):
+    path = _original_find_path(
+        self, start, target, pather, pythonize, cosmetic, unit_penalty
+    )
+    if (
+        cosmetic
+        and pythonize
+        and pather is self.player_unit
+        and has_stasis_hostile_units(self)
+        and path
+    ):
+        return path[:1]
+    return path
+
+
+Level.find_path = find_path_with_stasis_step
+
+
+_original_portal_advance = Portal.advance
+
+
+def portal_advance_with_stasis_check(self):
+    if self.locked and self.level.has_enemy_units():
+        return
+    _original_portal_advance(self)
+
+
+Portal.advance = portal_advance_with_stasis_check
+
+
+_original_enter_portal = Game.Game.enter_portal
+
+
+def enter_portal_with_stasis_check(self):
+    if self.cur_level.has_enemy_units():
+        return
+    _original_enter_portal(self)
+
+
+Game.Game.enter_portal = enter_portal_with_stasis_check
 
 
 _original_rebuild_event_managers = Game.Game.rebuild_event_managers

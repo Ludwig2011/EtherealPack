@@ -20,7 +20,7 @@ class MassStasis(Spell):
         self.level = 3
 
         self.duration = 7
-        self.radius = 5
+        self.radius = 4
         self.damage_type = [Ethereal]
 
         self.max_charges = 7
