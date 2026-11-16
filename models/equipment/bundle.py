@@ -3,6 +3,8 @@ from Level import Equipment, SLOT_WEAPON, Tags
 from mods.EtherealPack.models.spells.word_of_disjunction import WordOfDisjunction
 from mods.EtherealPack.tags.Ethereal import Ethereal
 
+#TODO make euqipment that gives bonus charges and duration
+
 class EtherStaff(Equipment):
 
 	def on_init(self):

@@ -8,10 +8,8 @@ from RareMonsters import SlimeAdaptiveArmorBuff
 from mods.EtherealPack.models.hazards.base import EtherealHazard
 import mods.EtherealPack.models.hazards.layer
 
-#TODO make euqipment staff that gives bonus charges and duration
 #TODO make icons animated again!
 #TODO ethermancer trial give ethermancer robe
-#TODO make spells/equipment scale with appropiate spell bonuses where not already done. Mostly missing for upgrades / equipment
 #TODO Rework vanilla ether spider
 Ethereal = ModHandler.register_tag("Äthereal", Color(1, 255, 188), letter="v", asset=["EtherealPack", "ether"])
 Etherealness = Tag("Ätherealness", Color(1, 255, 188))
