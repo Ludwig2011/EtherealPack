@@ -36,7 +36,6 @@ class EtherWave(Spell):
             desc += "\nThe burst ignores walls."
         return desc
 
-    #TODO red display does not get increased by link
     def get_impacted_tiles(self, x, y):
         radius = self.get_stat('radius')
         if self.has_ether_wyvern_nearby(x, y):
@@ -46,10 +45,6 @@ class EtherWave(Spell):
                 yield p
 
     def can_threaten(self, x, y):
-        if distance(self.caster, Point(x, y)) > self.radius:
-            return False
-
-        # Potential optimization- only make the aoe once per frame
         return Point(x, y) in list(self.get_impacted_tiles(self.caster.x, self.caster.y))
 
     def cast_instant(self, x, y):
